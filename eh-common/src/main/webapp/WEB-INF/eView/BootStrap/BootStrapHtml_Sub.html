@@ -91,7 +91,7 @@
             <option selected="" value="">--请选择--</option>            
             <#if bootstrap.option??>
             <#list bootstrap.option?keys as key>
-			    <option value="${key}" <#if (bootstrap.value?default('')?string == key)>selected="selected"</#if>>${bootstrap.option[key]}</option>
+			    <option value="${key}"> <#if (bootstrap.value?default('')?string == key)>selected="selected"</#if>>${bootstrap.option[key]}</option>
 			</#list>
             </#if>
         </select>
@@ -108,7 +108,7 @@
             <option selected="" value="">--请选择--</option>            
             <#if bootstrap.treeList??>
             <#list bootstrap.treeList as tree>
-			    <option value="${tree.id}" <#if (bootstrap.value?default(0)?int == tree.id)>selected="selected"</#if> class="level${tree.level!''}">${tree.title}</option>
+			    <option value="${tree.id}"> <#if (bootstrap.value?default(0)?int == tree.id)>selected="selected"</#if> class="level${tree.level!''}">${tree.title}</option>
 			</#list>
             </#if>
         </select>
@@ -136,7 +136,7 @@
         <#if bootstrap.option??>
         <#list bootstrap.option?keys as key>
         <label class="radio ">
-            <input type="radio" <#if (bootstrap.value?default('')?string == key)>checked="checked"</#if> value="${key}" id="bs_radio_${bootstrap.field_name}_${key}" name="${bootstrap.field_name}">
+            <input type="radio"> <#if (bootstrap.value?default('')?string == key)>checked="checked"</#if> value="${key}" id="bs_radio_${bootstrap.field_name}_${key}" name="${bootstrap.field_name}">
             ${bootstrap.option[key]}
         </label>
         </#list>
