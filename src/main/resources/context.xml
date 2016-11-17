@@ -7,9 +7,9 @@
                 auth="Container"   
                 type="javax.sql.DataSource"   
                 driverClassName="com.mysql.jdbc.Driver"   
-                url="jdbc:mysql://127.0.0.1:3306/ehproject?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull"   
-                username="root"   
-                password=""   
+                url="jdbc:mysql://120.24.185.249:3306/ehproject?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull"   
+                username="ehproject"   
+                password="42016048"   
                 maxActive="20"   
                 maxIdle="10"   
                 maxWait="10000"/>  
