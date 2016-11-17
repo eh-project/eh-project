@@ -74,6 +74,7 @@ public class PublicServiceImpl extends CommonServiceImpl implements PublicServic
 		// TODO Auto-generated method stub
 		ReturnObject<WpPublicWithBLOBs> rm = new ReturnObject<WpPublicWithBLOBs>();		
 		WpPublicWithBLOBs model = wpPublicMapper.selectByPrimaryKey(key);
+		if(model == null)model = new WpPublicWithBLOBs();
 		rm.setBootStrapList(this.formatBootStrapList(model));
 		rm.setCode(1);
 		rm.setModel(model);
@@ -89,9 +90,16 @@ public class PublicServiceImpl extends CommonServiceImpl implements PublicServic
 		c.andUidEqualTo(model.getUid());
 		c.andIdEqualTo(model.getId());
 		if(model.getToken() == null || model.getToken().equals(""))model.setToken(model.getPublicId());
-		int code = wpPublicMapper.updateByExampleSelective(model, example);
+		
+		Integer count = wpPublicMapper.countByExample(example);
+		if(count == 0){
+			wpPublicMapper.insertSelective(model);
+		}else{
+			wpPublicMapper.updateByExampleSelective(model, example);
+		}
+		
 		ro.setModel(model);
-		ro.setCode(code);
+		ro.setCode(1);
 		ro.setMsg("编辑成功");
 		return ro;
 	}

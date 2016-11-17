@@ -74,7 +74,19 @@
 <div id="bs_div_${bootstrap.field_name}" class="field-box form-group">
     <label class="col-sm-2 control-label">${bootstrap.field_label}</label>
     <div class="ui-select col-sm-7 controls">
-	    <input type="text" id="${bootstrap.field_name}" name="${bootstrap.field_name}" class="input-large datepicker" data-date-format="yyyy-mm-dd" value="${(bootstrap.value?string('yyyy-MM-dd'))!''}">
+	    <input type="text" id="${bootstrap.field_name}" name="${bootstrap.field_name}" class="input-large datepicker" data-date-format="yyyy-MM-dd" value="${(bootstrap.value?string('yyyy-MM-dd'))!''}">
+	    <span class="help-block ">${bootstrap.prompt}</span>
+	    <span id="bs_ok_sign_${bootstrap.field_name}" class="dn"><i class="icon-ok-sign"></i>${bootstrap.ok_sign}</span>
+	    <span id="bs_error_sign_${bootstrap.field_name}" class="dn"><i class="icon-remove-sign"></i>${bootstrap.error_sign}</span>
+    </div>
+</div>
+<#break>
+
+<#case "datepicker-ymdhms">
+<div id="bs_div_${bootstrap.field_name}" class="field-box form-group">
+    <label class="col-sm-2 control-label">${bootstrap.field_label}</label>
+    <div class="ui-select col-sm-7 controls">
+	    <input type="text" id="${bootstrap.field_name}" name="${bootstrap.field_name}" class="input-large datepicker" data-date-format="yyyy-MM-dd HH:mm:ss" value="${(bootstrap.value?string('yyyy-MM-dd HH:mm:ss'))!''}">
 	    <span class="help-block ">${bootstrap.prompt}</span>
 	    <span id="bs_ok_sign_${bootstrap.field_name}" class="dn"><i class="icon-ok-sign"></i>${bootstrap.ok_sign}</span>
 	    <span id="bs_error_sign_${bootstrap.field_name}" class="dn"><i class="icon-remove-sign"></i>${bootstrap.error_sign}</span>
@@ -91,7 +103,7 @@
             <option selected="" value="">--请选择--</option>            
             <#if bootstrap.option??>
             <#list bootstrap.option?keys as key>
-			    <option value="${key}"> <#if (bootstrap.value?default('')?string == key)>selected="selected"</#if>>${bootstrap.option[key]}</option>
+			    <option value="${key}" <#if (bootstrap.value?default('')?string == key)>selected="selected"</#if>>${bootstrap.option[key]}</option>
 			</#list>
             </#if>
         </select>
@@ -108,7 +120,7 @@
             <option selected="" value="">--请选择--</option>            
             <#if bootstrap.treeList??>
             <#list bootstrap.treeList as tree>
-			    <option value="${tree.id}"> <#if (bootstrap.value?default(0)?int == tree.id)>selected="selected"</#if> class="level${tree.level!''}">${tree.title}</option>
+			    <option value="${tree.id}" <#if (bootstrap.value?default(0)?int == tree.id)>selected="selected"</#if> class="level${tree.level!''}">${tree.title}</option>
 			</#list>
             </#if>
         </select>
@@ -136,7 +148,7 @@
         <#if bootstrap.option??>
         <#list bootstrap.option?keys as key>
         <label class="radio ">
-            <input type="radio"> <#if (bootstrap.value?default('')?string == key)>checked="checked"</#if> value="${key}" id="bs_radio_${bootstrap.field_name}_${key}" name="${bootstrap.field_name}">
+            <input type="radio" <#if (bootstrap.value?default('')?string == key)>checked="checked"</#if> value="${key}" id="bs_radio_${bootstrap.field_name}_${key}" name="${bootstrap.field_name}">
             ${bootstrap.option[key]}
         </label>
         </#list>
@@ -159,7 +171,7 @@
 	        		<#if (value == key)><#assign checked="checked='checked'"></#if>
 	        	</#list>
 	        	</#if>
-	            <input type="checkbox" ${checked} value="${key}" id="bs_checkbox_${bootstrap.field_name}_${key_index}" name="${bootstrap.field_name}[]" >
+	            <input type="checkbox" ${checked} value="${key}" id="bs_checkbox_${bootstrap.field_name}_${key_index}" name="${bootstrap.field_name}" >
 	            ${bootstrap.option[key]}
 	        </label>
 	        </#list>

@@ -116,12 +116,13 @@ public class WpPublicController extends WxCommonController{
 			@ModelAttribute WpPublicWithBLOBs wpPublic
 			) {
 		try{
-			Long user_id = (Long)request.getSession().getAttribute(Constants.SESSION_USER_ID);
-			wpPublic.setUid(user_id);
-			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
-			wpPublic.setId(wx_id);
+//			Long user_id = (Long)request.getSession().getAttribute(Constants.SESSION_USER_ID);
+//			wpPublic.setUid(user_id);
+			Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
+			wpPublic.setId(store_id);
+			wpPublic.setUid(Long.valueOf(store_id.toString()));
 			ReturnObject<WpPublicWithBLOBs> rm = publicService.public_update_submit(wpPublic);
-			weiXinService.setWpPublic(wx_id, wpPublic);
+			weiXinService.setWpPublic(store_id, wpPublic);
 			return this.ReturnJump(modelMap, rm.getCode(), rm.getMsg(), "public_update");
 		}catch(Exception e){
 			e.printStackTrace();
