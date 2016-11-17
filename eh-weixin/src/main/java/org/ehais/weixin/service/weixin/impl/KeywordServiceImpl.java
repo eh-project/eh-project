@@ -31,7 +31,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 	public ReturnObject<WpKeyword> keyword_list(HttpServletRequest request) throws Exception{
 		
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		
 		rm.setCode(1);
 		return rm;
@@ -41,7 +41,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 			Integer page, Integer len) throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();
-		if(store_id == null)store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		if(store_id == null)store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		Integer start = (page - 1 ) * len;
 		
 		WpKeywordExample example = new WpKeywordExample();
@@ -63,7 +63,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 			throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();	
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		WpKeyword model = new WpKeyword();
 		model.setId(0);
 		rm.setBootStrapList(this.formatBootStrapList(request,model));
@@ -83,7 +83,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 		}
 
 
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		model.setToken(this.getWpPublic(store_id).getToken());
 		model.setAddon("");
 		model.setAimId(0);
@@ -115,7 +115,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 			throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		WpKeyword model = wpKeywordMapper.selectByPrimaryKey(id);
 		rm.setBootStrapList(this.formatBootStrapList(request,model));
 		
@@ -128,7 +128,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 			throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		WpKeywordExample example = new WpKeywordExample();
 		WpKeywordExample.Criteria c = example.createCriteria();
 		
@@ -151,7 +151,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 			throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		
 		WpKeyword model = wpKeywordMapper.selectByPrimaryKey(id);
 		rm.setBootStrapList(this.formatBootStrapList(request,model));
@@ -165,7 +165,7 @@ public class KeywordServiceImpl  extends WeiXinCommonServiceImpl implements Keyw
 			throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<WpKeyword> rm = new ReturnObject<WpKeyword>();
-		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 		WpKeywordExample example = new WpKeywordExample();
 		WpKeywordExample.Criteria c = example.createCriteria();
 		c.andTokenEqualTo(this.getWpPublic(store_id).getToken());

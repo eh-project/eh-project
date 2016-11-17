@@ -33,7 +33,7 @@ public class WpPublicController extends WxCommonController{
 	public String wecome(ModelMap modelMap,
 			HttpServletRequest request,HttpServletResponse response){
 		try{
-			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 			WpPublicWithBLOBs wpPublic = weiXinService.getWpPublic(wx_id);
 			String addonConfig = wpPublic.getAddonConfig();
 			System.out.println(addonConfig);
@@ -63,7 +63,7 @@ public class WpPublicController extends WxCommonController{
 			@RequestParam(value = "wecome", required = true) String wecome
 			){
 		try{
-			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 			WpPublicWithBLOBs wpPublic = weiXinService.getWpPublic(wx_id);
 			String addonConfig = wpPublic.getAddonConfig();
 			System.out.println(addonConfig);
@@ -100,7 +100,7 @@ public class WpPublicController extends WxCommonController{
 			HttpServletRequest request,HttpServletResponse response
 			) {
 		try{
-			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 			ReturnObject<WpPublicWithBLOBs> rm = publicService.public_update(null, wx_id);
 			rm.setAction("public_update_submit");
 			modelMap.addAttribute("rm", rm);
@@ -118,7 +118,7 @@ public class WpPublicController extends WxCommonController{
 		try{
 			Long user_id = (Long)request.getSession().getAttribute(Constants.SESSION_USER_ID);
 			wpPublic.setUid(user_id);
-			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+			Integer wx_id = (Integer)request.getSession().getAttribute(Constants.SESSION_STORE_ID);
 			wpPublic.setId(wx_id);
 			ReturnObject<WpPublicWithBLOBs> rm = publicService.public_update_submit(wpPublic);
 			weiXinService.setWpPublic(wx_id, wpPublic);
