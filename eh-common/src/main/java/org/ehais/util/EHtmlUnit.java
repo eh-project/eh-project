@@ -1,23 +1,11 @@
-package com.ehais.hrlucene.service.impl;
+package org.ehais.util;
 
-import org.ehais.util.EHtmlUnit;
-import org.springframework.stereotype.Service;
-
-import com.ehais.hrlucene.service.GxrcService;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.apache.http.impl.client.HttpClientBuilder;
 
-@Service("gxrcService")
-public class GxrcServiceImpl implements GxrcService {
+public class EHtmlUnit {
 
-	private String url = "http://push.guangdongip.gov.cn/company.do?id=299";
-	@Override
-	public void loadGxrc() throws Exception {
-		// TODO Auto-generated method stub
-//		String content = EHtmlUnit.httpUnitRequest(url);
-//		System.out.println(content);
-		
+	public static String httpUnitRequest(String url) throws Exception {
 		WebClient webClient = new WebClient();
 
 		// 1 启动JS
@@ -40,18 +28,8 @@ public class GxrcServiceImpl implements GxrcService {
 		String htmlContent = htmlPage.asXml();
 		webClient.close();
 		
-		System.out.println(htmlContent);
+		return htmlContent;
+		
 	}
 	
-	
-	public static void main(String[] args) {
-		GxrcServiceImpl c = new GxrcServiceImpl();
-		try {
-			c.loadGxrc();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }
