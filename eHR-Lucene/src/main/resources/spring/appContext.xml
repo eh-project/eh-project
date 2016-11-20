@@ -40,7 +40,7 @@
 	</bean>
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="org.ehais.hrlucene.mapper,org.ehais.mapper" />
+		<property name="basePackage" value="com.ehais.hrlucene.mapper,org.ehais.mapper" />
 	</bean>
 
 
