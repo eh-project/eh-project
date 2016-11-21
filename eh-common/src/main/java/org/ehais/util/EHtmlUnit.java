@@ -50,7 +50,7 @@ public class EHtmlUnit {
 //		commmonWebClient.getOptions().setCssEnabled(false);
 		
 		//用多功能Client获取动态页面的html并执行完js后的页面
-		URL dynamicUrl = new URL("http://localhost:30010/WebSite");
+		URL dynamicUrl = new URL(url);
 		HtmlPage dynamicPage = (HtmlPage) multiWebClient.getPage(dynamicUrl);
 		return dynamicPage.asXml();
 		//根据项目需要,使用普通Client加载首页模板(避免执行模板里面的js,这些js都是真正要浏览器查看的时候才会执行)
