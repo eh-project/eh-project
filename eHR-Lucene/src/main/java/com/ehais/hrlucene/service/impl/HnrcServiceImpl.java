@@ -59,6 +59,16 @@ public class HnrcServiceImpl implements HnrcService {
 		Element posList = doc.getElementById("vacancy");
 		if(posList == null) 
 			return;
+		Elements tables_a = posList.getElementsByTag("a");
+		String href = null;
+		for (Element a : tables_a) {
+			if(a.hasAttr("href") && a.attr("href").indexOf("view-recruit") > 0){
+				href = website + "/" + a.attr("href");
+				System.out.println(a.text() + "=="+href);
+				positionDetail(href);//职位详情
+			}
+		}
+		/**
 		Elements tbodys = posList.getElementsByTag("tbody");
 		Element tbody = tbodys.get(1);
 		//System.out.println("tbody" + tbody);
@@ -77,6 +87,7 @@ public class HnrcServiceImpl implements HnrcService {
 				positionDetail(href);//职位详情
 			}
 		}
+		**/
 		//继续分析下一页
 		Elements pagelinks = doc.getElementsByClass("pagelinks");
 	//	System.out.println("pagelinks" + pagelinks);
@@ -213,8 +224,8 @@ public class HnrcServiceImpl implements HnrcService {
 			
 		
 			Element companynamea = companyintro.getElementsByTag("a").first();
-			String companyName = companynamea.attr("href");
-			
+//			String companyName = companynamea.attr("href");
+			String companyName = companynamea.text();//这里换成text()
 			
 			
 			/*td = tr.get(5).getElementsByTag("td");
@@ -325,8 +336,8 @@ public class HnrcServiceImpl implements HnrcService {
 		HnrcServiceImpl c = new HnrcServiceImpl();
 		try {
 //			c.loadGxrc();
-//			c.positionList("http://s.gxrc.com/sjob?keyword=%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B%E5%B8%88");
-	//		c.positionDetail("http://www.hnrcsc.com/web/view/view-recruit/id/F9735ACAD74E4C11.html?r=2");
+//			c.positionList("http://www.hnrcsc.com/web/seekjob/search-job!search.action?m=search&n=ts&filter.positionCode=01");
+			c.positionDetail("http://www.hnrcsc.com//web/view/view-recruit/id/01775F96D64FACBE.html;jsessionid=37CD1DB5206E59C6429B8CE99433E56A-n1.tomcat2?r=2");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
