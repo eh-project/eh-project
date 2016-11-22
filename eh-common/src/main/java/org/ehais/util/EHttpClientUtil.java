@@ -385,12 +385,12 @@ public class EHttpClientUtil {
 		// 目标地址
 		HttpPost httpGet = new HttpPost(url);
 
-		// 构造最简单的字符串数据
-		// StringEntity reqEntity = new StringEntity("name=test&password=test");
-		// 设置类型
-		// reqEntity.setContentType("application/x-www-form-urlencoded");
-		// 设置请求的数据
-		// httpGet.setEntity(reqEntity);
+//		 构造最简单的字符串数据
+//		 StringEntity reqEntity = new StringEntity("name=test&password=test");
+//		 设置类型
+//		 reqEntity.setContentType("application/x-www-form-urlencoded");
+//		设置请求的数据
+//		 httpGet.setEntity(reqEntity);
 
 		// 执行
 		HttpResponse response = httpclient.execute(httpGet);

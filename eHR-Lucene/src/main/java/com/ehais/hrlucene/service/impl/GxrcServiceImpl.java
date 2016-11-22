@@ -22,7 +22,7 @@ public class GxrcServiceImpl implements GxrcService {
 	private HrPositionService hrPositionService;
 
 	private String website = "http://s.gxrc.com/";
-	@Override
+	
 	public void loadGxrc() throws Exception {
 		// TODO Auto-generated method stub
 		String url = "http://s.gxrc.com/";
@@ -33,7 +33,7 @@ public class GxrcServiceImpl implements GxrcService {
 		//将xml的字符串转化成html可读对象
 		Document doc = Jsoup.parse(htmlContent,"utf-8");
 		
-		//根据html的结构读取信息
+		//根据html的结构读取信息 
 		Elements treatmentAdvantage = doc.getElementsByClass("treatmentAdvantage");
 		for (Element element : treatmentAdvantage) {
 			Elements a = element.getElementsByTag("a");
