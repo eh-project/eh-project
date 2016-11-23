@@ -25,6 +25,12 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+<dependency>
+    <groupId>xml-apis</groupId>
+    <artifactId>xml-apis</artifactId>
+    <version>1.4.01</version>
+</dependency>
 		
 		<dependency>
 			<groupId>net.sf.oval</groupId>
