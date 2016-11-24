@@ -1,6 +1,7 @@
 package com.ehais.hrlucene.service.impl;
 
 import org.ehais.tools.ReturnObject;
+import org.ehais.util.EHtmlUnit;
 import org.ehais.util.EHttpClientUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -21,14 +22,15 @@ public class HnrcServiceImpl implements HnrcService {
 	@Autowired
 	private HrPositionService hrPositionService;
 
-	private String website = "http://www.hnrcsc.com";
+	private String website = "http://www.syrczpw.com/";  //三亚人才网址
 //	@Override
 	public void loadHnrc() throws Exception {
-		// TODO Auto-generated method stub
-		String url = "http://www.hnrcsc.com";
 		
-		String htmlContent = EHttpClientUtil.methodGet(url);
-//		String htmlContent = EHtmlUnit.httpUnitRequest(url);
+		
+		
+		String url = "http://www.syrczpw.com/";
+		//String htmlContent = EHttpClientUtil.methodGet(url);
+		String htmlContent = EHtmlUnit.httpUnitRequest(url);
 		System.out.println(htmlContent);
 		
 		//将xml的字符串转化成html可读对象
@@ -36,58 +38,60 @@ public class HnrcServiceImpl implements HnrcService {
 	//	System.out.println("doc" + doc);
 		
 		//根据html的结构读取信息
-		Elements cata_content = doc.getElementsByClass("cata-content");
-		for (Element element : cata_content) {
-			Elements a = element.getElementsByTag("a");
-			
+		Elements job_type = doc.getElementsByClass("job_type");
+		for (Element element : job_type) {
+			Elements a = element.getElementsByTag("a");   //获得第一个页面的a链接
 			for (Element element2 : a) {
-			//	System.out.println(element2);
+				//System.out.println(element2);   输出测试是否抓取到
 				//获取keyword的标签信息
-				String href = url + element2.attr("href");
-				System.out.println("模块页： " + href);
+				String href = url + element2.attr("href");  //合并新的链接
+				System.out.println("第一个页面a链接： " + href);
 				positionList(href);//获取此keyword的列表信息
 			}
 		}	
 		
 	}
 	
+	
+	
+	
+	
+	//第二个页面
 	public void positionList(String url) throws Exception{
-		System.out.println("请求:" + url);
+		System.out.println("请求第二个页面:" + url);  //输出前面抓取到的url
+		
 		String htmlContent = EHttpClientUtil.methodGet(url);
-	//	System.out.println(htmlContent);
+		
+		//System.out.println(htmlContent);
+		
 		Document doc = Jsoup.parse(htmlContent,"utf-8");
-		Element posList = doc.getElementById("vacancy");
-		if(posList == null) 
+		Element threadlist = doc.getElementById("threadlist");
+		//如果没有这个id结束函数
+		if(threadlist == null) 
 			return;
-		Elements tables_a = posList.getElementsByTag("a");
+		
+		Elements subject_t = threadlist.getElementsByClass("subject_t");
+		
 		String href = null;
-		for (Element a : tables_a) {
-			if(a.hasAttr("href") && a.attr("href").indexOf("view-recruit") > 0){
+			
+		
+		
+		
+		int cout=0;	
+		for (Element a : subject_t) {
+			if(cout>=3){
+				
 				href = website + "/" + a.attr("href");
-				System.out.println(a.text() + "=="+href);
+				System.out.println(a.text() + "=="+href);//输出抓取到的url
+				
 				positionDetail(href);//职位详情
+				
 			}
+			cout++;
 		}
-		/**
-		Elements tbodys = posList.getElementsByTag("tbody");
-		Element tbody = tbodys.get(1);
-		//System.out.println("tbody" + tbody);
-		//System.out.println("tbody: " + tbody);
 		
-		Elements tables = tbody.getElementsByTag("table");
 		
-	//	System.out.println("tables: " + tables);
-		for (Element element : tables) {
-			Elements tds = element.getElementsByTag("td");
-			if(tds.size() > 0){
-				Element td = tds.first();
-	//			System.out.println("test td :" + td);
-				String href = website + td.getElementsByTag("a").first().attr("href");
-				System.out.println("href:" + href);
-				positionDetail(href);//职位详情
-			}
-		}
-		**/
+		/*
 		//继续分析下一页
 		Elements pagelinks = doc.getElementsByClass("pagelinks");
 	//	System.out.println("pagelinks" + pagelinks);
@@ -117,21 +121,9 @@ public class HnrcServiceImpl implements HnrcService {
 			//positionDetail(next);
 			System.out.println("最后一页了！");
 		}
+		*/
 		
 		
-		/*for(Element a : as){
-		System.out.println("a.text: " + a.text());
-		if(as.last().text().equals("尾页")) {
-			System.out.println("next");
-			 String href =  a.attr("href");
-			 System.out.println("href :" + href);
-			 positionList(href);
-		}
-		else {
-			System.out.println("没有下一页了！");
-			continue;
-		}			
-	}*/
 	 
 	}
 	
@@ -141,168 +133,62 @@ public class HnrcServiceImpl implements HnrcService {
 			String htmlContent = EHttpClientUtil.methodGet(url);
 			Document doc = Jsoup.parse(htmlContent,"utf-8");
 			
-			Element positionNameEle = doc.getElementsByClass("blue").first();
-			String positionName = positionNameEle.text();//职位名称
-			System.out.println("positionNameEle: " + positionName);
-			
-			//获取信息的主块
-			Element div = doc.getElementById("col-main-wrapper");
-			Elements tables = div.getElementsByTag("table");
-		//	System.out.println("tables: " + tables);
-			//第一个表格的获取项
-			Element table = tables.first();
-		//	System.out.println("table" + table);
-			Elements tr = table.getElementsByTag("tr");
-			
-			Elements td = tr.get(1).getElementsByTag("td");
-	//		System.out.println("td :" + td);
-			String fulltime = td.get(1).text();
-			String department = td.get(3).text();
-			
-			td = tr.get(2).getElementsByTag("td");
-			String postcategory = td.get(1).text();
-			String workcity = td.get(3).text();
-			
-			td = tr.get(3).getElementsByTag("td");
-			String headcount = td.get(1).text();
-			String salary = td.get(3).text();
-			
-			td = tr.get(4).getElementsByTag("td");
-			String workyears = td.get(1).text();
-			String workages = td.get(3).text();
-			
-			td = tr.get(5).getElementsByTag("td");
-			String degreelevel = td.get(1).text();
-			String profession = td.get(3).text();
-			
-			td = tr.get(6).getElementsByTag("td");
-			String industry = td.get(1).text();
-			String census = td.get(3).text();
-			
-			//具体要求
-			Element divs = doc.getElementsByClass("col-main").first();
-		
-			String detailrequirement = divs.getElementsByClass("mb10").get(1).text();
-			System.out.println("detailrequirement" + detailrequirement);
-			
-			//公司联系信息
-			Element comcontact = tables.get(1);
-		//	System.out.println("com: " + comcontact);
-			Elements contacttr = comcontact.getElementsByTag("tr");
-			
-			Elements contacttd = contacttr.get(0).getElementsByTag("td");
-			String companyAddress = contacttd.get(1).text();
-			
-			contacttd = contacttr.get(2).getElementsByTag("td");
-			String companyEmail = contacttd.get(1).text();
-			
-			contacttd = contacttr.get(3).getElementsByTag("td");
-			String contactperson = contacttd.get(1).text();
-			
-			//得到公司名字与概况的信息
-			Element companyintro = doc.getElementById("j-col-sub");
-			Element introtable = companyintro.getElementsByTag("table").first();
-			
-			Elements introtr = introtable.getElementsByTag("tr");
-		//	System.out.println("tr ==>" + introtr);
-			
-			Elements introtd = introtr.get(0).getElementsByTag("td");
-			String companyWebsite = introtd.get(1).text();
-			
-			introtd = introtr.get(1).getElementsByTag("td");
-			String companyIndustry = introtd.get(1).text();
-			
-			String companyScale = null;
-			String companyNature = null;
-			if (introtr.size() > 2) {
-				introtd = introtr.get(2).getElementsByTag("td");
-				companyScale = introtd.get(1).text();
-				
-				introtd = introtr.get(3).getElementsByTag("td");
-				 companyNature = introtd.get(1).text();
-			}
-			
-		
-			Element companynamea = companyintro.getElementsByTag("a").first();
-//			String companyName = companynamea.attr("href");
-			String companyName = companynamea.text();//这里换成text()
+			Elements td = doc.getElementsByTag("td");
 			
 			
-			/*td = tr.get(5).getElementsByTag("td");
-			String gender = td.get(0).text();
-			String technicalpost = td.get(1).text();
 			
-			td = tr.get(6).getElementsByTag("td");
-			String language = td.get(0).text();
-			String issueTime = td.get(1).text();
-			
-			
-			Elements xingzhiUL = doc.getElementsByClass("xingzhiUL");
-			Elements li = xingzhiUL.first().getElementsByTag("li");
-			String companyNature = li.get(0).text().replace("性质：", "");
-			String companyScale = li.get(1).text().replace("规模：", "");
-			String companyIndustry = li.get(2).text().replace("行业：", "");
-			
-			
-			Elements gz_info_top2 = doc.getElementsByClass("gz_info_top2");
-			String companyName = gz_info_top2.first().getElementsByTag("h4").text();
+			String positionName = td.get(2).text();//职位名称
+			System.out.println("职位名称: " + positionName);
+			String fulltime = td.get(5).text(); //全职工作
+			System.out.println("工作性质: " + fulltime);
+			String issueTime = td.get(7).text();//发布时间
+			System.out.println("发布时间: " + issueTime);
+			String degreelevel = td.get(12).text();//学历要求
+			System.out.println("学历要求: " + degreelevel);
+			String workyears = td.get(14).text();//工作经验要求
+			System.out.println("工作经验要求: " + workyears);
+			String salary = td.get(16).text();//薪水
+			System.out.println("薪水: " + salary);
 			
 			
-			Elements gz_info = doc.getElementsByClass("gz_info");
-
-			String companyDetail = gz_info.get(1).getElementsByTag("p").html();
 			
 			
-			Elements gz_info_txt = doc.getElementsByClass("gz_info_txt");
-			String detailrequirement = gz_info_txt.html(); 
-			
-			Element table_add = doc.getElementById("table_add");
-			tr = table_add.getElementsByTag("tr");
-			td = tr.get(0).getElementsByTag("td");
-			String tel = td.get(0).text();
-			td = tr.get(1).getElementsByTag("td");
-			String contactperson = td.get(0).text();
-			td = tr.get(2).getElementsByTag("td");
-			String companyEmail = td.get(0).text();
-			td = tr.get(3).getElementsByTag("td");
-			String companyWebsite = td.get(0).text();
-			td = tr.get(4).getElementsByTag("td");
-			String companyAddress = td.get(0).text(); */
 			
 			
 			HaiHrPositionWithBLOBs position = new HaiHrPositionWithBLOBs();
 			
 			position.setPositionName(positionName);
-			position.setHeadcount(headcount);
-			position.setDepartment(department);
+			//position.setHeadcount(headcount);
+			//position.setDepartment(department);
 			position.setDegreelevel(degreelevel);
-			position.setPostCategory(postcategory);
-			position.setIndustry(industry);
+			//position.setPostCategory(postcategory);
+			//position.setIndustry(industry);
 			position.setSalary(salary);
 			position.setWorkyears(workyears);
-			position.setWorkcity(workcity);
+			//position.setWorkcity(workcity);
 			position.setFulltime(fulltime);
-			position.setProfession(profession);
+			position.setIssueTime(issueTime);
+			//position.setProfession(profession);
 			
-			position.setWorkages(workages);
-			position.setCensus(census);
+			//position.setWorkages(workages);
+			//position.setCensus(census);
 			
-			position.setDetailrequirement(detailrequirement);
+			//position.setDetailrequirement(detailrequirement);
 			
-			position.setContactperson(contactperson);
-			position.setCompanyEmail(companyEmail);
-			position.setCompanyWebsite(companyWebsite);
-			position.setCompanyAddress(companyAddress);
+			//position.setContactperson(contactperson);
+			//position.setCompanyEmail(companyEmail);
+			//position.setCompanyWebsite(companyWebsite);
+			//position.setCompanyAddress(companyAddress);
 			
 
-			position.setCompanyNature(companyNature);
-			position.setCompanyScale(companyScale);
+			//position.setCompanyNature(companyNature);
+			//position.setCompanyScale(companyScale);
 
-			position.setCompanyIndustry(companyIndustry);
+			//position.setCompanyIndustry(companyIndustry);
 					
-			position.setCompanyName(companyName);
+			//position.setCompanyName(companyName);
 			
-/*			position.setTechnicalpost(technicalpost);
+		/*  position.setTechnicalpost(technicalpost);
 			position.setLanguage(language);
 			position.setGender(gender);
 			position.setHeightbody(heightbody);
@@ -314,16 +200,18 @@ public class HnrcServiceImpl implements HnrcService {
 			
 			
 			
-			position.setHrSource("湖南人才网");
+			position.setHrSource("三亚人才网");
 			position.setHrPositionUrl(url);
 			
 //			JSONObject obj = JSONObject.fromObject(position);
 //			System.out.println(obj.toString());
 			
-			System.out.println(postcategory);
+			
 			ReturnObject<HaiHrPosition> rm = hrPositionService.SaveHrPosition(position);
 			JSONObject obj = JSONObject.fromObject(rm);
 			System.out.println(obj.toString());
+			
+			
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -332,16 +220,6 @@ public class HnrcServiceImpl implements HnrcService {
 	}
 	
 	
-	public static void main(String[] args) {
-		HnrcServiceImpl c = new HnrcServiceImpl();
-		try {
-//			c.loadGxrc();
-//			c.positionList("http://www.hnrcsc.com/web/seekjob/search-job!search.action?m=search&n=ts&filter.positionCode=01");
-			c.positionDetail("http://www.hnrcsc.com//web/view/view-recruit/id/01775F96D64FACBE.html;jsessionid=37CD1DB5206E59C6429B8CE99433E56A-n1.tomcat2?r=2");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	
 
 }

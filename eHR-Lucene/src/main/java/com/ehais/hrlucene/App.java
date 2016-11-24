@@ -5,6 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.ehais.hrlucene.service.HnrcService;
 
+
 public class App 
 {
     public static void main( String[] args ) throws Exception
@@ -17,8 +18,8 @@ public class App
 //        GxrcService gxrcService = (GxrcService)context.getBean("gxrcService");
 //        gxrcService.loadGxrc();
         
-        HnrcService hnrcService = (HnrcService)context.getBean("hnrcService");
-        hnrcService.loadHnrc();
+         HnrcService hnrcService = (HnrcService)context.getBean("hnrcService");
+         hnrcService.loadHnrc();
         
 //        SpringTaskService springTaskService = (SpringTaskService)context.getBean("springTaskService");
 //        
