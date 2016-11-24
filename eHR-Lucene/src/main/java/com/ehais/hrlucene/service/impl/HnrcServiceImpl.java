@@ -176,6 +176,7 @@ public class HnrcServiceImpl implements HnrcService {
 			
 			//position.setDetailrequirement(detailrequirement);
 			
+			
 			//position.setContactperson(contactperson);
 			//position.setCompanyEmail(companyEmail);
 			//position.setCompanyWebsite(companyWebsite);
