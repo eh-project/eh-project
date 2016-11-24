@@ -149,7 +149,7 @@ public class HnrcServiceImpl implements HnrcService {
 			System.out.println("工作经验要求: " + workyears);
 			String salary = td.get(16).text();//薪水
 			System.out.println("薪水: " + salary);
-			
+			String companyName ="还没写好"; 
 			
 			
 			
@@ -168,6 +168,7 @@ public class HnrcServiceImpl implements HnrcService {
 			//position.setWorkcity(workcity);
 			position.setFulltime(fulltime);
 			position.setIssueTime(issueTime);
+			position.setCompanyName(companyName);
 			//position.setProfession(profession);
 			
 			//position.setWorkages(workages);
@@ -186,7 +187,7 @@ public class HnrcServiceImpl implements HnrcService {
 
 			//position.setCompanyIndustry(companyIndustry);
 					
-			//position.setCompanyName(companyName);
+			
 			
 		/*  position.setTechnicalpost(technicalpost);
 			position.setLanguage(language);
