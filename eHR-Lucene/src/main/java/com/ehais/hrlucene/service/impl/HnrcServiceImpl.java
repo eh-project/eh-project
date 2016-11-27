@@ -16,39 +16,42 @@ import com.ehais.hrlucene.service.HnrcService;
 import com.ehais.hrlucene.service.HrPositionService;
 
 import net.sf.json.JSONObject;
+import net.sourceforge.htmlunit.corejs.javascript.regexp.SubString;
 
 @Service("hnrcService")
 public class HnrcServiceImpl implements HnrcService {
 	@Autowired
 	private HrPositionService hrPositionService;
 
-	private String website = "http://www.syrczpw.com/";  //三亚人才网址
+	private String website = "http://www.syrczpw.com/gposinfo/webapp/";  //三亚人才网址
 //	@Override
 	public void loadHnrc() throws Exception {
 		
 		
 		
-		String url = "http://www.syrczpw.com/";
-		//String htmlContent = EHttpClientUtil.methodGet(url);
-		String htmlContent = EHtmlUnit.httpUnitRequest(url);
+		String url = "http://www.syrczpw.com/gposinfo/webapp/";
+		String htmlContent = EHttpClientUtil.methodGet(url);
+		//String htmlContent = EHtmlUnit.httpUnitRequest(url);
 		System.out.println(htmlContent);
+		
+		
 		
 		//将xml的字符串转化成html可读对象
 		Document doc = Jsoup.parse(htmlContent,"utf-8");
-	//	System.out.println("doc" + doc);
+		//System.out.println("doc" + doc);
 		
 		//根据html的结构读取信息
-		Elements job_type = doc.getElementsByClass("job_type");
-		for (Element element : job_type) {
+		
+		Element HotKey = doc.getElementById("HotKey"); //获得第一个页面的页面 ID
+		Elements li_1 = HotKey.getElementsByTag("li"); //获得li标签
+		
+		for (Element element : li_1) {
 			Elements a = element.getElementsByTag("a");   //获得第一个页面的a链接
-			for (Element element2 : a) {
-				//System.out.println(element2);   输出测试是否抓取到
-				//获取keyword的标签信息
-				String href = url + element2.attr("href");  //合并新的链接
+		
+				String href = url + a.attr("href");  //合并新的链接
 				System.out.println("第一个页面a链接： " + href);
 				positionList(href);//获取此keyword的列表信息
-			}
-		}	
+			}	
 		
 	}
 	
@@ -58,37 +61,38 @@ public class HnrcServiceImpl implements HnrcService {
 	
 	//第二个页面
 	public void positionList(String url) throws Exception{
+		
 		System.out.println("请求第二个页面:" + url);  //输出前面抓取到的url
-		
 		String htmlContent = EHttpClientUtil.methodGet(url);
-		
-		//System.out.println(htmlContent);
-		
 		Document doc = Jsoup.parse(htmlContent,"utf-8");
-		Element threadlist = doc.getElementById("threadlist");
+		Elements Triangle = doc.getElementsByClass("Triangle"); //获得第二个页面的目标class
 		//如果没有这个id结束函数
-		if(threadlist == null) 
+		int size = doc.getElementsByTag("option").size();
+		if(Triangle == null) 
 			return;
-		
-		Elements subject_t = threadlist.getElementsByClass("subject_t");
-		
 		String href = null;
-			
-		
-		
-		
-		int cout=0;	
-		for (Element a : subject_t) {
-			if(cout>=3){
+		Elements li_2 = Triangle.get(0).getElementsByTag("li");
+	
+		for (Element a : li_2) {
 				
-				href = website + "/" + a.attr("href");
-				System.out.println(a.text() + "=="+href);//输出抓取到的url
+				a=a.getElementsByTag("a").get(0);
+				System.out.println(a.attr("href"));
+				String temp = a.attr("href").substring(3);
+				
+				href = website + temp ;
+				System.out.println(href);//输出抓取到的url
 				
 				positionDetail(href);//职位详情
-				
-			}
-			cout++;
 		}
+		
+		for(int i=2;i>size;i++)
+		{	
+			url = url + "&page="+String.valueOf(i);
+			System.out.println(url);
+			positionList(url);
+		}
+		
+		
 		
 		
 		/*
@@ -133,30 +137,79 @@ public class HnrcServiceImpl implements HnrcService {
 			String htmlContent = EHttpClientUtil.methodGet(url);
 			Document doc = Jsoup.parse(htmlContent,"utf-8");
 			
-			Elements td = doc.getElementsByTag("td");
+			
+			
+			Elements border_bottom = doc.getElementsByClass("border_bottom");   //获取class:postDesc
 			
 			
 			
-			String positionName = td.get(2).text();//职位名称
+			
+			
+			
+			
+			
+			
+			String positionName = border_bottom.get(0).getElementsByTag("span").get(0).text();//职位名称
 			System.out.println("职位名称: " + positionName);
-			String fulltime = td.get(5).text(); //全职工作
-			System.out.println("工作性质: " + fulltime);
-			String issueTime = td.get(7).text();//发布时间
+			
+			
+			
+	
+			String issueTime = doc.getElementsByClass("zwxq").get(0).getElementsByTag("span").get(0).text();//发布时间
+			issueTime = issueTime.substring(5);
 			System.out.println("发布时间: " + issueTime);
-			String degreelevel = td.get(12).text();//学历要求
-			System.out.println("学历要求: " + degreelevel);
-			String workyears = td.get(14).text();//工作经验要求
+			
+			String workyears = doc.getElementsByClass("zwxq").get(0).getElementsByTag("span").get(1).text(); //工作经验要求
+			workyears = workyears.substring(7);
 			System.out.println("工作经验要求: " + workyears);
-			String salary = td.get(16).text();//薪水
+			
+			String salary = doc.getElementsByClass("zwxq").get(0).getElementsByTag("span").get(2).text();//薪水
+			salary = salary.substring(5);
 			System.out.println("薪水: " + salary);
-			String companyName ="还没写好"; 
+			
+			String welfare = doc.getElementsByClass("zwxq").get(0).getElementsByTag("span").get(3).text(); //其它福利
+			welfare = welfare.substring(7);
+			System.out.println("其它福利: " + welfare);
+			
+			String degreelevel = doc.getElementById("degree").text();//学历要求
+			degreelevel = degreelevel.substring(5);
+			System.out.println("学历要求: " + degreelevel);
+			
+			String fulltime = doc.getElementById("nature").text(); //工作性质
+			if(fulltime.length()>4)
+				fulltime = fulltime.substring(4);
+			System.out.println("工作性质: " + fulltime);
+			
+			String companyName = border_bottom.get(0).getElementsByTag("span").get(1).text();  //公司名称
+			System.out.println("公司名称: " + companyName);
+			
+			String workcity = doc.getElementsByClass("zwxq").get(0).getElementsByTag("span").get(4).text();  //工作地点
+			if(workcity.length()>5)
+				workcity = workcity.substring(5);
+			System.out.println("工作地点: " + workcity);
+			
+			String  companyWebsite = doc.getElementById("cSites").text(); //公司网站
+			if(companyWebsite.length()>4)
+				companyWebsite = companyWebsite.substring(4);
+			System.out.println("公司网站: " + companyWebsite);
+			
+			String companyNature = doc.getElementById("cNature").text(); //公司性质
+			if(companyNature.length()>4)
+				companyNature = companyNature.substring(4);
+			System.out.println("公司性质: " + companyNature);
+			
+			String companyAddress = doc.getElementsByClass("companyDesc").get(0).getElementsByTag("div").get(5).text();  //公司地址
+			System.out.println("公司地址: " + companyAddress);
 			
 			
-			
-			
+			String companyDetail = doc.getElementsByClass("zwxq").get(1).getElementsByTag("div").get(0).text();  //公司介绍
+			if(companyDetail.length()>0)
+				companyDetail = companyDetail.substring(0,companyDetail.indexOf("公司全部职位") ) ;
+			System.out.println("公司介绍: " + companyDetail);
+
 			
 			HaiHrPositionWithBLOBs position = new HaiHrPositionWithBLOBs();
-			
+			position.setWelfare(welfare);
 			position.setPositionName(positionName);
 			//position.setHeadcount(headcount);
 			//position.setDepartment(department);
@@ -165,7 +218,7 @@ public class HnrcServiceImpl implements HnrcService {
 			//position.setIndustry(industry);
 			position.setSalary(salary);
 			position.setWorkyears(workyears);
-			//position.setWorkcity(workcity);
+			position.setWorkcity(workcity);
 			position.setFulltime(fulltime);
 			position.setIssueTime(issueTime);
 			position.setCompanyName(companyName);
@@ -179,16 +232,16 @@ public class HnrcServiceImpl implements HnrcService {
 			
 			//position.setContactperson(contactperson);
 			//position.setCompanyEmail(companyEmail);
-			//position.setCompanyWebsite(companyWebsite);
-			//position.setCompanyAddress(companyAddress);
+			position.setCompanyWebsite(companyWebsite);
+			position.setCompanyAddress(companyAddress);
 			
 
-			//position.setCompanyNature(companyNature);
+			position.setCompanyNature(companyNature);
 			//position.setCompanyScale(companyScale);
 
 			//position.setCompanyIndustry(companyIndustry);
 					
-			
+			position.setCompanyDetail(companyDetail);
 			
 		/*  position.setTechnicalpost(technicalpost);
 			position.setLanguage(language);
@@ -196,7 +249,7 @@ public class HnrcServiceImpl implements HnrcService {
 			position.setHeightbody(heightbody);
 			position.setIssueTime(issueTime);
 		
-			position.setCompanyDetail(companyDetail);
+			
 			position.setTel(tel);
 		 */
 			
