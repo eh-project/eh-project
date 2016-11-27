@@ -143,7 +143,7 @@ public class EHtmlUnit {
 	
 	
 	//changPage method writing by Stephen Zhang inspired by LGJ
-	public static String changePage(String url,String page) throws Exception{
+	/*public static String changePage(String url,String page) throws Exception{
 		// 得到浏览器对象，直接New一个就能得到，现在就好比说你得到了一个浏览器了  
 	    WebClient webclient = new WebClient();  
 	  
@@ -172,7 +172,7 @@ public class EHtmlUnit {
 	    webclient.close();
 	    return result;
 	}
-	
+	*/
 	
 	
 	
