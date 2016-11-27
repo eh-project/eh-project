@@ -4,7 +4,10 @@ import org.ehais.tools.ReturnObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ehais.hrlucene.mapper.HaiHrCompanyMapper;
 import com.ehais.hrlucene.mapper.HaiHrPositionMapper;
+import com.ehais.hrlucene.model.HaiHrCompany;
+import com.ehais.hrlucene.model.HaiHrCompanyExample;
 import com.ehais.hrlucene.model.HaiHrPosition;
 import com.ehais.hrlucene.model.HaiHrPositionExample;
 import com.ehais.hrlucene.model.HaiHrPositionWithBLOBs;
@@ -16,6 +19,8 @@ public class HrPositionServiceImpl implements HrPositionService {
 
 	@Autowired
 	private HaiHrPositionMapper haiHrPositionMapper;
+	@Autowired
+	private HaiHrCompanyMapper haiHrCompanyMapper;
 	
 	@Override
 	public ReturnObject<HaiHrPosition> SaveHrPosition(HaiHrPositionWithBLOBs hrPosition) throws Exception {
@@ -37,15 +42,46 @@ public class HrPositionServiceImpl implements HrPositionService {
 			rm.setMsg("职位网址不能为空");return rm;
 		}
 		
+		//抽取haihrposition数据模型的公司信息注入到haihrcompany数据模型里面
+		
+		HaiHrCompany hrCompany=new HaiHrCompany();
+		hrCompany.setCompany_name(hrPosition.getCompanyName());
+		hrCompany.setCompany_detail(hrPosition.getCompanyDetail());
+		hrCompany.setCompany_website(hrPosition.getCompanyWebsite());
+		hrCompany.setCompany_industry(hrPosition.getCompanyIndustry());
+		hrCompany.setCompany_scale(hrPosition.getCompanyScale());
+		hrCompany.setCompany_nature(hrPosition.getCompanyNature());
+		hrCompany.setWelfare(hrPosition.getWelfare());
+		hrCompany.setCompany_address(hrPosition.getCompanyAddress());
+		hrCompany.setCompany_email(hrPosition.getCompanyEmail());
+		hrCompany.setCompany_fax(hrPosition.getCompanyFax());
+		hrCompany.setContactperson(hrPosition.getContactperson());
+		hrCompany.setTel(hrPosition.getTel());
+		hrCompany.setPhone(hrPosition.getPhone());
+		
+		
+		
+		
 		//判断是否存在当前网址的职位
 		HaiHrPositionExample example = new HaiHrPositionExample();
 		example.createCriteria().andHrPositionUrlEqualTo(hrPosition.getHrPositionUrl());
 		Integer count = haiHrPositionMapper.countByExample(example);
 		if(count == 0){//不存在此记录，直接插入数据库
 			haiHrPositionMapper.insertSelective(hrPosition);
+			//haiHrCompanyMapper.insertSelective(hrCompany);
 		}else{//存在当前记录，则更新
 			haiHrPositionMapper.updateByExampleSelective(hrPosition, example);
-		}		
+		}
+		
+		//判断是否有相同的公司
+		HaiHrCompanyExample companyExample=new HaiHrCompanyExample();
+		companyExample.createCriteria().andCompany_nameEqualTo(hrCompany.getCompany_name());
+		long countcompany=haiHrCompanyMapper.countByExample(companyExample);
+		if(countcompany == 0){
+			haiHrCompanyMapper.insertSelective(hrCompany);
+		}else{
+			haiHrCompanyMapper.updateByExampleSelective(hrCompany, companyExample);
+		}
 		
 		
 		rm.setCode(1);
