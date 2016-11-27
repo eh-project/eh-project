@@ -50,7 +50,7 @@ public class HnrcServiceImpl implements HnrcService {
 		
 				String href = url + a.attr("href");  //合并新的链接
 				System.out.println("第一个页面a链接： " + href);
-				positionList(href);//获取此keyword的列表信息
+				positionList(href,1);//获取此keyword的列表信息
 			}	
 		
 	}
@@ -60,14 +60,19 @@ public class HnrcServiceImpl implements HnrcService {
 	
 	
 	//第二个页面
-	public void positionList(String url) throws Exception{
+	public void positionList(String url,int i) throws Exception{
+		
 		
 		System.out.println("请求第二个页面:" + url);  //输出前面抓取到的url
 		String htmlContent = EHttpClientUtil.methodGet(url);
 		Document doc = Jsoup.parse(htmlContent,"utf-8");
 		Elements Triangle = doc.getElementsByClass("Triangle"); //获得第二个页面的目标class
 		//如果没有这个id结束函数
-		int size = doc.getElementsByTag("option").size();
+		
+		
+		int size = doc.getElementsByTag("option").size();//select大小
+		
+		
 		if(Triangle == null) 
 			return;
 		String href = null;
@@ -85,12 +90,15 @@ public class HnrcServiceImpl implements HnrcService {
 				positionDetail(href);//职位详情
 		}
 		
-		for(int i=2;i>size;i++)
-		{	
+			if(i<size)
+			{
+			i++;	
 			url = url + "&page="+String.valueOf(i);
 			System.out.println(url);
-			positionList(url);
-		}
+			positionList(url,i);
+			}else{
+				return ;
+			}
 		
 		
 		
