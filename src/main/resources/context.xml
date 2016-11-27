@@ -3,7 +3,8 @@
 
 	<WatchedResource>WEB-INF/web.xml</WatchedResource> 
 
-    <Resource name="jndi/ehproject"   
+
+   <Resource name="jndi/ehproject"   
                 auth="Container"   
                 type="javax.sql.DataSource"   
                 driverClassName="com.mysql.jdbc.Driver"   
@@ -12,8 +13,6 @@
                 password="42016048"   
                 maxActive="20"   
                 maxIdle="10"   
-                maxWait="10000"/>  
-
-				 
+                maxWait="10000"/>  				 
                    
 </Context> 

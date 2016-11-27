@@ -26,9 +26,9 @@ public class SpringTaskServiceImpl implements SpringTaskService{
 	@Override
 	@Scheduled(cron="* * * */7 * *")  
     public void myTask(){  
-        System.out.println("==============it is first task!时间："+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+    //    System.out.println("==============it is first task!时间："+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         try {
-//			gxrcService.loadGxrc();
+//	//		gxrcService.loadGxrc();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
