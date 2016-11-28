@@ -9,5 +9,5 @@ public interface YnrcService {
 	 * @日期 2016.11.20
 	 * @返回 void
 	 */
-	public void loadGxrc() throws Exception;
+	public void loadYnrc() throws Exception;
 }

@@ -26,25 +26,22 @@ public class GxrcServiceImpl implements GxrcService {
 	@Override
 	public void loadGxrc() throws Exception {
 		// TODO Auto-generated method stub
+		String url = "http://s.gxrc.com/";
+		String htmlContent = EHttpClientUtil.methodGet(url);
+		// String htmlContent = EHtmlUnit.httpUnitRequest(url);
+		// System.out.println(htmlContent);
 
-//		String url = "http://s.gxrc.com/";
-		String htmlContent = EHttpClientUtil.methodGet(website);
-//		String htmlContent = EHtmlUnit.httpUnitRequest(url);
-//		System.out.println(htmlContent);
-		
-		//将xml的字符串转化成html可读对象
-		Document doc = Jsoup.parse(htmlContent,"utf-8");
-		
-		//根据html的结构读取信息
+		// 将xml的字符串转化成html可读对象
+		Document doc = Jsoup.parse(htmlContent, "utf-8");
+
+		// 根据html的结构读取信息
 		Elements treatmentAdvantage = doc.getElementsByClass("treatmentAdvantage");
 		for (Element element : treatmentAdvantage) {
 			Elements a = element.getElementsByTag("a");
 			for (Element element2 : a) {
-
-				//获取keyword的标签信息
-				String href = website + element2.attr("href");
-				positionList(href);//获取此keyword的列表信息
-
+				// 获取keyword的标签信息
+				String href = url + element2.attr("href");
+				positionList(href);// 获取此keyword的列表信息
 			}
 		}
 
