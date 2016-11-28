@@ -23,7 +23,6 @@ public class HaiNanrcServiceImpl implements HaiNanrcService{
 
 	//private String website = "http://s.gxrc.com/";
 	private String website = "http://www.hnrczpw.com/";
-	@Override	
 	public void loadHaiNanrc() throws Exception{
 		// TODO Auto-generated method stub
 		String url = "http://www.hnrczpw.com";

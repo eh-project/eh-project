@@ -27,7 +27,6 @@ public class YnrcServiceImpl implements YnrcService {
 	private String posList = "http://www.ynhr.com/jobs/jobs-list.php?"
 			+ "key=&jobcategory=&trade=&citycategory=&wage=&jobtag=&education=&experience=&settr=&nature=&scale=&sort=&page=";
 
-	@Override
 	public void loadGxrc() throws Exception {
 		// TODO Auto-generated method stub
 		// String url = "http://www.ynhr.com/";

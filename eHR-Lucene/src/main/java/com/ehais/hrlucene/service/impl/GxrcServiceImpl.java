@@ -23,7 +23,6 @@ public class GxrcServiceImpl implements GxrcService {
 
 	private String website = "http://s.gxrc.com/";
 
-	@Override
 	public void loadGxrc() throws Exception {
 		// TODO Auto-generated method stub
 
