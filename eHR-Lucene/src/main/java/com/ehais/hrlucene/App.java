@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.ehais.hrlucene.service.GxrcService;
-
+import com.ehais.hrlucene.service.ScrcService;
 import com.ehais.hrlucene.service.FjrcService;
 
 /**
@@ -24,8 +24,11 @@ public class App
 //        GxrcService gxrcService = (GxrcService)context.getBean("gxrcService");
 //        gxrcService.loadGxrc();
         
-        FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
-        fjrcService.LoadFjrc();
+        //FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
+        //fjrcService.LoadFjrc();
+        
+        ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
+        scrcService.Loadrc();
         
 //        SpringTaskService springTaskService = (SpringTaskService)context.getBean("springTaskService");
 //        

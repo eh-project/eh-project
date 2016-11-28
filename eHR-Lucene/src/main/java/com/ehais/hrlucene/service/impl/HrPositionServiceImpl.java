@@ -22,7 +22,6 @@ public class HrPositionServiceImpl implements HrPositionService {
 	@Autowired
 	private HaiHrCompanyMapper haiHrCompanyMapper;
 	
-	@Override
 	public ReturnObject<HaiHrPosition> SaveHrPosition(HaiHrPositionWithBLOBs hrPosition) throws Exception {
 		// TODO Auto-generated method stub
 		ReturnObject<HaiHrPosition> rm = new ReturnObject<HaiHrPosition>();

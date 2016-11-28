@@ -23,7 +23,6 @@ public class SpringTaskServiceImpl implements SpringTaskService{
      * 注意： 30 * * * * * 表示每分钟的第30秒执行，而（*斜杠30）表示每30秒执行 
      *  
      * */ 
-	@Override
 	@Scheduled(cron="* * * */7 * *")  
     public void myTask(){  
     //    System.out.println("==============it is first task!时间："+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
