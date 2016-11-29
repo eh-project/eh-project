@@ -77,8 +77,8 @@
 	<mvc:interceptors>
 	
 		<mvc:interceptor>
-			<mvc:mapping path="/member/**"/>			
-			<ref bean="loginInterceptor"/>
+			<mvc:mapping path="/api/**"/>
+			<ref bean="apiInterceptor"/>
 		</mvc:interceptor>
 		
 		<mvc:interceptor>
@@ -88,17 +88,8 @@
 		
 		
 	</mvc:interceptors>
-	<bean id="loginInterceptor" class="org.ehais.interceptor.LoginInterceptor">
-		<property name="loginUrl" value="/login"/>
-		<property name="ignoreUrls">
-			<list>
-				<value>/login</value>
-				<value>/memberLogin</value>
-				<value>/logout</value>
-				<value>/apix/*</value>
-			</list>
-		</property>
-	</bean>
+	
+	<bean id="apiInterceptor" class="org.ehais.interceptor.EApiInterceptor"></bean>
 	
 	<bean id="loginAdminInterceptor" class="org.ehais.interceptor.AdminInterceptor">
 		<property name="loginUrl" value="/admin_login"/>

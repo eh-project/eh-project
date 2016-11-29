@@ -49,5 +49,6 @@
 		<property name="storeId" value="100" />
 	</bean>
 
- 
+	<bean class="org.ehais.processor.InitDataListener"></bean>
+
 </beans>

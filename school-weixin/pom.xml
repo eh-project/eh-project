@@ -15,11 +15,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
-   	<controller.package>com.ehais.school.controller,org.ehais.weixin.controller,org.ehais.controller</controller.package>
-    <component.package>com.ehais.school.service,org.ehais.weixin.service,org.ehais.service</component.package>
-	<mapper.package>com.ehais.school.mapper,org.ehais.weixin.mapper,org.ehais.mapper</mapper.package>
+   	<controller.package>com.ehais.school.controller,com.ehais.school.webservice,org.ehais.weixin.controller,org.ehais.controller</controller.package>
+    <component.package>com.ehais.school.service,com.ehais.hrlucene.service,org.ehais.weixin.service,org.ehais.service</component.package>
+	<mapper.package>com.ehais.school.mapper,com.ehais.hrlucene.mapper,org.ehais.weixin.mapper,org.ehais.mapper</mapper.package>
 	<mapper.xml>classpath*:mapper/**/*.xml</mapper.xml>
-	<model.package>com.ehais.school.model,org.ehais.weixin.model,org.ehais.model</model.package>
+	<model.package>com.ehais.school.model,com.ehais.hrlucene.model,org.ehais.weixin.model,org.ehais.model</model.package>
 	   
         
   </properties>
@@ -27,8 +27,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+      <version>4.12</version>
     </dependency>
 		<dependency>
 		    <groupId>org.freemarker</groupId>
@@ -45,7 +44,12 @@
 			<artifactId>eh-weixin</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-			
+		<dependency>
+			<groupId>com.ehais</groupId>
+			<artifactId>eHR-Lucene</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 		
   </dependencies>
   
