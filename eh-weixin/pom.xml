@@ -30,7 +30,16 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <version>2.3.23</version>
+		</dependency>
+		<dependency>
+		    <groupId>xml-apis</groupId>
+		    <artifactId>xml-apis</artifactId>
+		    <version>1.4.01</version>
+		</dependency> 
 		<dependency>
 			<groupId>com.ehais</groupId>
 			<artifactId>eh-common</artifactId>
@@ -39,7 +48,6 @@
 
 
 	</dependencies>
-	<packaging>war</packaging>
 	
 	<build>
 		<finalName>eh-weixin</finalName>
@@ -151,7 +159,7 @@
 							<outputDirectory>${basedir}/target/classes/META-INF/resources/ehais/</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/../p-common/src/main/resources/statics/</directory>
+									<directory>${basedir}/../eh-common/src/main/ehais-resources/ehais/</directory>
 								</resource>
 							</resources>
 						</configuration>
