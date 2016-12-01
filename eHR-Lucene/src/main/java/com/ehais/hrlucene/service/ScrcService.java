@@ -7,5 +7,5 @@ import org.ehais.tools.ReturnObject;
  *
  */
 public interface ScrcService {
-	public ReturnObject Loadrc() throws Exception;
+	public void Loadrc(String positionURL) throws Exception;
 }

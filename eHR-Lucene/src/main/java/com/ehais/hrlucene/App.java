@@ -28,7 +28,7 @@ public class App
         //fjrcService.LoadFjrc();
         
         ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
-        scrcService.Loadrc();
+        scrcService.Loadrc(null);
         
 //        SpringTaskService springTaskService = (SpringTaskService)context.getBean("springTaskService");
 //        
