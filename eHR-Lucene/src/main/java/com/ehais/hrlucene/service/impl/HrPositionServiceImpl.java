@@ -1,5 +1,10 @@
 package com.ehais.hrlucene.service.impl;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.ehais.tools.EConditionObject;
 import org.ehais.tools.ReturnObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,6 +90,30 @@ public class HrPositionServiceImpl implements HrPositionService {
 		
 		rm.setCode(1);
 		rm.setMsg("保存成功");
+		return rm;
+	}
+
+	@Override
+	public ReturnObject<HaiHrPosition> ListHrPosition(
+			HttpServletRequest request,
+			EConditionObject param,
+			String hr_source
+			)
+			throws Exception {
+		ReturnObject<HaiHrPosition> rm = new ReturnObject<HaiHrPosition>();
+		rm.setCode(0);
+		// 按条件返回职位数据
+		HaiHrPositionExample example = new HaiHrPositionExample();
+		example.setStart((param.getPage() - 1 ) * param.getLen());
+		example.setLen(param.getLen());
+		HaiHrPositionExample.Criteria criteria = example.createCriteria();
+		if(hr_source != null && !hr_source.equals("")) criteria.andHrSourceEqualTo(hr_source);
+		
+		List<HaiHrPosition> list = haiHrPositionMapper.hai_hr_position_list_by_example(example);
+		Integer count = haiHrPositionMapper.countByExample(example);
+		rm.setRows(list);
+		rm.setTotal(count);
+		rm.setCode(1);
 		return rm;
 	}
 

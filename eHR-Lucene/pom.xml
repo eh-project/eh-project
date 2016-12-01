@@ -51,8 +51,9 @@
   
   
   <build>
-	<finalName>fjrc</finalName>
+	<finalName>eHR-Lucene</finalName>
 		<plugins>
+			<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -62,10 +63,10 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<!-- <mainClass>com.gzepro.pdata.ClientJunit</mainClass> -->
 							<mainClass>com.ehais.hrlucene.App</mainClass>
 						</manifest>
 					</archive>
+
 				</configuration>
 				<executions>
 					<execution>
@@ -74,9 +75,19 @@
 						<goals>
 							<goal>single</goal>
 						</goals>
+						<configuration>  
+			                <resources>
+								<resource>
+									<excludes>
+				                		<exclude>test/**</exclude>
+				              		 </excludes>
+								</resource>
+							</resources> 
+			            </configuration> 
 					</execution>
 				</executions>
 			</plugin>
+			 -->
 		</plugins>
 	</build>
 	

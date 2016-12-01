@@ -18,10 +18,8 @@ import com.ehais.hrlucene.model.HaiHrPositionWithBLOBs;
 import com.ehais.hrlucene.service.HrPositionService;
 import com.ehais.hrlucene.service.ScrcService;
 
+
 import net.sf.json.JSONObject;
-
-
-
 
 
 

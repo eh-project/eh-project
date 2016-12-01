@@ -14,20 +14,173 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    
+   	<controller.package>com.ehais.school.controller,com.ehais.school.webservice,org.ehais.weixin.controller,org.ehais.controller</controller.package>
+    <component.package>com.ehais.school.service,com.ehais.hrlucene.service,org.ehais.weixin.service,org.ehais.service</component.package>
+	<mapper.package>com.ehais.school.mapper,com.ehais.hrlucene.mapper,org.ehais.weixin.mapper,org.ehais.mapper</mapper.package>
+	<mapper.xml>classpath*:mapper/**/*.xml</mapper.xml>
+	<model.package>com.ehais.school.model,com.ehais.hrlucene.model,org.ehais.weixin.model,org.ehais.model</model.package>
+	   
+        
   </properties>
   <dependencies>
+  	<dependency>
+	<groupId>com.ehais</groupId>
+	<artifactId>eh-common</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	</dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+      <version>4.12</version>
     </dependency>
-    
+
+		<dependency>
+		    <groupId>org.freemarker</groupId>
+		    <artifactId>freemarker</artifactId>
+		    <version>2.3.23</version>
+		</dependency>
     	<dependency>
 			<groupId>com.ehais</groupId>
 			<artifactId>eh-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ehais</groupId>
+			<artifactId>eh-weixin</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ehais</groupId>
+			<artifactId>eHR-Lucene</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
 		
   </dependencies>
+  
+  	<build>
+		<finalName>school-weixin</finalName>
+
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.mybatis.generator</groupId>
+				<artifactId>mybatis-generator-maven-plugin</artifactId>
+				<version>1.3.2</version>
+				<configuration>
+					<verbose>true</verbose>
+					<overwrite>true</overwrite>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven_compiler_ver}</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven_resources_ver}</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- eclipse -X tomcat7:run -->
+
+			<plugin> 
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<path>/</path>
+					<uriEncoding>UTF-8</uriEncoding>
+					<port>80</port>
+					<java.util.logging.manager>org.apache.juli.ClassLoaderLogManager</java.util.logging.manager>
+					
+					<mode>context</mode>
+					<contextFile>${basedir}/../src/main/resources/context.xml</contextFile>
+
+				</configuration>                 
+                 
+			</plugin>
+
+
+
+			<!-- clean package jboss-as:deploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.3.Final</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.0.2</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+				<executions>
+					<execution>
+						<id>copy-resources-config-properties</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/META-INF/config/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/../src/main/resources/config/</directory>
+									<includes>
+										<include>**/*.properties</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+
+
+					<execution>
+						<id>copy-xmls</id>
+						<phase>process-sources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/META-INF/resources/ehais/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/../eh-common/src/main/ehais-resources/ehais/</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	
+	
+  	<packaging>war</packaging>
+
 </project>
