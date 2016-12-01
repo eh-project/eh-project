@@ -8,7 +8,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
 import com.ehais.hrlucene.service.ScrcService;
-import com.sun.org.glassfish.external.statistics.Statistic;
+
 
 
 /**
