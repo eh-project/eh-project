@@ -13,6 +13,6 @@
                 password="42016048"   
                 maxActive="20"   
                 maxIdle="10"   
-                maxWait="10000"/>  				 
+                maxWait="40"/>  				 
                    
 </Context> 
