@@ -7,9 +7,9 @@ import org.ehais.tools.ReturnObject;
 import org.ehais.util.EHtmlUnit;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,6 @@ import com.ehais.hrlucene.model.HaiHrPosition;
 import com.ehais.hrlucene.model.HaiHrPositionWithBLOBs;
 import com.ehais.hrlucene.service.HrPositionService;
 import com.ehais.hrlucene.service.ScrcService;
-
 
 import net.sf.json.JSONObject;
 

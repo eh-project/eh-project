@@ -33,6 +33,34 @@ public class EArticleServiceImpl  extends EArticleCommonServiceImpl implements E
 		rm.setCode(1);
 		return rm;
 	}
+	
+	public ReturnObject<EHaiArticle> article_list(HttpServletRequest request,Integer store_id,Integer cat_id,
+			Integer page, Integer len) throws Exception {
+		// TODO Auto-generated method stub
+		ReturnObject<EHaiArticle> ro = new ReturnObject<EHaiArticle>();
+		if(page <= 0) page = 1;
+		Integer start = (page - 1 ) * len;
+		List<EHaiArticle> list = eHaiArticleMapper.article_list(store_id , cat_id , start, len);
+		EHaiArticleExample example = new EHaiArticleExample();
+		EHaiArticleExample.Criteria c = example.createCriteria();
+//		c.andStoreIdEqualTo(store_id);
+		example.CriteriaStoreId(c, this.storeIdCriteriaObject(request));
+		
+		Integer total = eHaiArticleMapper.countByExample(example);
+		ro.setCode(1);
+		ro.setRows(list);
+		ro.setTotal(total);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		EHaiArticleCatExample exampleCat = new EHaiArticleCatExample();
+		EHaiArticleCatExample.Criteria cCat = exampleCat.createCriteria();
+		cCat.andStoreIdEqualTo(store_id);
+		List<EHaiArticleCat> cat_list = eHaiArticleCatMapper.selectByExample(exampleCat);
+		map.put("cat_list", cat_list);
+		
+		ro.setMap(map);		
+		return ro;
+	}
 
 	public ReturnObject<EHaiArticle> article_list_json(HttpServletRequest request,Integer store_id,boolean isCode,
 			Integer page, Integer len) throws Exception {
@@ -241,6 +269,94 @@ public class EArticleServiceImpl  extends EArticleCommonServiceImpl implements E
 //		
 		return bootStrapList;
 	}
+	
+	
+	public EHaiArticleCat article_cat(HttpServletRequest request,Integer key) throws Exception {
+		// TODO Auto-generated method stub
+		return eHaiArticleCatMapper.selectByPrimaryKey(key);
+	}
+
+	public EHaiArticle article(HttpServletRequest request,Integer key) throws Exception {
+		// TODO Auto-generated method stub
+		return eHaiArticleMapper.selectByPrimaryKey(key);
+	}
+	
+	public EHaiArticle article_code(HttpServletRequest request,Integer store_id,String code) throws Exception {
+		// TODO Auto-generated method stub
+		return eHaiArticleMapper.article_code(store_id,code);
+	}
+
+	public ReturnObject<EHaiArticle> article_code_list(HttpServletRequest request,Integer store_id,
+			Integer page, Integer len) throws Exception {
+		// TODO Auto-generated method stub
+		ReturnObject<EHaiArticle> ro = new ReturnObject<EHaiArticle>();
+		Integer start = (page - 1 ) * len;
+		List<EHaiArticle> list = eHaiArticleMapper.article_code_list(store_id , start, len);
+		
+		EHaiArticleExample example = new EHaiArticleExample();
+		EHaiArticleExample.Criteria c = example.createCriteria();
+		c.andStoreIdEqualTo(store_id);
+		c.andCodeIsNotNull();
+		Integer total = eHaiArticleMapper.countByExample(example);
+		ro.setCode(1);
+		ro.setRows(list);
+		ro.setTotal(total);
+		
+			
+		return ro;
+	}
+	
+	
+	
+	
+
+	public ReturnObject<EHaiArticle> article_insert_v2(HttpServletRequest request)
+			throws Exception {
+		// TODO Auto-generated method stub
+		ReturnObject<EHaiArticle> rm = new ReturnObject<EHaiArticle>();	
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		EHaiArticle model = new EHaiArticle();
+		rm.setBootStrapList(this.formatBootStrapList(request,model,1));
+		rm.setCode(1);
+		return rm;
+	}
+
+	public ReturnObject<EHaiArticle> article_update_v2(
+			HttpServletRequest request, Integer key) throws Exception {
+		// TODO Auto-generated method stub
+		ReturnObject<EHaiArticle> ro = new ReturnObject<EHaiArticle>();
+		Integer store_id = (Integer)request.getSession().getAttribute(Constants.SESSION_WX_ID);
+		Map<String, Object> map = new HashMap<String, Object>();
+		EHaiArticleCatExample exampleCat = new EHaiArticleCatExample();
+		EHaiArticleCatExample.Criteria cCat = exampleCat.createCriteria();
+		cCat.andStoreIdEqualTo(store_id);
+		List<EHaiArticleCat> cat_list = eHaiArticleCatMapper.selectByExample(exampleCat);
+		map.put("cat_list", cat_list);
+		
+		ro.setMap(map);	
+		
+		EHaiArticle model = eHaiArticleMapper.selectByPrimaryKey(key);
+		ro.setBootStrapList(this.formatBootStrapList(request,model,0));
+		ro.setCode(1);
+		return ro;
+	}
+
+	public ReturnObject<EHaiArticle> article_list_by_catcode(HttpServletRequest request,Integer store_id,
+			String code, Integer page, Integer len) throws Exception {
+		// TODO Auto-generated method stub
+		ReturnObject<EHaiArticle> ro = new ReturnObject<EHaiArticle>();
+		Integer start = (page - 1 ) * len;
+		List<EHaiArticle> list = eHaiArticleMapper.article_list_by_catcode(store_id , code , start, len);
+		
+		
+		ro.setCode(1);
+		ro.setRows(list);
+		
+			
+		return ro;
+	}
+
+	
 	
 }
 

@@ -4,10 +4,55 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 import org.ehais.model.EHaiArticle;
 import org.ehais.model.EHaiArticleExample;
 
 public interface EHaiArticleMapper {
+	
+	@ResultMap(value = "BaseResultMap")
+	public List<EHaiArticle> article_list(
+			@Param("store_id") Integer store_id,
+			@Param("cat_id") Integer cat_id,
+			@Param("start") Integer start,
+			@Param("len") Integer len
+			);
+	
+	@ResultMap(value = "BaseResultMap")
+	public List<EHaiArticle> article_list_v2(
+			@Param("store_id") Integer store_id,
+			@Param("cat_id") Integer cat_id,
+			@Param("start") Integer start,
+			@Param("len") Integer len
+			);
+
+	
+	
+	@Select("select * from hai_article where store_id = #{store_id} and ifnull(code,'') != '' order by article_id desc limit #{start},#{len}")
+	@ResultMap(value = "BaseResultMap")
+	public List<EHaiArticle> article_code_list(
+			@Param("store_id") Integer store_id,
+			@Param("start") Integer start,
+			@Param("len") Integer len
+			);
+	
+	@Select("select * from hai_article where store_id = #{store_id} and code = #{code} order by article_id desc limit 0,1")
+	@ResultMap(value = "BaseResultMap")
+	public EHaiArticle article_code(
+			@Param("store_id") Integer store_id,
+			@Param("code") String code
+			);
+	
+	@Select("select * from hai_article where store_id = #{store_id} and article_id in (${article_ids}) order by article_id desc limit #{start},#{len}")
+	@ResultMap(value = "BaseResultMap")
+	public List<EHaiArticle> article_mult_list(
+			@Param("store_id") Integer store_id,
+			@Param("article_ids") String article_ids,
+			@Param("start") Integer start,
+			@Param("len") Integer len
+			);
+	
+	
 	
 	@ResultMap(value = "BaseResultMap")
 	public List<EHaiArticle> article_list_by_catcode(
