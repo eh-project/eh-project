@@ -10,7 +10,7 @@ import org.junit.Test;
 import junit.framework.TestCase;
 
 public class HrApiJunit{
-	private String web_url = "http://localhost/api/";
+	private String web_url = "http://gzhmt.ehais.com/api/";
 	private String timestamp = String.valueOf(System.currentTimeMillis());
 	private String appkey = "swetXsdfWEertr";
 	private String secret = "SDfs1224WEdsdf";
