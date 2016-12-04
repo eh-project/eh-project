@@ -703,5 +703,31 @@
   
   
   
+    <select id="article_list" resultMap="BaseResultMap" parameterType="map" >
+    select
+    <include refid="Base_Column_List" />
+    from hai_article
+    where store_id = #{store_id} and ifnull(code,'') = '' 
+    <if test="cat_id != null and cat_id != 0" >
+      and cat_id = #{cat_id}
+    </if>
+    order by article_id desc 
+    limit #{start},#{len}
+  </select>
+  
+  <select id="article_list_v2" resultMap="BaseResultMap" parameterType="map" >
+    select
+    <include refid="Base_Column_List" />
+    from hai_article
+    where store_id = #{store_id} 
+    <if test="cat_id != null and cat_id != 0" >
+      and cat_id = #{cat_id}
+    </if>
+    order by article_id desc 
+    limit #{start},#{len}
+  </select>
+
+
+  
   
 </mapper>

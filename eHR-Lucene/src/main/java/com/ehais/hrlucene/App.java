@@ -3,16 +3,8 @@ package com.ehais.hrlucene;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-
-import com.ehais.hrlucene.service.GxrcService;
-//import com.ehais.hrlucene.service.GzrcService;
-import com.ehais.hrlucene.service.ScrcService;
-
-import net.sourceforge.htmlunit.corejs.javascript.tools.debugger.Main;
-
-import com.ehais.hrlucene.service.FjrcService;
-
 import com.ehais.hrlucene.service.YnrcService;
+import com.ehais.hrlucene.service.FjrcService;
 
 
 /**
@@ -39,8 +31,10 @@ public class App
         //fjrcService.LoadFjrc();
         
 
-        //ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
-        //scrcService.Loadrc(null);
+
+//        ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
+//        scrcService.Loadrc(null);
+
 
         //ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
         //scrcService.Loadrc();

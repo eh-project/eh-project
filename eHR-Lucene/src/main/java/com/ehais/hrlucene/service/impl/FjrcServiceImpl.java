@@ -189,7 +189,7 @@ public class FjrcServiceImpl implements FjrcService {
 		try{
 			fulltime=lisContainDetail.get(0).getElementsByTag("p").get(1).text();
 		}catch(Exception e){
-			
+		
 		}
 		fulltime=fulltime.replace("工作时间要求：", "");
 		fulltime=fulltime.replace(" ", "");

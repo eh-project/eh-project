@@ -2,7 +2,6 @@ package com.ehais.hrlucene.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.ehais.tools.CriteriaObject;
 
 public class HaiHrPositionExample {
     /**

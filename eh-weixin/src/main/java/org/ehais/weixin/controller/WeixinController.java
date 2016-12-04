@@ -209,7 +209,9 @@ public class WeixinController extends WxCommonController{
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("userInfo", userInfo);		
 				if(userInfo != null){
-					//保存用户信息于我们的数据库中
+					//注：把用户表由EHaiUsers换成WXUsers
+					//颖恒处理
+					//2016-12-04
 					ReturnObject<EHaiUsers> rm = eUsersService.wx_user_save(
 							request,
 							wxid, 

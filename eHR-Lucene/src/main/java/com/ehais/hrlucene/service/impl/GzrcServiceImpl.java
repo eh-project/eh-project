@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 import org.ehais.tools.ReturnObject;
 import org.ehais.util.EHtmlUnit;
-import org.ehais.util.EHttpClientUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 import org.springframework.stereotype.Service;
 
 import com.ehais.hrlucene.model.HaiHrPosition;
@@ -19,7 +17,6 @@ import com.ehais.hrlucene.service.GzrcService;
 import com.ehais.hrlucene.service.HrPositionService;
 
 import net.sf.json.JSONObject;
-import net.sourceforge.htmlunit.corejs.javascript.tools.debugger.Main;
 
 @Service("GzrcService")
 public class GzrcServiceImpl implements GzrcService {
