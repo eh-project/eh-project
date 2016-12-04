@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.ehais.hrlucene.service.YnrcService;
+import com.ehais.hrlucene.service.FjrcService;
 
 
 /**
@@ -30,16 +31,18 @@ public class App
         //fjrcService.LoadFjrc();
         
 
+
 //        ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
 //        scrcService.Loadrc(null);
+
 
         //ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
         //scrcService.Loadrc();
         
 
         
-//        FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
-//        fjrcService.LoadFjrc();
+        FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
+        fjrcService.LoadFjrc();
 
 
         

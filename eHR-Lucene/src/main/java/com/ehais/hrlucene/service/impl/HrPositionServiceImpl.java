@@ -93,7 +93,6 @@ public class HrPositionServiceImpl implements HrPositionService {
 		return rm;
 	}
 
-	@Override
 	public ReturnObject<HaiHrPosition> ListHrPosition(
 			HttpServletRequest request,
 			EConditionObject param,
