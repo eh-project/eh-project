@@ -69,7 +69,7 @@ public class FjrcServiceImpl implements FjrcService {
 			}
 			
 		}
-		
+		System.out.println("All data has Scraped and transfered to the database,Program Closing!");
 	}
 	
 	public void grepEachPosition(List<String> hrefLists) throws Exception{
@@ -108,7 +108,14 @@ public class FjrcServiceImpl implements FjrcService {
 					doc=Jsoup.parse(PageResult,"utf-8");
 				}
 				Elements Table=doc.getElementsByClass("mygrid");
-				Elements Alltr=Table.get(0).getElementsByTag("tr");
+				Elements Alltr=null;
+				try{
+					Alltr=Table.get(0).getElementsByTag("tr");
+				}catch(Exception e){
+					System.out.println("There is no jobs in this Sort...Ignore");
+					continue;
+				}
+				
 				int first=1;
 				String positionName = "-1";
 				for(Element tr:Alltr){
@@ -178,7 +185,12 @@ public class FjrcServiceImpl implements FjrcService {
 		headcount=headcount.replace("]", "");
 		
 		Elements lisContainDetail=doc.getElementsByClass("b10");
-		String fulltime=lisContainDetail.get(0).getElementsByTag("p").get(1).text();
+		String fulltime=null;
+		try{
+			fulltime=lisContainDetail.get(0).getElementsByTag("p").get(1).text();
+		}catch(Exception e){
+			
+		}
 		fulltime=fulltime.replace("工作时间要求：", "");
 		fulltime=fulltime.replace(" ", "");
 		String degreelevel=lisContainDetail.get(0).getElementsByTag("p").get(2).text();
