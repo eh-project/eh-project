@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ehais.hrlucene.model.HaiHrCompany;
 import com.ehais.hrlucene.model.HaiHrPosition;
+import com.ehais.hrlucene.service.HrCompanyService;
 import com.ehais.hrlucene.service.HrPositionService;
 
 
@@ -24,6 +26,9 @@ public class HRApiController extends CommonController{
 
 	@Autowired
 	private HrPositionService hrPositionService;
+	
+	@Autowired
+	private HrCompanyService hrCompanyService;
 	
 	@ResponseBody
 	@RequestMapping("/position")
@@ -43,5 +48,35 @@ public class HRApiController extends CommonController{
 		return "";
 	}
 	
+	@ResponseBody
+	@RequestMapping("/company")
+	public String company(ModelMap modelMap,
+			HttpServletRequest request,HttpServletResponse response,
+			@ModelAttribute EConditionObject param,
+			@RequestParam(value = "companyName", required = false) String companyName ){
+		try{
+			ReturnObject<HaiHrCompany> rm = hrCompanyService.ListHrCompany(request, param, companyName);
+			return this.writeJson(rm);
+		}catch(Exception e){
+			e.printStackTrace();
+			log.error("logErr", e);
+		}
+		return "";
+	}
 	
+//	@ResponseBody
+//	@RequestMapping("/article")
+//	public String article(ModelMap modelMap,
+//			HttpServletRequest request,HttpServletResponse response,
+//			@ModelAttribute EConditionObject param,
+//			@RequestParam(value = "", required = false) String  ){
+//		try{
+//			ReturnObject<HaiHrArticle> rm = hrArticleService.ListHrArticle(request, param, );
+//			return this.writeJson(rm);
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			log.error("logErr", e);
+//		}
+//		return "";
+//	}
 }
