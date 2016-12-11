@@ -3,8 +3,9 @@ package com.ehais.hrlucene;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.ehais.hrlucene.service.YnrcService;
+
 import com.ehais.hrlucene.service.FjrcService;
+import com.ehais.hrlucene.service.impl.GgxhService;
 
 
 /**
@@ -27,10 +28,9 @@ public class App
 
         //GzrcService gzrcService=(GzrcService)context.getBean("GzrcService");
         //gzrcService.loadGzrc();
-        //FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
-        //fjrcService.LoadFjrc();
         
-
+        GgxhService ggxhService=(GgxhService)context.getBean("GgxhService");
+        ggxhService.LoadGgxh(null);
 
 //        ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
 //        scrcService.Loadrc(null);
@@ -41,8 +41,8 @@ public class App
         
 
         
-        FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
-        fjrcService.LoadFjrc();
+//        FjrcService fjrcService = (FjrcService)context.getBean("FjrcService");
+//        fjrcService.LoadFjrc();
 
 
         
@@ -56,8 +56,8 @@ public class App
 //        HnrcService service = (HnrcService)context.getBean("hnrcService");
 //        service.loadHnrc();
         
-        YnrcService serivce = (YnrcService)context.getBean("ynrcService");
-        serivce.loadGxrc();
+//        YnrcService serivce = (YnrcService)context.getBean("ynrcService");
+//        serivce.loadGxrc();
         
         
     }

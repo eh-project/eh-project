@@ -74,7 +74,7 @@ public class EHtmlUnit {
 	
 	public static String httpUnitAjaxRequest(String url) throws Exception {
 		//创建一个可执行js,css,ajax的多功能WebClient
-		WebClient multiWebClient = new WebClient(BrowserVersion.INTERNET_EXPLORER_11);
+		WebClient multiWebClient = new WebClient(BrowserVersion.CHROME);
 		multiWebClient.getOptions().setJavaScriptEnabled(true);//执行JavaScript
 		multiWebClient.getOptions().setCssEnabled(true);//执行css
 		multiWebClient.setAjaxController(new NicelyResynchronizingAjaxController());//设置ajax代理

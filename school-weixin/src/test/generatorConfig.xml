@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-  <context id="context1">
-    <jdbcConnection connectionURL="???" driverClass="???" password="???" userId="???" />
-    <javaModelGenerator targetPackage="???" targetProject="???" />
-    <sqlMapGenerator targetPackage="???" targetProject="???" />
-    <javaClientGenerator targetPackage="???" targetProject="???" type="XMLMAPPER" />
-    <table schema="???" tableName="???">
-      <columnOverride column="???" property="???" />
-    </table>
+<classPathEntry  location="/Users/stephen/.m2/repository/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar"/>
+    <context id="context1" targetRuntime="MyBatis3">
+  
+    <jdbcConnection connectionURL="jdbc:mysql://120.24.185.249:3306/ehproject?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull" driverClass="com.mysql.jdbc.Driver" password="42016048" userId="ehproject" />
+    
+    <javaModelGenerator targetPackage="com.ehais.hrlucene.model" targetProject="eHR-Lucene" />
+    
+    <sqlMapGenerator targetPackage="mapper" targetProject="eHR-Lucene/src/main/resources/" />
+    
+    <javaClientGenerator targetPackage="com.ehais.hrlucene.mapper" targetProject="eHR-Lucene" type="XMLMAPPER" />
+    
+    <!--  <table schema="ehproject" tableName="%" >
+      <property name="useActualColumnNames" value="true"/>
+    </table>-->
+  
+  	<table schema="ehproject" tableName="hai_article_cat" >
+  		<property name="useActualColumnNames" value="true"/>
+  	
+  	</table>
+  	
+  	<table schema="ehproject" tableName="hai_article" >
+  		<property name="useActualColumnNames" value="true"/>
+  	
+  	</table>
+  
   </context>
 </generatorConfiguration>

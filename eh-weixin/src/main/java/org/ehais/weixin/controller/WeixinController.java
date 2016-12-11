@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ehais.common.Constants;
 import org.ehais.model.EHaiUsers;
+import org.ehais.model.WxUsers;
 import org.ehais.service.EUsersService;
+import org.ehais.service.WxUsersService;
 import org.ehais.tools.ReturnObject;
 import org.ehais.util.ECommon;
 import org.ehais.weixin.model.AccessToken;
@@ -40,7 +42,7 @@ public class WeixinController extends WxCommonController{
 	private static Logger log = LoggerFactory.getLogger(WeixinController.class);
 
 	@Autowired
-	private WeiXinService weiXinService;
+	private WxUsersService wxUsersService;
 	
 	@Autowired
 	private EUsersService eUsersService;
@@ -212,7 +214,31 @@ public class WeixinController extends WxCommonController{
 					//注：把用户表由EHaiUsers换成WXUsers
 					//颖恒处理
 					//2016-12-04
-					ReturnObject<EHaiUsers> rm = eUsersService.wx_user_save(
+//					ReturnObject<EHaiUsers> rm = eUsersService.wx_user_save(
+//							request,
+//							wxid, 
+//							"", 
+////							(userInfo.getNickname() == null ? "" : userInfo.getNickname()),
+//							"",
+//							"", 
+//							userInfo.getNickname(), 
+//							"", 
+//							userInfo.getSex(), 
+//							userInfo.getSubscribe(), 
+//							openid, 
+//							userInfo.getCity(), 
+//							userInfo.getCountry(), 
+//							userInfo.getProvince(), 
+//							userInfo.getLanguage(), 
+//							userInfo.getHeadimgurl(), 
+//							userInfo.getSubscribe_time(), 
+//							userInfo.getUnionid(), 
+//							userInfo.getRemark(), 
+//							userInfo.getGroupid()
+//							);
+					
+					//2016-12-6 用户信息转存到WXUsers 张颖恒
+					ReturnObject<WxUsers> rm = wxUsersService.wx_user_save(
 							request,
 							wxid, 
 							"", 
@@ -234,12 +260,13 @@ public class WeixinController extends WxCommonController{
 							userInfo.getRemark(), 
 							userInfo.getGroupid()
 							);
-					Long userId = null;
+					
+					int userId = -1;
 					if(rm.getCode() == 1 && rm.getModel() != null){
-						userId = rm.getModel().getUserId();
+						userId = rm.getModel().getUser_id();
 						request.getSession().setAttribute(Constants.SESSION_OPEN_ID, openid);
 						request.getSession().setAttribute(Constants.SESSION_USER_ID, userId);
-						request.getSession().setAttribute(Constants.SESSION_USER_NAME, rm.getModel().getUserName());
+						request.getSession().setAttribute(Constants.SESSION_USER_NAME, rm.getModel().getUser_name());
 					}
 					//保存用户信息于session中				
 					map.put("userId", userId);
