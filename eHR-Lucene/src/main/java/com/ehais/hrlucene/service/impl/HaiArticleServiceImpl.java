@@ -46,11 +46,18 @@ public class HaiArticleServiceImpl implements HaiArticleService {
 		
 		HaiArticleExample haiArticleExample=new HaiArticleExample();
 		haiArticleExample.createCriteria().andLinkEqualTo(haiArticle.getLink());
-		long CountLink=haiArticleMapper.countByExample(haiArticleExample);
-		if(CountLink == 0){
-			haiArticleMapper.insertSelective(haiArticle);
-		}else{
-			haiArticleMapper.updateByExampleSelective(haiArticle, haiArticleExample);
+		try{
+			long CountLink=haiArticleMapper.countByExample(haiArticleExample);
+			if(CountLink == 0){
+				haiArticleMapper.insertSelective(haiArticle);
+			}else{
+				haiArticleMapper.updateByExampleSelective(haiArticle, haiArticleExample);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			rm.setCode(-4);
+			rm.setMsg("数据库操作失败。。");
+			return rm;
 		}
 		rm.setCode(0);
 		rm.setMsg("保存成功");

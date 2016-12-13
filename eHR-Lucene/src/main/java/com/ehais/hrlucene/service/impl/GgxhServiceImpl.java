@@ -1,9 +1,14 @@
 package com.ehais.hrlucene.service.impl;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
 
 import org.ehais.tools.ReturnObject;
 import org.ehais.util.EHtmlUnit;
@@ -13,9 +18,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ehais.hrlucene.model.HaiArticle;
 import com.ehais.hrlucene.service.HaiArticleService;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
 
 
 /**
@@ -38,21 +48,21 @@ public class GgxhServiceImpl implements GgxhService {
 	 * @see com.ehais.hrlucene.service.impl.GgxhService#LoadGgxh()
 	 */
 	public void LoadGgxh(String cate) throws Exception{
-		//不知道怎么用的字段。。
+		//不知道怎么用的字段。。start
 		haiArticle.setCode("none");
 		haiArticle.setAuthor_email("none");
 		haiArticle.setKeywords("none");
 		haiArticle.setFile_url("none");
+		//不知道怎么用的字段。。end
 		
 		
 		//getting html content
 		System.out.println("Getting the main html content...");
-		String htmlContent=getHTML(cate);
-		//String htmlContent=EHtmlUnit.httpUnitRequest("http://www.gzaa.org.cn/NewsList.aspx?id=%u534F%u4F1A%u52A8%u6001");
-		//parsing the html content
+		//String htmlContent=getHTML(cate);
+		String htmlContent=gethtmlwithHttpUnit();
 		
 		System.out.println("Parsing the main html content...");
-		Document rootdoc=Jsoup.parse(htmlContent,"utf-8");
+		Document rootdoc=Jsoup.parse(htmlContent,"gb2312");
 		
 		System.out.println("setting the category");
 		
@@ -191,7 +201,8 @@ public class GgxhServiceImpl implements GgxhService {
 	
 	
 	public String getHTML(String category) throws Exception{
-		Process p=Runtime.getRuntime().exec("python /Users/stephen/Desktop/untitled/scrapehtml.py");
+		Process p=Runtime.getRuntime().exec("python scrapehtml.py");
+		//Process p=Runtime.getRuntime().exec("pwd");
 		BufferedReader stdInput=new BufferedReader(new InputStreamReader(p.getInputStream()));
 		String htmlContent=null;
 		String s=null;
@@ -199,6 +210,48 @@ public class GgxhServiceImpl implements GgxhService {
             htmlContent=htmlContent+s;
         }
 		return htmlContent;
+	}
+	
+	public String gethtmlwithHttpUnit() throws Exception{
+		WebClient wc=new WebClient(BrowserVersion.FIREFOX_45);
+		wc.getOptions().setJavaScriptEnabled(true);
+		//wc.getOptions().setCssEnabled(true);
+		wc.getOptions().setThrowExceptionOnScriptError(false);
+		wc.waitForBackgroundJavaScript(1000);
+		
+		HtmlPage htmlPage=null;
+		htmlPage=wc.getPage("http://www.gzaa.org.cn/NewsList.aspx?id=%u534F%u4F1A%u52A8%u6001");
+		ScriptResult result=htmlPage.executeJavaScript("__doPostBack('pager','1')");
+		HtmlPage Page2=(HtmlPage)result.getNewPage();
+		List<HtmlAnchor> aList=Page2.getAnchors();
+		String htmlContent=htmlPage.asXml();
+		System.out.println(htmlContent);
+		return htmlContent;
+	}
+	
+	public String getHtmlContent() throws Exception{
+		String urlParameters  = "param1=a&param2=b&param3=c";
+		byte[] postData       = urlParameters.getBytes( StandardCharsets.UTF_8 );
+		int    postDataLength = postData.length;
+		String request        = "http://example.com/index.php";
+		URL    url            = new URL( request );
+		HttpURLConnection conn= (HttpURLConnection) url.openConnection();           
+		conn.setDoOutput( true );
+		conn.setInstanceFollowRedirects( false );
+		conn.setRequestMethod( "POST" );
+		conn.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded"); 
+		conn.setRequestProperty( "charset", "utf-8");
+		conn.setRequestProperty( "Content-Length", Integer.toString( postDataLength ));
+		conn.setUseCaches( false );
+		InputStreamReader isr =new InputStreamReader(conn.getInputStream());
+		BufferedReader br = new BufferedReader(isr);
+		String tmp="";
+		String result="";
+		while((tmp=br.readLine())!=null){
+			result += tmp;
+		}
+		
+		return result;
 	}
 	
 	public static void main(String []agrv) throws Exception{
