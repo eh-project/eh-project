@@ -30,7 +30,7 @@ public class App
         //gzrcService.loadGzrc();
         
         GgxhService ggxhService=(GgxhService)context.getBean("GgxhService");
-        ggxhService.LoadGgxh(null);
+        ggxhService.mainScrape();
 
 //        ScrcService scrcService=(ScrcService)context.getBean("ScrcService");
 //        scrcService.Loadrc(null);

@@ -1,13 +1,18 @@
 package com.ehais.hrlucene.service.impl;
 
+import java.util.List;
+
 import javax.enterprise.inject.New;
 
 import org.ehais.tools.ReturnObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ehais.hrlucene.mapper.HaiArticleCatMapper;
 import com.ehais.hrlucene.mapper.HaiArticleMapper;
 import com.ehais.hrlucene.model.HaiArticle;
+import com.ehais.hrlucene.model.HaiArticleCat;
+import com.ehais.hrlucene.model.HaiArticleCatExample;
 import com.ehais.hrlucene.model.HaiArticleExample;
 import com.ehais.hrlucene.service.HaiArticleService;
 
@@ -21,6 +26,8 @@ import com.ehais.hrlucene.service.HaiArticleService;
 public class HaiArticleServiceImpl implements HaiArticleService {
 	@Autowired
 	private HaiArticleMapper haiArticleMapper;
+	@Autowired
+	private HaiArticleCatMapper haiArticleCatMapper;
 	
 	/* (non-Javadoc)
 	 * @see com.ehais.hrlucene.service.impl.HaiArticleService#Save_Article(com.ehais.hrlucene.model.HaiArticle)
@@ -59,6 +66,39 @@ public class HaiArticleServiceImpl implements HaiArticleService {
 			rm.setMsg("数据库操作失败。。");
 			return rm;
 		}
+		rm.setCode(0);
+		rm.setMsg("保存成功");
+		return rm;
+	}
+	
+	public ReturnObject<HaiArticleCat> save_cat(HaiArticleCat haiArticleCat){
+		ReturnObject<HaiArticleCat> rm = new ReturnObject<HaiArticleCat>();
+		
+		if(haiArticleCat.getCat_name().equals("")||haiArticleCat.getCat_name()==null){
+			rm.setMsg("分类名字不能为空");
+			rm.setCode(-1);
+			return rm;
+		}
+		
+		HaiArticleCatExample haiArticleCatExample = new HaiArticleCatExample();
+		haiArticleCatExample.createCriteria().andCat_nameEqualTo(haiArticleCat.getCat_name());
+		try{
+			long countCate=haiArticleCatMapper.countByExample(haiArticleCatExample);
+			if(countCate == 0){
+				haiArticleCatMapper.insertSelective(haiArticleCat);
+			}
+			else{
+				haiArticleCatMapper.updateByExampleSelective(haiArticleCat, haiArticleCatExample);
+			}
+			List<HaiArticleCat> tmpList=haiArticleCatMapper.selectByExample(haiArticleCatExample);
+			rm.setRows(tmpList);
+		}catch (Exception e) {
+			// TODO: handle exception
+			rm.setCode(-2);
+			rm.setMsg("数据库操作失败。。");
+			return rm;
+		}
+		
 		rm.setCode(0);
 		rm.setMsg("保存成功");
 		return rm;

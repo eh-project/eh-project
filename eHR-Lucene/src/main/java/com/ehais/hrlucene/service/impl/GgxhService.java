@@ -7,6 +7,6 @@ package com.ehais.hrlucene.service.impl;
  */
 public interface GgxhService {
 
-	public void LoadGgxh(String cate) throws Exception;
+	public void mainScrape() throws Exception;
 
 }
