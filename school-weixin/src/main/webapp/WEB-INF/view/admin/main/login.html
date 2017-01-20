@@ -39,7 +39,7 @@
 						<input class="input" id="admin_pwd" type="password" name="password" placeholder="请输入管理员密码" title="管理员密码" data-rule-required="true"  data-msg-required=""/>
 					</li>
 					<li class="verifycode-wrapper">
-						<img src="/getVerifyCode" >
+						<img id="verifyCodeImg" onclick="loadVerifyCode()" alt="点击获取验证码" style="cursor:pointer;">
 						<!-- {:sp_verifycode_img('length=4&font_size=20&width=248&height=42&use_noise=1&use_curve=0','style="cursor: pointer;" title="点击获取"')} -->
 					</li>
 					<li>
@@ -59,5 +59,12 @@
 	document.getElementById('js-admin-name').focus();
 })();
 </script>
+
+<script>
+function loadVerifyCode(){
+	document.getElementById('verifyCodeImg').src="/getVerifyCode?"+ new Date().getTime();
+}
+</script>
+
 </body>
 </html>

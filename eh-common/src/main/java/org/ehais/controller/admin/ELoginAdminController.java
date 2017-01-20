@@ -55,11 +55,17 @@ public class  ELoginAdminController extends CommonController {
 		try{
 			ReturnObject<EHaiAdminUser> rm = eHaiAdminUserService.login_admin(request, username, password);
 			ReturnObject<?> rm2=vcc.confirmCode(request);
-			if(rm2.getCode()!=1){
+			if(rm2.getCode()==1){
+				System.out.println("verifyCode is right");
+				return this.ReturnJump(modelMap, rm.getCode(), rm.getMsg(), "/admin/index");
+			}
+			else{
+				System.out.println("verifyCode error");
 				rm.setCode(-3);
 				rm.setMsg("验证码错误");
+				return this.ReturnJump(modelMap, rm.getCode(), rm.getMsg(), "/admin/index");
 			}
-			return this.ReturnJump(modelMap, rm.getCode(), rm.getMsg(), "/admin/index");
+//			return this.ReturnJump(modelMap, rm.getCode(), rm.getMsg(), "/admin/index");
 		}catch(Exception e){
 			e.printStackTrace();
 		}

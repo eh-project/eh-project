@@ -17,10 +17,10 @@ public class verifyCodeComfirmImpl implements verifyCodeComfirm {
 		HttpSession session=request.getSession();
 		String verifyCode=(String)session.getAttribute("validateCode");
 		String userCode=request.getParameter("verify");
-		//System.out.println("userCode-->"+userCode);
-		//System.out.println("verifyCode-->"+verifyCode);
+		System.out.println("userCode-->"+userCode);
+		System.out.println("verifyCode-->"+verifyCode);
 		ReturnObject<?> rm = new ReturnObject<>();
-		if(!(verifyCode.equals(userCode))){
+		if(!(verifyCode.equalsIgnoreCase(userCode))){
 			rm.setCode(-3);
 			//rm.setMsg("验证码不正确");
 		}
