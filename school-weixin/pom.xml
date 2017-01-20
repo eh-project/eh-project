@@ -15,11 +15,11 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
-   	<controller.package>com.ehais.school.controller,com.ehais.school.webservice,org.ehais.weixin.controller,org.ehais.controller</controller.package>
+   	<controller.package>com.ehais.school.controller,com.ehais.school.webservice,org.ehais.weixin.controller,org.ehais.controller,com.ehais.schoolweixin.controller</controller.package>
     <component.package>com.ehais.school.service,com.ehais.hrlucene.service,org.ehais.weixin.service,org.ehais.service</component.package>
 	<mapper.package>com.ehais.school.mapper,com.ehais.hrlucene.mapper,org.ehais.weixin.mapper,org.ehais.mapper</mapper.package>
 	<mapper.xml>classpath*:mapper/**/*.xml</mapper.xml>
-	<model.package>com.ehais.school.model,com.ehais.hrlucene.model,org.ehais.weixin.model,org.ehais.model</model.package>
+	<model.package>com.ehais.school.model,com.ehais.hrlucene.model,org.ehais.weixin.model,org.ehais.model</model.package> 
 	   
         
   </properties>
@@ -102,7 +102,7 @@
 				<configuration>
 					<path>/</path>
 					<uriEncoding>UTF-8</uriEncoding>
-					<port>80</port>
+					<port>8080</port>
 					<java.util.logging.manager>org.apache.juli.ClassLoaderLogManager</java.util.logging.manager>
 					
 					<mode>context</mode>

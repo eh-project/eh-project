@@ -20,7 +20,7 @@
 		<mapper.package>org.ehais.weixin.mapper,org.ehais.mapper</mapper.package>
 		<mapper.xml>classpath*:mapper/**/*.xml</mapper.xml>
 		<model.package>org.ehais.weixin.model,org.ehais.model</model.package>
-		<controller.package>org.ehais.weixin.controller,org.ehais.controller</controller.package>
+		<controller.package>org.ehais.weixin.controller,org.ehais.controller,com.ehais.schoolweixin.controller</controller.package>
         
 	</properties>
 	<dependencies>

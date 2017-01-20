@@ -1,37 +1,19 @@
 package com.ehais.hrlucene.service.impl;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
-
-import org.apache.xmlbeans.impl.xb.xsdschema.impl.PublicImpl;
 import org.ehais.tools.ReturnObject;
-import org.ehais.util.EHtmlUnit;
-import org.hamcrest.core.IsInstanceOf;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.stereotype.Service;
+
 import com.ehais.hrlucene.model.HaiArticle;
 import com.ehais.hrlucene.model.HaiArticleCat;
 import com.ehais.hrlucene.service.HaiArticleService;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 
 

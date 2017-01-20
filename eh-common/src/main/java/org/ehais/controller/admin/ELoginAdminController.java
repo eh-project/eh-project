@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.ehais.controller.CommonController;
 import org.ehais.model.EHaiAdminUser;
 import org.ehais.service.EHaiAdminUserService;
+import org.ehais.service.verifyCodeComfirm;
 import org.ehais.tools.ReturnObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ public class  ELoginAdminController extends CommonController {
 
 	@Autowired
 	private EHaiAdminUserService eHaiAdminUserService;
+	@Autowired
+	private verifyCodeComfirm vcc;
 	
 	
 	
@@ -51,6 +54,11 @@ public class  ELoginAdminController extends CommonController {
 			) {
 		try{
 			ReturnObject<EHaiAdminUser> rm = eHaiAdminUserService.login_admin(request, username, password);
+			ReturnObject<?> rm2=vcc.confirmCode(request);
+			if(rm2.getCode()!=1){
+				rm.setCode(-3);
+				rm.setMsg("验证码错误");
+			}
 			return this.ReturnJump(modelMap, rm.getCode(), rm.getMsg(), "/admin/index");
 		}catch(Exception e){
 			e.printStackTrace();

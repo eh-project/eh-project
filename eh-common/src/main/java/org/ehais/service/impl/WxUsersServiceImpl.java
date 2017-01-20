@@ -8,6 +8,7 @@ import org.ehais.model.WxUsersExample;
 import org.ehais.service.WxUsersService;
 import org.ehais.tools.ReturnObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 
 
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author stephen
  *
  */
+@Service("WxUsersService")
 public class WxUsersServiceImpl implements WxUsersService {
 	@Autowired
 	private WxUsersMapper wxUsersMapper;
@@ -22,7 +24,6 @@ public class WxUsersServiceImpl implements WxUsersService {
 	/* (non-Javadoc)
 	 * @see org.ehais.service.impl.WxUsersService#wx_user_save(javax.servlet.http.HttpServletRequest, java.lang.Integer, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer, java.lang.Integer, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Long, java.lang.String, java.lang.String, java.lang.Integer)
 	 */
-	@Override
 	public ReturnObject<WxUsers> wx_user_save(HttpServletRequest request, 
 			Integer wxid,//store_id
 			String email,

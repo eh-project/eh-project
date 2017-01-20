@@ -40,5 +40,28 @@ public class HrApiJunit{
 		
 	}
 	
+	@Test
+	public void verifycode(){
+		try{
+			Map<String, String> paramsMap = new HashMap<String, String>();
+			paramsMap.put("appkey", appkey);
+	    	paramsMap.put("version", "v1.0");
+	    	paramsMap.put("timestamp", timestamp);
+	    	
+	    	paramsMap.put("page", "1");
+	    	paramsMap.put("len", "10");
+	    	paramsMap.put("store_id", "1");
+	    	
+	    	String sign = SignUtil.getSignWS(paramsMap,secret);
+	    	paramsMap.put("sign", sign);
+			String req = EHttpClientUtil.httpPost("http://localhost:8080/getVerifyCode",null);
+			
+			System.out.println("请求返回："+req);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	
 }
