@@ -5,12 +5,13 @@ import java.util.Map;
 
 import org.ehais.util.EHttpClientUtil;
 import org.ehais.util.SignUtil;
+import org.ehais.util.httpPostAndGet;
 import org.junit.Test;
 
 import junit.framework.TestCase;
 
 public class HrApiJunit{
-	private String web_url = "http://gzhmt.ehais.com/api/";
+	private String web_url = "http://gzhmt.ehais.com";
 	private String timestamp = String.valueOf(System.currentTimeMillis());
 	private String appkey = "swetXsdfWEertr";
 	private String secret = "SDfs1224WEdsdf";
@@ -54,9 +55,11 @@ public class HrApiJunit{
 	    	
 	    	String sign = SignUtil.getSignWS(paramsMap,secret);
 	    	paramsMap.put("sign", sign);
-			String req = EHttpClientUtil.httpPost("http://localhost:8080/getVerifyCode",null);
+	    	httpPostAndGet hpg=new httpPostAndGet();
 			
-			System.out.println("请求返回："+req);
+			
+			System.out.println("请求返回：");
+			hpg.sendGet(web_url+"/getVerifyCode");
 			
 		}catch(Exception e){
 			e.printStackTrace();

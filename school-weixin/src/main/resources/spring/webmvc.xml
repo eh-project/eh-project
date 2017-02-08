@@ -32,6 +32,9 @@
 	<mvc:resources mapping="/project/**" location="/project/" cache-period="86400" />
 	<mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
  	<mvc:resources mapping="/ehais/**" location="classpath:/META-INF/resources/ehais/"/>
+ 	<mvc:resources location="/img/" mapping="/img/**" cache-period="86400" />
+ 	<mvc:resources mapping="/Repair/css/**" location="/css/" cache-period="86400" />
+ 	<mvc:resources mapping="/Repair/js/**" location="/js/" cache-period="86400" />
  
 	<mvc:default-servlet-handler />
 

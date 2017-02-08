@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+	<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	    <title>保修服务</title>
+		<link href="css/repair/bootstrap.min.css" rel="stylesheet">
+		<link href="css/repair/repair.css" rel="stylesheet">
+
+		<!--[if lt IE 9]>
+		<script src="js/html5shiv.js"></script>
+		<script src="js/respond.min.js"></script>
+		<![endif]-->
+	</head>
+
+      <body>
+			<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+			  <div class="container-fluid">
+			    <!-- Brand and toggle get grouped for better mobile display -->
+			    <div class="navbar-header">
+			      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			        <span class="sr-only">Toggle navigation</span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			        <span class="icon-bar"></span>
+			      </button>
+			      <a class="navbar-brand" href="#">广州航海学院</a>
+			    </div>
+
+			    <!-- Collect the nav links, forms, and other content for toggling -->
+			    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      <ul class="nav navbar-nav">
+			        <li><a href="index.html">首页</a></li>
+			        <li><a href="#">校园论坛</a></li>
+			        <li><a href="#">校园微信</a></li>
+			        <li><a href="#">校园资源租借</a></li>
+			        <li><a href="#">校级选课</a></li>
+			        <li><a href="#">勤工俭学</a></li>
+			        <li><a href="#">考试专题</a></li>
+			        <li><a href="#">奖学金评估</a></li>
+			        <li class="active"><a href="#">报修服务</a></li>
+			        <li><a href="#">地理位置</a></li>
+			      </ul>
+			    </div><!-- /.navbar-collapse -->
+			  </div><!-- /.container-fluid -->
+			</nav>
+		<!--输入信息-->
+		<form role="form" action="/Repair/Submit" method="post" enctype="multipart/form-data">
+  			<div class="form-group">
+			    <label for="InputDormitory">请输入你的宿舍号</label>
+			    <input type="text" class="form-control" name="user_address" id="InputDormitory" placeholder="例如：南区x栋xxx号">
+			</div>
+
+			 <div class="form-group">
+			    <label for="InputPhone">请输入联系方式</label>
+			    <input type="text" class="form-control" name="user_contact" id="InputPhone" placeholder="">
+			</div>
+			<div class="form-group">
+			    <label for="InputDate">请预约维修日期</label>
+			    <input type="date" class="form-control" name="user_date" id="InputDate" placeholder="例如：xx月xx日周x">
+			</div>
+			<div class="form-group">
+			    <label for="InputClass">请预约维修类型</label>
+			    <div>
+			    	<p class="repairClass">水龙头<input type="checkbox" name="user_class" id="InputClass1" value="水龙头" ></p>
+			    	<p class="repairClass">门窗<input type="checkbox"  name="user_class" id="InputClass2" value="门窗"></p>
+			    	<p class="repairClass">其他<input type="checkbox"  name="user_class" id="InputClass3" value="其他"></p>
+			    </div>
+
+			</div>
+			<label for="InputDetail">请详细描述问题情况</label>
+			<textarea id="InputDetail" class="form-control" name="user_detail" rows="3" placeholder="例如：空调雪种不够，空调不制冷"></textarea>
+			  <div class="form-group">
+			    <label for="InputPictureFile">图片上传</label>
+			    <input type="file" id="InputPictureFile" name="user_sendPicture">
+			  </div>
+ 		 <button type="submit" class="btn btn-default">提交订单</button>
+		</form>
+
+
+
+
+        <script src="js/repair/jquery-1.11.1.js"></script>
+        <script src="js/repair/bootstrap.min.js"></script>
+      </body>
+    </html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+<classPathEntry  location="/Users/stephen/.m2/repository/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar"/>
+  <context id="context1" targetRuntime="MyBatis3">
+  
+    
+    <!-- <plugin type="/Users/stephen/HaiSoftware/ehaisMyBatisPlugin/src/main/java/org/ehais/mybatis/plugin/MyPaginationPlugin.java"></plugin> -->
+  
+    <jdbcConnection connectionURL="jdbc:mysql://120.24.185.249:3306/ehproject" driverClass="com.mysql.jdbc.Driver" password="42016048" userId="ehproject" />
+    <javaModelGenerator targetPackage="com.ehais.schoolweixin.model" targetProject="./src/main/java/" />
+    <sqlMapGenerator targetPackage="mapper" targetProject="./src/main/resources" ><property name="enableSubPackages" value="true"/></sqlMapGenerator>
+    <javaClientGenerator targetPackage="com.ehais.schoolweixin.mapper" targetProject="./src/main/java/" type="XMLMAPPER" />
+    
+    <table schema="ehproject" tableName="wx_repair" domainObjectName="wxRepair">
+      <property name="useActualColumnNames" value="true"/>  
+    </table>
+    
+  </context>
+</generatorConfiguration>

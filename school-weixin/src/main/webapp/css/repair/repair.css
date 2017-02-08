@@ -1,0 +1,19 @@
+.repairClass{
+	display:inline-flex;
+	margin:5px;
+}
+
+#succeedImg{
+	position: relative;
+	left: 39%;
+
+}
+#succeedText{
+	position: relative;
+	/*left: 0%;*/
+	text-align: center;
+}
+#buttonGroup{
+	position: relative;
+	left: 26%;
+}

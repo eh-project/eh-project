@@ -144,6 +144,7 @@ public class WeixinController extends WxCommonController{
 			@PathVariable("controller") String controller,
 			@PathVariable("postfix") String postfix
 			){
+		//System.out.println("enter gowx controller");
 		try{
 			if(request.getServerName().equals("localhost") || request.getServerName().equals("127.0.0.1")){
 				//测试使用
@@ -263,7 +264,7 @@ public class WeixinController extends WxCommonController{
 					
 					int userId = -1;
 					if(rm.getCode() == 1 && rm.getModel() != null){
-						userId = rm.getModel().getUser_id();
+						userId = rm.getModel().getStore_id();
 						request.getSession().setAttribute(Constants.SESSION_OPEN_ID, openid);
 						request.getSession().setAttribute(Constants.SESSION_USER_ID, userId);
 						request.getSession().setAttribute(Constants.SESSION_USER_NAME, rm.getModel().getUser_name());

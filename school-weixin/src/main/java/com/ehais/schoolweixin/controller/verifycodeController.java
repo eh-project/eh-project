@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class verifycodeController {
@@ -27,5 +28,11 @@ public class verifycodeController {
 		session.setAttribute("validateCode", vcode.getCode());
 		vcode.write(response.getOutputStream());
 		//System.out.println("4");
+	}
+	
+	@RequestMapping("/hellworld")
+	@ResponseBody
+	public String helloworld(){
+		return "helloworld testing";
 	}
 }

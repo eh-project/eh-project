@@ -16,11 +16,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     
    	<controller.package>com.ehais.school.controller,com.ehais.school.webservice,org.ehais.weixin.controller,org.ehais.controller,com.ehais.schoolweixin.controller</controller.package>
-    <component.package>com.ehais.school.service,com.ehais.hrlucene.service,org.ehais.weixin.service,org.ehais.service</component.package>
-	<mapper.package>com.ehais.school.mapper,com.ehais.hrlucene.mapper,org.ehais.weixin.mapper,org.ehais.mapper</mapper.package>
+    <component.package>com.ehais.school.service,com.ehais.hrlucene.service,org.ehais.weixin.service,org.ehais.service,com.ehais.schoolweixin.service</component.package>
 	<mapper.xml>classpath*:mapper/**/*.xml</mapper.xml>
-	<model.package>com.ehais.school.model,com.ehais.hrlucene.model,org.ehais.weixin.model,org.ehais.model</model.package> 
-	   
+	<model.package>com.ehais.school.model,com.ehais.hrlucene.model,org.ehais.weixin.model,org.ehais.model,com.ehais.schoolweixin.model</model.package> 
+	<mapper.package>com.ehais.school.mapper,com.ehais.hrlucene.mapper,org.ehais.weixin.mapper,org.ehais.mapper,com.ehais.schoolweixin.mapper</mapper.package>
+	 
         
   </properties>
   <dependencies>
@@ -49,9 +49,7 @@
 			<artifactId>eHR-Lucene</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
-		
-		
+	
   </dependencies>
   
   	<build>
@@ -110,7 +108,7 @@
 
 				</configuration>                 
                  
-			</plugin>
+			</plugin> 
 
 
 

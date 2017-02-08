@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+  <!-- <link rel="stylesheet" href="css/repair/bootstrap.min.css">
+  <script src="js/repair/jquery-1.11.1.js"></script>
+  <script src="js/repair/bootstrap.min.js"></script> -->
+  <link rel="stylesheet" href="../../../css/repair/repair.css">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">广州航海学院</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="index.html">首页</a></li>
+          <li><a href="#">校园论坛</a></li>
+          <li><a href="#">校园微信</a></li>
+          <li><a href="#">校园资源租借</a></li>
+          <li><a href="#">校级选课</a></li>
+          <li><a href="#">勤工俭学</a></li>
+          <li><a href="#">考试专题</a></li>
+          <li><a href="#">奖学金评估</a></li>
+          <li class="active"><a href="#">报修服务</a></li>
+          <li><a href="#">地理位置</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">订单状态</div>
+    <div class="panel-body">
+      <div>
+        <img src='../../../img/sign-check-icon.png' width="20%" id='succeedImg'>
+      </div>
+      <div>
+        <h4 id="succeedText">${Info}</h4>
+      </div>
+      <div id="buttonGroup">
+        <button type="button" class="btn btn-default" onclick="jumper('repair')">继续报修</button>
+        <button type="button" class="btn btn-default" onclick="jumper('repairList')">订单列表</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function jumper(location){
+      if(location=='repair')window.location.href='/Repair/MainPage';
+      else if(location=='repairList')window.location.href='/Repair/querySummary';
+    }
+  </script>
+</body>
+</html>
