@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -74,6 +75,12 @@ public class weixinRepairController {
 		rm=urs.saveRepairList(urmodel);
 		log.info("returnMsg==>"+rm.getMsg());
 		modelmap.addAttribute("Info", rm.getMsg());
+		if(rm.getCode()==1){
+			modelmap.addAttribute("imgLocation","../../../img/sign-check-icon.png");
+		}
+		else{
+			modelmap.addAttribute("imgLocation","../../../img/wrong.png");
+		}
 		return "/repair/orderSucceed";
 	}
 	
@@ -117,5 +124,11 @@ public class weixinRepairController {
 		long wxid=10;
 		returnList=urs.getRepairList(String.valueOf(wxid)).getRows();
 		return returnList;
+	}
+	
+	@RequestMapping("/getDetail/{id}")
+	public String getDetail(ModelMap model,@PathVariable("id") String id){
+		
+		return "";
 	}
 }

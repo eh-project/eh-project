@@ -23,6 +23,8 @@ function listSummary(Data){
         var button=document.createElement("button");
         button.type="button";
         button.classList.add("list-group-item");
+        //console.log('id='+dataList[i].id);
+        button.id=dataList[i].id;
 
         var header=document.createElement("h4");
         header.classList.add("list-group-item-heading");
@@ -37,4 +39,8 @@ function listSummary(Data){
         summaryList.appendChild(button);
     }
   }
+}
+
+function getDetail(id){
+	window.location.href="/Repair/getDetail/"+id;
 }

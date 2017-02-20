@@ -51,7 +51,7 @@
     <div class="panel-heading">订单状态</div>
     <div class="panel-body">
       <div>
-        <img src='../../../img/sign-check-icon.png' width="20%" id='succeedImg'>
+        <img src=${imgLocation} width="20%" id='succeedImg'>
       </div>
       <div>
         <h4 id="succeedText">${Info}</h4>
@@ -65,7 +65,7 @@
   <script>
     function jumper(location){
       if(location=='repair')window.location.href='/Repair/MainPage';
-      else if(location=='repairList')window.location.href='/Repair/querySummary';
+      else if(location=='repairList')window.location.href='/Repair/summaryMainPage';
     }
   </script>
 </body>
