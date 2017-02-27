@@ -16,10 +16,10 @@
 	<!-- Spring bootstrap config, only use this file in code should be sufficient -->
 	<!-- ======================================================================== -->
 
-	<!-- <context:property-placeholder location="classpath:${system.config}"
-		ignore-unresolvable="true" /> -->
-	<context:property-placeholder location="classpath:/META-INF/config/application-dev.properties"
-		ignore-unresolvable="true" />	
+	<context:property-placeholder location="classpath:${system.config}"
+		ignore-unresolvable="true" />
+	<!-- <context:property-placeholder location="classpath:/META-INF/config/application-dev.properties"
+		ignore-unresolvable="true" /> -->	
 
 	<import resource="classpath*:spring/appContext-*.xml" />
 

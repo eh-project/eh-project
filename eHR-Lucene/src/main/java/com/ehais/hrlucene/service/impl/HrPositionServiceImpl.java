@@ -112,7 +112,7 @@ public class HrPositionServiceImpl implements HrPositionService {
 		Integer count = haiHrPositionMapper.countByExample(example);
 		rm.setRows(list);
 		rm.setTotal(count);
-		rm.setCode(1);
+		rm.setCode(2);
 		return rm;
 	}
 

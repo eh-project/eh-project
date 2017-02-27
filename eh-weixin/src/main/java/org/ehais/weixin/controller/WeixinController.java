@@ -146,7 +146,7 @@ public class WeixinController extends WxCommonController{
 			){
 		//System.out.println("enter gowx controller");
 		try{
-			if(request.getServerName().equals("localhost") || request.getServerName().equals("127.0.0.1")){
+			if(request.getServerName().equals("localhost") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("192.168.43.33")){
 				//测试使用
 				String url = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/weixin/openid/"+wxid+"/"+controller+"."+postfix;
 				url+="?code="+ECommon.nonceStr(32);
@@ -185,7 +185,7 @@ public class WeixinController extends WxCommonController{
 		log.info("openid:==controller:"+controller+"/postfix="+postfix+"/code="+code);
 		
 		try{
-			if(request.getServerName().equals("localhost") || request.getServerName().equals("127.0.0.1")){
+			if(request.getServerName().equals("localhost") || request.getServerName().equals("127.0.0.1") || request.getServerName().equals("192.168.43.33")){
 				String controllurl = "/"+controller.replaceAll("-", "/")+"."+postfix;
 				log.info("localhost log openid controllurl "+controllurl);
 				String openid = "o5eMcv6IGgGFswvaK8a_tCVA-qHw";
