@@ -72,8 +72,5 @@ public class ReturnObject<T> {
 	public void setExtendsFieldsTabs(List<ExtendsFieldsTabs> extendsFieldsTabs) {
 		this.extendsFieldsTabs = extendsFieldsTabs;
 	}
-	
-	
-	
-	
+		
 }

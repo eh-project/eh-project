@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>活动发起页面</title >  
+		<link  href="/css/activity/bootstrap.css" rel="stylesheet" type="text/css" />
+		<link href="/css/activity/index.css" rel="stylesheet" type="text/css" />
+	    <link href="//at.alicdn.com/t/font_qzvltg839dqs38fr.css" rel="stylesheet" />
+	    <script src="/js/activity/jquery-3.1.1.js"></script>
+	    <script src="/js/activity/bootstrap.js"></script>
+		<title>活动报名</title>
+</head>
+<body>
+	<body>
+	    <div id="header"><b><h3 id="h1">活动报名</h3></div>	
+		    <form role="form" action="signupsubmit" method="post" style=" margin: 20px; background-color: #fff;padding:10px; border-radius: 2em;">
+		    	 <div class="form-group">
+		            <label for="activityname"><i class="iconfont icon-mingcheng1"></i>&nbsp;活动名称</label>
+		                <input type="text"  class="form-control" name="activityname" id="activityname" disabled  placeholder="${acname }">
+		        </div>
+		        <div>
+		        	<input type="hidden"  name="activityname" value="${acname }" />
+		        </div>
+		        <div class="form-group">
+		            <label for="activitiesName"><i class="iconfont icon-mingcheng1"></i>&nbsp;你的名字 :</label>
+		                <input type="text"  class="form-control" name="name" id="activitiesName" placeholder="请输入你的名字">
+		        </div>
+				<button style="" type="submit" class="btn btn-success btn-lg btn-block">提 交</button>				 
+			</form>
+	</body>
+</body>
+</html>

@@ -1,0 +1,23 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+p{
+	font-family: "华文细黑";
+}
+#header{
+	height: 44px;
+    width:100%;	
+    background-color:#0F9210;
+    margin: 0;
+	padding: 0;
+}
+#h1{
+	margin: 0;
+	font-family:"华文细黑";
+	text-align: center;
+	line-height: 1.7em;
+	color: white;
+	
+}
+
