@@ -7,12 +7,6 @@
         <dependent-module archiveName="eh-common-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eh-common/eh-common">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="eh-weixin-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eh-weixin/eh-weixin">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="eHR-Lucene-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/eHR-Lucene/eHR-Lucene">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="school-weixin"/>
         <property name="java-output-path" value="/school-weixin/target/classes"/>
     </wb-module>

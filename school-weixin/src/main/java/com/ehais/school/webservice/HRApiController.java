@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehais.hrlucene.model.HaiHrCompany;
 import com.ehais.hrlucene.model.HaiHrPosition;
-import com.ehais.hrlucene.service.HrCompanyService;
 import com.ehais.hrlucene.service.HrPositionService;
 
 
@@ -27,8 +26,8 @@ public class HRApiController extends CommonController{
 	@Autowired
 	private HrPositionService hrPositionService;
 	
-	@Autowired
-	private HrCompanyService hrCompanyService;
+//	@Autowired
+//	private HrCompanyService hrCompanyService;
 	
 	@ResponseBody
 	@RequestMapping("/position")
@@ -54,13 +53,13 @@ public class HRApiController extends CommonController{
 			HttpServletRequest request,HttpServletResponse response,
 			@ModelAttribute EConditionObject param,
 			@RequestParam(value = "companyName", required = false) String companyName ){
-		try{
-			ReturnObject<HaiHrCompany> rm = hrCompanyService.ListHrCompany(request, param, companyName);
-			return this.writeJson(rm);
-		}catch(Exception e){
-			e.printStackTrace();
-			log.error("logErr", e);
-		}
+//		try{
+//			ReturnObject<HaiHrCompany> rm = hrCompanyService.ListHrCompany(request, param, companyName);
+//			return this.writeJson(rm);
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			log.error("logErr", e);
+//		}
 		return "";
 	}
 	
