@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>活动发起页面</title >  
+		<link  href="/css/activity/bootstrap.css" rel="stylesheet" type="text/css" />
+		<link href="/css/activity/index.css" rel="stylesheet" type="text/css" />
+	    <link href="/css/activity/bootstrap-datetimepicker.css" rel="stylesheet" />
+	    <link href="//at.alicdn.com/t/font_qzvltg839dqs38fr.css" rel="stylesheet" />
+	    <script src="/js/activity/jquery-3.1.1.js"></script>
+	    <script src="/js/activity/bootstrap.js"></script>
+	    <script src="/js/activity/bootstrap-datetimepicker.js"></script>
+	    <script src="/js/activity/bootstrap-datetimepicker.zh-CN"></script>
+	    
+	</head>
+	<body>
+	    <div id="header"><b><h3 id="h1">活动发起</h3></div>
+	
+		    <form role="form" action="submit" method="post" style=" margin: 20px; background-color: #fff;padding:10px; border-radius: 2em;">
+		        <div class="form-group">
+		            <label for="activitiesName"><i class="iconfont icon-mingcheng1"></i>&nbsp;活动名称 :</label>
+		                <input type="text"  class="form-control" name="activityName" id="activitiesName" placeholder="请输入活动名称">
+		        </div>
+		        <div class="form-group">
+		            <label for="MiaoShu"><i class="iconfont icon-neirong"></i>&nbsp;活动描述 :</label>
+		                <textarea id="MiaoShu" name="description" class="form-control" rows="3" placeholder="请输入活动描述"></textarea>
+		        </div>
+	            <label for="startTime"><i class="iconfont icon-date"></i>&nbsp;活动开始时间 :</label>
+	            <br>
+            <div class="input-append date" id="datetimepicker"  data-date-format="yyyy-mm-dd hh:ii">
+			   <input  class="form-control time1"  name="startTime"  size="16"  type="text" placeholder="请选择时间">
+			  
+			</div>
+			<br>
+			<label for="endTime"><i class="iconfont icon-date"></i>&nbsp;活动结束时间 :</label>
+			<div  class="input-append date" id="datetimepicker"  data-date-format="yyyy-mm-dd hh:ii">
+			   <input class="form-control time1" name="endTime" size="16" type="text" placeholder="请选择时间">
+			   <span class="add-on"><i class="iconfont icon-remove"></i></span>
+			   <span class="add-on"><i class="icon-th"></i></span>
+			</div>
+			<br>
+			<label for="endTime"><i class="iconfont icon-date"></i>&nbsp;活动截止报名时间 :</label>
+			<div  class="input-append date" id="datetimepicker"  data-date-format="yyyy-mm-dd hh:ii">
+			   <input class="form-control time1" name="finalTime" size="16" type="text" placeholder="请选择时间">
+			   <span class="add-on"><i class="iconfont icon-remove"></i></span>
+			   <span class="add-on"><i class="icon-th"></i></span>
+			</div>
+			
+            	<script type="text/javascript">
+				 $(".time1").datetimepicker({
+				 format: "yyyy-mm-dd hh:ii",
+				 autoclose: true,
+				 todayBtn: true,
+				 todayHighlight: true,
+				 showMeridian: true,
+				 pickerPosition: "bottom-center",
+				 language: 'zh-CN',//中文，需要引用zh-CN.js包
+				 startView: 2,//月视图
+				 minView: 0,//日期时间选择器所能够提供的最精确的时间选择视图
+				 });
+                 </script>
+                 <br>
+				    <button style="" type="submit" class="btn btn-success btn-lg btn-block">提 交</button>				 
+			</form>
+	</body>
+	
+</html>

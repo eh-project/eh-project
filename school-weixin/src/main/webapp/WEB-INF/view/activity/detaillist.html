@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+	<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>活动详情页</h2>
+  <p>发起报名人员列表</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>活动名称</th>
+        <th>活动报名人员姓名</th>
+      </tr>
+    </thead>
+    <tbody>
+      <#if detaillist??>
+      	<#list detaillist as detail>
+	      	<tr class="success">
+	      		 <td>${acname }</td>
+	        	 <td>${detail.name }</td>
+	    	</tr>    
+      	</#list>      
+      </#if>
+      	
+    </tbody>
+  </table>
+  <div><a href="list">活动列表</a></div>
+</div>
+
+</body>
+</html>
