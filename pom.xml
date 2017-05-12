@@ -363,6 +363,7 @@
 		<module>eh-common</module>
 		<module>eHR-Lucene</module>
     <module>reptileV1</module>
+    <module>FigoShop</module>
   </modules>
 
 	<profiles>

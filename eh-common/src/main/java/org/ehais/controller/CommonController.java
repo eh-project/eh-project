@@ -4,13 +4,17 @@ package org.ehais.controller;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.ehais.tools.ReturnObject;
+import org.ehais.util.IpUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import net.sf.json.JSONObject;
@@ -29,8 +33,8 @@ public class CommonController {
 	 * @return
 	 */
 	public String config_file(HttpServletRequest request,String file_name){
-		String path = "";
-		if(request.getServerName().equals("localhost")){
+		String path = "";		
+		if(request.getServerName().equals("localhost") || request.getServerName().equals("127.0.0.1") || IpUtil.getIpAddr(request).equals("127.0.0.1")){
 			path = request.getRealPath("").replace("webapp", "");
 			path += "/resources/config/"+file_name;
 		}else{
@@ -152,6 +156,14 @@ public class CommonController {
 		return "/system/dispatch_jump";
 	}
 	
+	public String errorJSON(Exception e){
+		ReturnObject<Object> rm = new ReturnObject<Object>();		
+		rm.setCode(0);
+		rm.setMsg(e.getMessage());
+		JSONObject json = JSONObject.fromObject(rm);
+		return json.toString();
+	}
+	
 	
 	public String ReturnJump(ModelMap modelMap,Integer code , String msg,String jumpUrl){
 
@@ -168,6 +180,58 @@ public class CommonController {
 		return "/system/dispatch_jump";
 	}
 	
+	public String ReturnJump(ModelMap modelMap,Integer code , String[] msgs,String jumpUrl){
+
+		if(code == 1){
+			modelMap.addAttribute("successMsgs",msgs);
+			modelMap.addAttribute("jumpUrl",jumpUrl);
+			modelMap.addAttribute("waitSecond",3);
+		}else{
+			modelMap.addAttribute("errorMsgs",msgs);
+			modelMap.addAttribute("jumpUrl","javascript:history.back(-1);");
+			modelMap.addAttribute("waitSecond",3);
+		}
+		
+		return "/system/dispatch_jump";
+	}
+	
+	public <T> String ReturnJump(ModelMap modelMap,ReturnObject<T> rm,String jumpUrl){
+
+		if(rm.getCode() == 1){
+			modelMap.addAttribute("successMsg",rm.getMsg());
+			modelMap.addAttribute("successMsgs",rm.getMsgs());
+			modelMap.addAttribute("jumpUrl",jumpUrl);
+			modelMap.addAttribute("waitSecond",3);
+		}else{
+			modelMap.addAttribute("errorMsg",rm.getMsg());
+			modelMap.addAttribute("errorMsgs",rm.getMsgs());
+			modelMap.addAttribute("jumpUrl","javascript:history.back(-1);");
+			modelMap.addAttribute("waitSecond",2);
+		}
+		
+		return "/system/dispatch_jump";
+	}
+	
+	public <T> String ReturnJumpWrong(ModelMap modelMap,BindingResult result){
+		List<ObjectError> errorList = result.getAllErrors();
+//        for(ObjectError error : errorList){
+//            System.out.println(error.getDefaultMessage());
+//        }
+		modelMap.addAttribute("errorMsgs",errorList);
+		modelMap.addAttribute("jumpUrl","javascript:history.back(-1);");
+		modelMap.addAttribute("waitSecond",3);
+		
+		return "/system/dispatch_jump";
+	}
+	
+	public <T> String ReturnWriteWrong(ModelMap modelMap,BindingResult result){
+		ReturnObject<Object> rm = new ReturnObject<Object>();
+		rm.setCode(-2);
+		rm.setErrorList(result.getAllErrors());
+		JSONObject json = JSONObject.fromObject(rm,this.getDefaultJsonConfig());
+		return json.toString();
+	}
+	
 	public String wrongJump(ModelMap modelMap,String msg){
 		modelMap.addAttribute("errorMsg",msg);
 		return "/system/wrong";
@@ -179,7 +243,6 @@ public class CommonController {
 	 * @return
 	 */
 	public <T> String writeJson(ReturnObject<T> rm){
-//		JSONObject json = new JSONObject(rm);
 		JSONObject json = JSONObject.fromObject(rm,this.getDefaultJsonConfig());
 		return json.toString();
 	}
@@ -194,26 +257,9 @@ public class CommonController {
 	 * @返回 String
 	 */
 	public <T> String writeJsonObject(T t){
-//		JSONObject json = new JSONObject(t);
 		JSONObject json = JSONObject.fromObject(t,this.getDefaultJsonConfig());
 		return json.toString();
 	}
-	
-	
-	@ExceptionHandler  
-    public String myExceptionHandler(HttpServletRequest request, Exception ex) { 
-		ex.printStackTrace();
-        request.setAttribute("ex", ex);  
-        // 根据不同错误转向不同页面  
-        if(ex instanceof SQLException) {  
-            return "error";  
-        }else if(ex instanceof RuntimeException) {  
-            return "error";  
-        } else {  
-            return "error";  
-        }  
-    }
-	
 	
 	/**
 	 * json转换config
@@ -251,6 +297,22 @@ public class CommonController {
 		});
 		return config;
 	}
+	
+	
+	@ExceptionHandler  
+    public String myExceptionHandler(HttpServletRequest request, Exception ex) { 
+		ex.printStackTrace();
+        request.setAttribute("ex", ex);  
+        // 根据不同错误转向不同页面  
+        if(ex instanceof SQLException) {  
+            return "error";  
+        }else if(ex instanceof RuntimeException) {  
+            return "error";  
+        } else {  
+            return "error";  
+        }  
+    }
+	
 	
 }
 

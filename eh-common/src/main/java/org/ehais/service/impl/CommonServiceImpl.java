@@ -21,6 +21,8 @@ import org.ehais.model.ExtendsField.ExtendsFieldsXml;
 import org.ehais.service.CommonService;
 import org.ehais.tools.CriteriaObject;
 import org.ehais.util.FSO;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.thoughtworks.xstream.XStream;
 

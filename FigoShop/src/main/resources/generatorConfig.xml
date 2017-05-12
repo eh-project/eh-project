@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+  <classPathEntry    location="D:/MavenRepository/mysql/mysql-connector-java/5.1.21/mysql-connector-java-5.1.21.jar"/>
+  <context id="context1">
+    <jdbcConnection connectionURL="jdbc:mysql://123.207.238.174:3306/hqh" driverClass="com.mysql.jdbc.Driver" password="chacahshop51235548" userId="HqH" />
+    <javaModelGenerator targetPackage="generator.model" targetProject="figoarticle" />
+    <sqlMapGenerator targetPackage="generator.xml" targetProject="figoarticle" />
+    <javaClientGenerator targetPackage="generator.mapper" targetProject="figoarticle" type="XMLMAPPER" />
+    <!-- 
+    <table tableName="unionpay_rcv_response">
+      <generatedKey column="union_rcv_id" sqlStatement="Mysql" identity="true" />
+    </table>
+    
+    <table tableName="hai_brand" ><generatedKey column="brand_id" sqlStatement="MySql" identity="true" /></table>
+    <table tableName="hai_category" ><generatedKey column="cat_id" sqlStatement="MySql" identity="true" /></table>
+    <table tableName="hai_goods" ><generatedKey column="goods_id" sqlStatement="MySql" identity="true" /></table>
+    <table tableName="hai_goods_attr" ><generatedKey column="goods_attr_id" sqlStatement="MySql" identity="true" /></table>
+    <table tableName="hai_goods_gallery" ><generatedKey column="img_id" sqlStatement="MySql" identity="true" /></table>
+    <table tableName="hai_goods_url" ><generatedKey column="goods_url_id" sqlStatement="MySql" identity="true" /></table>
+    
+     -->
+    <table tableName="hai_goods_attr" ><generatedKey column="goods_attr_id" sqlStatement="MySql" identity="true" /></table>
+    
+  </context>
+</generatorConfiguration>
