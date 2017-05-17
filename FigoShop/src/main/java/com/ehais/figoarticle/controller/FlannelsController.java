@@ -10,9 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.FSO;
 import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,14 +66,17 @@ public class FlannelsController extends FigoCommonController {
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
-//			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
+			result = FSO.ReadFileName("E:/temp/Farfetch.html");
 			Document doc = Jsoup.parse(result);
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			
 			// TODO 
-			
+			Element topMenu = doc.getElementById("topMenu");
+			System.out.println(topMenu.outerHtml());
+//			Element firstUL = topMenu.select(">ul").first();
+//			System.out.println(firstUL.outerHtml());
 			
 			
 			System.out.println("==========================================");
@@ -82,12 +87,12 @@ public class FlannelsController extends FigoCommonController {
 //			System.out.println(element.html());
 			System.out.println("==========================================");
 			
-			Map<String, String> paramsMap = new HashMap<String,String>();
-			paramsMap.put("json", arr.toString());
-			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-//			String api = "http://localhost:8087/api/category";
-			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			System.out.println(apiresult);
+//			Map<String, String> paramsMap = new HashMap<String,String>();
+//			paramsMap.put("json", arr.toString());
+//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+////			String api = "http://localhost:8087/api/category";
+//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+//			System.out.println(apiresult);
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -221,7 +226,9 @@ public class FlannelsController extends FigoCommonController {
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";
-		DemoController ac = new DemoController();
+		String categoryUrl = "";
+		FlannelsController ac = new FlannelsController();
+		ac.category(null, categoryUrl);
 //		ac.goodsModel(url,1);
 //		ac.goodsUrl(null, goodsurl, 1);
 	}
