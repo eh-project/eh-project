@@ -291,7 +291,7 @@ public class FlannelsController extends FigoCommonController {
 				HaiGoodsAttr goodsColor = new HaiGoodsAttr();
 				goodsColor.setAttrValue(element.text());
 				goodsColor.setAttrType("color");
-				goodsColor.setAttrPrice(priceS);
+				goodsColor.setAttrPrice(price.toString());
 				goodsAttrList.add(goodsColor);
 			}
 
@@ -302,7 +302,7 @@ public class FlannelsController extends FigoCommonController {
 				HaiGoodsAttr goodsSize = new HaiGoodsAttr();
 				goodsSize.setAttrValue(element.text());
 				goodsSize.setAttrType("size");
-				goodsSize.setAttrPrice(priceS);
+				goodsSize.setAttrPrice(price.toString());
 				goodsAttrList.add(goodsSize);
 			}
 
