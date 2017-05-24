@@ -277,6 +277,7 @@ CREATE TABLE `hai_goods_attr` (
   `goods_id` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '商品编号',
   `attr_value` text NOT NULL COMMENT '属性名称',
   `attr_price` varchar(255) NOT NULL DEFAULT '' COMMENT '属性价格',
+  `attr_type` varchar(255) NOT NULL DEFAULT '' COMMENT '属性类型',
   PRIMARY KEY (`goods_attr_id`),
   KEY `goods_id` (`goods_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

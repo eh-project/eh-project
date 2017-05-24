@@ -11,6 +11,7 @@
   <artifactId>FigoShop</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>FigoShop</name>
+	<packaging>war</packaging>
   <url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -499,7 +500,7 @@
 					<path>/</path>
 					<uriEncoding>UTF-8</uriEncoding>
 					<port>8087</port>
-					<java.util.logging.manager>org.apache.juli.ClassLoaderLogManager</java.util.logging.manager>
+					<!--<java.util.logging.manager>org.apache.juli.ClassLoaderLogManager</java.util.logging.manager>-->
 					<mode>context</mode>
 					<contextFile>${basedir}/../context.xml</contextFile>
 				</configuration>

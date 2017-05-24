@@ -1,41 +1,30 @@
 package com.ehais.figoarticle.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.ehais.util.Bean2Utils;
+import com.ehais.figoarticle.model.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.FSO;
 import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ehais.figoarticle.model.HaiCategory;
-import com.ehais.figoarticle.model.HaiCategoryExample;
-import com.ehais.figoarticle.model.HaiGoodsAttr;
-import com.ehais.figoarticle.model.HaiGoodsEntity;
-import com.ehais.figoarticle.model.HaiGoodsGallery;
-import com.ehais.figoarticle.model.HaiGoodsUrl;
-import com.ehais.figoarticle.model.HaiGoodsUrlExample;
-import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/flannels")
 public class FlannelsController extends FigoCommonController {
-	private static String url = "http://www.flannels.com/";
+	private static String url = "http://www.flannels.com";
 	
 
 
@@ -64,46 +53,103 @@ public class FlannelsController extends FigoCommonController {
 	
 	
 	private void category(HttpServletRequest request,String categoryUrl){
+		System.out.println("请求地址：" + categoryUrl);
 		String result = "";
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
-//			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
-			result = FSO.ReadFileName("E:/temp/Farfetch.html");
+			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
+//			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\flannels.html");
 			Document doc = Jsoup.parse(result);
-			List<HaiCategory> list = new ArrayList<HaiCategory>();
-			
-			// TODO 
-			Element topMenu = doc.getElementById("topMenu");
-			System.out.println(topMenu.outerHtml());
+//			Element topMenu = doc.getElementById("topMenu");
 //			Element firstUL = topMenu.select(">ul").first();
-//			System.out.println(firstUL.outerHtml());
-			
-			
-			System.out.println("==========================================");
-			System.out.println("==========================================");
-			
-			JSONArray arr = JSONArray.fromObject(list);
-			System.out.println(arr.toString());
+//			Elements topcate = firstUL.select(">li");
+//			topcate.remove(4);
+//			topcate.remove(3);
+//			topcate.remove(1);
+
+			Element shop = doc.getElementsByClass("shop").first();
+			Elements topcate = shop.select("div[data-level=2]");
+			topcate.remove(2);
+
+			List<HaiCategory> list = new ArrayList<HaiCategory>();
+			String sexHref = "";
+			for (Element element : topcate) {
+
+				Element sex = element.getElementsByTag("a").get(0);
+				System.out.println(sex.text());
+				sexHref = sex.attr("href");
+				if (sexHref.indexOf("http") < 0) sexHref = url + sexHref;
+				Elements mplevel = element.select("div[data-level=3]");
+				HaiCategory topcat = new HaiCategory();
+				topcat.setCatName(sex.text());
+				topcat.setCategoryUrl(sexHref);
+				topcat.setIsShow(true);
+
+				List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
+				String parentHref = "";
+				for (Element element1 : mplevel) {
+					Element parentP = element1.getElementsByClass("menulevelheader").first();
+					Element parentA = parentP.select(">a").first();
+					System.out.println("===" + parentA.text());
+					parentHref = parentA.attr("href");
+					if (parentHref.indexOf("http") < 0) parentHref = url + parentHref;
+					Elements childrenLi = element1.select(".level2");
+
+					HaiCategory cat2 = new HaiCategory();
+					cat2.setCatName(parentA.text());
+					cat2.setCategoryUrl(parentHref);
+					cat2.setIsShow(true);
+					topcatlist.add(cat2);
+
+					List<HaiCategory> catlist = new ArrayList<HaiCategory>();
+					String childrenHref = "";
+					for (Element element2 : childrenLi) {
+						Element childrenA = element2.select(">a").first();
+						System.out.println("======" + childrenA.text());
+						childrenHref = childrenA.attr("href");
+						if (childrenHref.indexOf("http") < 0) childrenHref = url + childrenHref;
+						HaiCategory cat3 = new HaiCategory();
+						cat3.setCatName(childrenA.text());
+						cat3.setCategoryUrl(childrenHref);
+						cat3.setIsShow(true);
+
+						catlist.add(cat3);
+					}
+
+					cat2.setChildren(catlist);
+				}
+
+				topcat.setChildren(topcatlist);
+				list.add(topcat);
+			}
+
+
+				System.out.println("==========================================");
+				System.out.println("==========================================");
+
+				JSONArray arr = JSONArray.fromObject(list);
+				System.out.println(arr.toString());
 //			System.out.println(element.html());
-			System.out.println("==========================================");
-			
-//			Map<String, String> paramsMap = new HashMap<String,String>();
-//			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-////			String api = "http://localhost:8087/api/category";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-//			System.out.println(apiresult);
-			
+				System.out.println("==========================================");
+
+				Map<String, String> paramsMap = new HashMap<String, String>();
+				paramsMap.put("json", arr.toString());
+				String api = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/api/category";
+//			String api = "http://localhost:8087/api/category";
+				String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+				System.out.println(apiresult);
+
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	@ResponseBody
 	@RequestMapping("/url")
 	public String url(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
-		
+
 		try {
 
 			HaiCategoryExample example = new HaiCategoryExample();
@@ -114,27 +160,39 @@ public class FlannelsController extends FigoCommonController {
 				System.out.println(haiCategory.getCategoryUrl());
 				this.goodsUrl(request, haiCategory.getCategoryUrl(), haiCategory.getCatId());
 			}
-			
+
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return "";
 	}
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
-		System.out.println(goodsurl);
+		System.out.println("请求地址："+goodsurl);
 		String result = "";
 		try{
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
-//			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
 			Document doc = Jsoup.parse(result);
+			Element product_list = doc.select(".s-productscontainer2").first();
+			if (product_list == null) {
+				return "";
+			}
+			Elements product_li = product_list.select(">li");
 			List<String> list = new ArrayList<String>();
 
-			// TODO
+			for (Element element : product_li) {
+				Element product_a = element.getElementsByClass("s-product-sache").first();
+				String productHref = product_a.attr("href");
+				if(product_a.attr("href").indexOf("http") < 0) productHref = url + productHref;
+				System.out.println(productHref);
+				list.add(productHref);
+
+			}
 			
 			
 			JSONArray arr = JSONArray.fromObject(list);
@@ -144,16 +202,16 @@ public class FlannelsController extends FigoCommonController {
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
 			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
+			System.out.println(apiresult);
+
 			//获取下一页
-			/**			 
-			Element page_chooser = page.getElementById("page-chooser");
-			Element next = page_chooser.getElementsByClass("next").first();
-			if(next != null){
-				String href_a = next.attr("href");
+			Element page = doc.select("a.NextLink").first();
+			if(page != null){
+				String href_a = page.attr("href");
+				if(href_a.indexOf("http")<0) href_a = url + href_a;
 				this.goodsUrl(request, href_a, catId);
 			}
-			**/
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -186,23 +244,69 @@ public class FlannelsController extends FigoCommonController {
 	
 	
 	public String goodsModel(HttpServletRequest request , String goodsurl ,Integer catId){
-		System.out.println(goodsurl);
+		System.out.println("请求地址：" + goodsurl);
 		String result = "";
 		HaiGoodsEntity entity = new HaiGoodsEntity();
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
-		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
-		goods.setGoodsUrl(goodsurl);
-		goods.setCatId(catId);
-		try{
 
+		try{
+			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+			Document doc = Jsoup.parse(result);
+			String name = doc.getElementById("ProductName").text();
+			String priceS = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl04_ctl01_lblSellingPrice").text();
+			Integer price = Float.valueOf(priceS.substring(1)).intValue() * 100;
+			String desc = doc.select("[itemprop=description]").text();
+			String currency = doc.select(".spanCurrencyLanguageSelector").text().substring(2);
+
+			goods.setGoodsName(name);
+			goods.setShopPrice(price);
+			goods.setGoodsDesc(desc);
+			goods.setCurrency(currency);
+			goods.setGoodsUrl(goodsurl);
+			goods.setCatId(catId);
+
+			//picture
+			Element gallery_ul = doc.getElementById("piThumbList");
+			Elements gallery_a = gallery_ul.select("li>a");
+			for(Element element : gallery_a) {
+				String gHref = element.attr("href");
+				HaiGoodsGallery gallery = new HaiGoodsGallery();
+				gallery.setThumbUrl(gHref);
+				gallery.setImgUrl(gHref);
+				gallery.setImgOriginal(gHref);
+				goodsGalleryList.add(gallery);
+			}
+
+			HaiGoodsGallery gallery = goodsGalleryList.get(0);
+			goods.setGoodsThumb(gallery.getThumbUrl());
+			goods.setGoodsImg(gallery.getImgUrl());
+			goods.setOriginalImg(gallery.getImgOriginal());
 			
-			
-			
-			
-			
-			Bean2Utils.printEntity(goods);
+			//color
+			Element color = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl08_colourDdl");
+			Elements color_option = color.select("option");
+			for(Element element : color_option) {
+				HaiGoodsAttr goodsColor = new HaiGoodsAttr();
+				goodsColor.setAttrValue(element.text());
+				goodsColor.setAttrType("color");
+				goodsColor.setAttrPrice(priceS);
+				goodsAttrList.add(goodsColor);
+			}
+
+			//size
+			Element size = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl10_sizeDdl");
+			Elements size_option = size.select("option");
+			for(Element element : size_option) {
+				HaiGoodsAttr goodsSize = new HaiGoodsAttr();
+				goodsSize.setAttrValue(element.text());
+				goodsSize.setAttrType("size");
+				goodsSize.setAttrPrice(priceS);
+				goodsAttrList.add(goodsSize);
+			}
+
+//			Bean2Utils.printEntity(goods);
 			
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
@@ -211,10 +315,10 @@ public class FlannelsController extends FigoCommonController {
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
 //			String api = "http://localhost:8087/api/goods";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
+			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+			System.out.println(apiresult);
 			
 			
 		}catch(Exception e){
