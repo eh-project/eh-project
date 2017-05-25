@@ -194,6 +194,7 @@
 
 
   </dependencies>
+<<<<<<< HEAD
   
   <build>
 	  	<plugins>
@@ -208,6 +209,21 @@
 		  </configuration>  
 		</plugin> 
 	  </plugins>
+=======
+  <build>
+  <plugins>
+    <plugin>  
+	  <groupId>org.apache.maven.plugins</groupId>  
+	  <artifactId>maven-compiler-plugin</artifactId>  
+	  <version>3.1</version>  
+	  <configuration>  
+	    <source>1.7</source>  
+	    <target>1.7</target>  
+	    <encoding>UTF-8</encoding>
+	  </configuration>  
+	</plugin> 
+  </plugins>
+>>>>>>> 75b31b492b4d4ba9673e4c2ab624ddf56b2bb437
   </build>
   
 </project>
