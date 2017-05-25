@@ -46,8 +46,6 @@ public class IfchicController extends FigoCommonController {
 
 	
 	private static String url = "https://www.ifchic.com";
-	
-	
 
 	@ResponseBody
 	@RequestMapping("/brand")
@@ -61,8 +59,7 @@ public class IfchicController extends FigoCommonController {
 	public String category(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
-			
-
+			this.categorys(request, url);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,54 +71,65 @@ public class IfchicController extends FigoCommonController {
 	private void categorys(HttpServletRequest request,String websiteUrl){
 		String result = "";
 		try {
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), websiteUrl);
-//			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", websiteUrl);
+			//result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), websiteUrl);
+	//		result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", websiteUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(websiteUrl).get(); 
+			//Document doc = Jsoup.parse(result);
+			//得到菜单项
 			Element menu = doc.getElementById("menu");
+			//得到菜单的子列表
 			Elements menuLi = menu.select(">li");
+		//	System.out.println(menuLi);
+			//删掉第一、二个元素
 			menuLi.remove(1);
 			menuLi.remove(0);
+		//	System.out.println("===========================********");
+		//	System.out.println("===========================********");
+		//	System.out.println(menuLi);
 			
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			String parentHref = "";
 			for (Element element : menuLi) {
-				
 				Element parentA = element.select(">a").first();
 				System.out.println(parentA.text());
 				Element adtm_sub = element.select(">div.adtm_sub").first();
-				if(adtm_sub == null) continue;
+				if(adtm_sub == null) 
+					continue;
 				Elements childrenLi = adtm_sub.getElementsByTag("li");
-				if(childrenLi == null) continue;
+				if(childrenLi == null) 
+					continue;
 				parentHref = parentA.attr("href");
-				if(parentHref.indexOf("http") < 0) parentHref = url + parentHref;
+				if(parentHref.indexOf("http") < 0) 
+					parentHref = url + parentHref;
 				HaiCategory cat = new HaiCategory();
 				cat.setCatName(parentA.text());
 				cat.setCategoryUrl(parentHref);
-				cat.setIsShow(true);
-				
+				cat.setIsShow(true);			
 				List<HaiCategory> catList = new ArrayList<HaiCategory>();
 				for (Element element2 : childrenLi) {
 					Elements childrenA = element2.getElementsByTag("a");
-					if(childrenA == null) continue;
-					if(childrenA.text() == null || childrenA.text().equals("")) continue;
+			//		System.out.println("\nchildrenA" + childrenA + "childrenA\n");
+					if(childrenA == null) 
+						continue;
+					if(childrenA.text() == null || childrenA.text().equals("")) 
+						continue;
 					for (Element element3 : childrenA) {
-						System.out.println("======"+element3.text());
-						
+						System.out.println("======" + element3.text());					
 						HaiCategory cat2 = new HaiCategory();
 						cat2.setCatName(element3.text());
-						cat2.setCategoryUrl(element3.attr("href"));
-						cat2.setIsShow(true);
-						
-						catList.add(cat2);
-						
-					}
-					
-					cat.setChildren(catList);
-					
+					//	System.out.println(element3.attr("href") + element3.attr("href").indexOf("http"));
+						if((element3.attr("href").indexOf("http")) < 0)
+							cat2.setCategoryUrl(url + element3.attr("href"));
+						else
+							cat2.setCategoryUrl(element3.attr("href"));
+					//	System.out.println(cat.getCategoryUrl());
+						cat2.setIsShow(true);						
+						catList.add(cat2);						
+					}					
+					cat.setChildren(catList);					
 				}
-				list.add(cat);
-				
+				list.add(cat);			
 			}
 			
 			System.out.println("==========================================");
@@ -134,8 +142,8 @@ public class IfchicController extends FigoCommonController {
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-//			String api = "http://localhost:8087/api/category";
+//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -152,7 +160,7 @@ public class IfchicController extends FigoCommonController {
 		try {
 			HaiCategoryExample example = new HaiCategoryExample();
 			HaiCategoryExample.Criteria c = example.createCriteria();
-			c.andCategoryUrlLike(url+"%");
+			c.andCategoryUrlLike(url+"%"); 
 			List<HaiCategory> listCategory = haiCategoryMapper.selectByExample(example);
 			for (HaiCategory haiCategory : listCategory) {
 				System.out.println(haiCategory.getCategoryUrl());
@@ -171,9 +179,10 @@ public class IfchicController extends FigoCommonController {
 		String result = "";
 		try{
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), websiteUrl);
-			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", goodsurl);
+		//	result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+		//	Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).get();
 			Element product_list = doc.getElementById("product_list");
 			Elements product_li = product_list.select(">li");
 			
@@ -203,15 +212,10 @@ public class IfchicController extends FigoCommonController {
 				Element next_a = pagination_next.getElementsByTag("a").first();
 				if(next_a != null){
 					String href_a = next_a.attr("href");
-//					this.goodsUrl(request, url + href_a, catId);
-//					System.out.println(url + href_a);
+					this.goodsUrl(request, url + href_a, catId);
+					System.out.println(url + href_a);
 				}
-				
 			}
-			
-			
-			
-
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -253,10 +257,11 @@ public class IfchicController extends FigoCommonController {
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 		
 		try{
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+		//	result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+			//Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).get();
 			Element primary_block = doc.getElementById("primary_block");
 			String goodsName = primary_block.select("h1.product_name").first().text();
 			goods.setGoodsName(goodsName);
@@ -334,12 +339,10 @@ public class IfchicController extends FigoCommonController {
 		String goodsurl = "https://www.ifchic.com/110-new-arrivals";
 		IfchicController ac = new IfchicController();
 //		ac.goodsModel(url,1);
-//		ac.categorys(null, goodsurl);
+		ac.categorys(null, goodsurl);
 //		ac.goodsUrl(null, goodsurl,119);
 		
-		goodsurl = "https://www.ifchic.com/rachel-comey/3167-ticklers-high-rise-jeans-dirty-white.html";
-		ac.goodsModel(null, goodsurl, 119);
-	}
-	
-	
+//		goodsurl = "https://www.ifchic.com/rachel-comey/3167-ticklers-high-rise-jeans-dirty-white.html";
+//		ac.goodsModel(null, goodsurl, 119);
+	}	
 }

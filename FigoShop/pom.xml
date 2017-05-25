@@ -7,6 +7,7 @@
     <artifactId>ehproject</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
+  <packaging>war</packaging>
   <groupId>com.ehais</groupId>
   <artifactId>FigoShop</artifactId>
   <version>0.0.1-SNAPSHOT</version>

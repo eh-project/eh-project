@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<#include "/include/BootStrap_Include.html">
+<title>航院微信管理后台</title>
+<link href="/themes/default/admin/index.css" rel="stylesheet" />
+<style type="text/css">
+.layout-split-north{border-bottom:0;}
+.layout-split-west{border-right: 1px solid #2c3e50;}
+.layout-split-west .panel-body{background: #f2f2f2;}
+.panel-body-noheader{border-top-width:0;}
+.panel-header, .panel-body{border-width:0;}
+.panel-body{padding:0;}
+</style>
+</head>
+<body class="easyui-layout" data-options="fit : true,border : false">
+    <div data-options="region:'north',title:'',split:true" style="height:45px;background: #2c3e50;">
+    	<div class="container-fluid">
+    		<div href="/index.php?g=admin&amp;m=index&amp;a=index" class="brand pull-left"> 
+    			<span>航院微信管理中心</span>
+			</div>
+			<div class="pull-left nav_shortcuts">					
+					<a class="btn btn-small btn-warning" href="/" title="网站首页" target="_blank">
+						<i class="fa fa-home"></i>
+					</a>
+					
+					<a class="btn btn-small btn-success" href="javascript:openapp('/index.php?g=portal&amp;m=AdminTerm&amp;a=index','index_termlist','分类管理');" title="分类管理">
+						<i class="fa fa-th"></i>
+					</a>					
+					<a class="btn btn-small btn-info" href="javascript:openapp('/index.php?g=portal&amp;m=AdminPost&amp;a=index','index_postlist','文章管理');" title="文章管理">
+						<i class="fa fa-pencil"></i>
+					</a>
+					<a class="btn btn-small btn-danger" href="javascript:openapp('/index.php?g=admin&amp;m=setting&amp;a=clearcache','index_clearcache','清除缓存');" title="清除缓存">
+						<i class="fa fa-trash-o"></i>
+					</a>					
+					<a class="btn btn-small" href="javascript:openapp('/index.php?g=admin&amp;m=menu&amp;a=index','index_menu','后台菜单');" title="后台菜单">
+						<i class="fa fa-list"></i>
+					</a>				
+			</div>
+			
+			<ul class="nav simplewind-nav pull-right">
+				<li class="light-blue">
+					<a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle">
+   						<i class="fa fa-user"></i>
+   						<span class="user-info">
+							欢迎, <#if session_admin_name??>${session_admin_name }</#if><#if session_admin_id??>【${session_admin_id }】</#if>
+						</span>
+						<i class="fa fa-caret-down"></i>
+					</a>
+					<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
+						<li><a href="javascript:;"><i class="fa fa-cog"></i> 网站信息</a></li>
+						<li><a href="javascript:;"><i class="fa fa-user"></i> 修改信息</a></li>							
+						<li><a href="javascript:;"><i class="fa fa-lock"></i> 修改密码</a></li>							
+						<li><a href="/admin_logout"><i class="fa fa-sign-out"></i> 退出</a></li>
+					</ul>
+				</li>
+			</ul>
+					
+    	</div>
+    </div>
+    <div data-options="region:'west',title:'',split:true" style="width:190px;"><#include "menu.html"></div>
+    <div  data-options="region:'center',title:''"  style="padding:0px;" >
+    	<div id="web_main" class="easyui-tabs" fit="true" ></div>
+    </div>
+    
+</body>
+</html>

@@ -168,7 +168,6 @@ public class FlannelsController extends FigoCommonController {
 	public String goodsAll(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
-
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
@@ -196,14 +195,7 @@ public class FlannelsController extends FigoCommonController {
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
 		try{
-
-			
-			
-			
-			
-			
 			Bean2Utils.printEntity(goods);
-			
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
 			entity.setGoodsGalleryList(goodsGalleryList);
@@ -214,13 +206,11 @@ public class FlannelsController extends FigoCommonController {
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
 //			String api = "http://localhost:8087/api/goods";
 //			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
-			
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return "";
+				
+			}	catch(Exception e){
+				e.printStackTrace();
+			}
+			return "";
 	}
 	
 	

@@ -13,6 +13,7 @@ File Encoding         : 65001
 Date: 2017-05-17 19:36:53
 */
 
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -303,3 +304,15 @@ CREATE TABLE `hai_goods_gallery` (
 -- ----------------------------
 -- Records of hai_goods_gallery
 -- ----------------------------
+
+CREATE TABLE `hai_goods_url` (
+`goods_url_id`  int(11) NOT NULL AUTO_INCREMENT ,
+`cat_id`  int(11) NULL DEFAULT NULL ,
+`goods_url`  varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+PRIMARY KEY (`goods_url_id`)
+)
+ENGINE=InnoDB
+DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
+AUTO_INCREMENT=1
+ROW_FORMAT=COMPACT
+;

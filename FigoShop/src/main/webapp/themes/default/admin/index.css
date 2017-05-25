@@ -1,0 +1,128 @@
+@CHARSET "UTF-8";
+
+#menu-ul .emenu .submenu{
+	display: none;
+}
+#menu-ul .emenu.current .submenu{
+	display: block;
+}
+
+
+.nav-list > li .submenu > li > a {
+    border-bottom: 1px solid #e5e5e5;
+    border-top: 1px solid #fcfcfc;
+    color: #616161;
+    display: block;
+    font-size: 14px;
+    margin: 0;
+    padding: 7px 0 8px 25px;
+    position: relative;
+    background: #f9f9f9;
+}
+
+
+.brand{
+	color:#fff;
+	font-weight:200;
+	text-shadow:0 1px 0 #2c3e50;
+	font-size: 18px;
+	line-height: 40px;
+	height: 40px;
+	margin-right: 30px;
+}
+.nav_shortcuts{
+	line-height: 40px;
+	height: 40px;
+}
+.nav-list ,.nav-list ul ,.nav-list li{
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list > li {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #fcfcfc -moz-use-text-color #e5e5e5;
+    border-image: none;
+    border-style: solid none;
+    border-width: 1px 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    line-height: 20px;
+}
+.nav-list > li:first-child {
+    border-top: 0 none;
+}
+
+.nav-list > li > a {
+    background-color: #f9f9f9;
+    color: #585858;
+    display: block;
+    font-size: 13px;
+    height: 38px;
+    line-height: 36px;
+    padding: 0 16px 0 7px;
+    text-decoration: none;
+    text-shadow: none !important;
+}
+
+li [class^="fa-"], li [class*=" fa-"], .nav-list li [class^="fa-"], .nav-list li [class*=" fa-"] {
+    width: auto;
+}
+.nav-list > li > a > [class*="fa-"]:first-child {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: normal;
+    min-width: 30px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+
+.nav-list > li > a {
+    background-color: #f4f4f4;
+}
+
+.simplewind-nav > li {
+    background: #2e6589 none repeat scroll 0 0;
+    border-left: 1px solid #ddd;
+    line-height: 45px;
+    max-height: 45px;
+    padding: 0;
+    position: relative;
+}
+
+.simplewind-nav > li.light-blue {
+    background: #1dccaa none repeat scroll 0 0;
+}
+
+
+
+
+.nav-list > li a > .arrow {
+    color: #666;
+    display: inline-block;
+    font-size: 18px;
+    height: 14px;
+    line-height: 14px;
+    padding: 0;
+    position: absolute;
+    right: 9px;
+    text-shadow: none;
+    top: 11px;
+    width: 14px !important;
+}
+
+.simplewind-nav > li > a{
+	padding-top: 0;padding-bottom: 0;
+	color: #fff;font-size: 14px;font-weight: 200;
+}
+.simplewind-nav > li > ul{
+	
+}

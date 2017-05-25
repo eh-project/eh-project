@@ -1,5 +1,6 @@
 package com.ehais.figoarticle.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,13 +68,14 @@ public class FarfetchController extends FigoCommonController{
 	
 	
 	private void category(HttpServletRequest request,String categoryUrl){
-		String result = "";
+		String cateUrl = "";
+		//	String result = "";
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
-			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
+			//result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/Farfetch.html");
-			System.out.println(result);
-			Document doc = Jsoup.parse(result);
+			//System.out.println(result);
+			Document doc = Jsoup.connect(categoryUrl).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			Element header_nav = doc.getElementById("header-nav");
 			Elements nav = header_nav.getElementsByTag("nav");
@@ -84,13 +86,19 @@ public class FarfetchController extends FigoCommonController{
 					Element a0 = element2.select(">a").first();
 					cate.setCatName(a0.text());
 					cate.setCategoryUrl(a0.attr("href").indexOf("http") >= 0 ? a0.attr("href") : (url+a0.attr("href")));
+					//得到每一个分类的数据
+					if(cate.getCategoryUrl() != null) {
+						  cateUrl = cate.getCategoryUrl();
+						  
+					}
+				
+					
 					Bean2Utils.printEntity(cate);
 					list.add(cate);
 					
 					System.out.println("////////////////////////");
 				}
 			}
-			
 			
 			System.out.println("==========================================");
 			System.out.println("==========================================");
@@ -105,11 +113,29 @@ public class FarfetchController extends FigoCommonController{
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
 			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			System.out.println(apiresult);
-			
-			
-			
+			System.out.println(apiresult);			
 		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	//得到每个分类的
+	private void getArticlesToSaveFromCategory(String url) {
+		try {
+			Document doc = Jsoup.connect(url).get();
+			Element section = doc.getElementsByTag("section").get(1);
+			//System.out.println("section " + section);
+			Elements articles = section.getElementsByTag("article");
+			for(Element article : articles) {
+				//System.out.println("article"  + article);
+			//	System.out.println("===========");
+				Elements as = article.getElementsByTag("a");
+				if(as != null)
+					for(Element a : as) {
+						System.out.println("a====== " + a);
+					}
+			}
+		}catch(IOException e)  {
 			e.printStackTrace();
 		}
 	}
@@ -143,15 +169,22 @@ public class FarfetchController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
-			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", goodsurl);
-//			result = FSO.ReadFileName("E:/temp/Farfetch.html");
-			Document doc = Jsoup.parse(result);
-			List<String> list = new ArrayList<String>();
+			//result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			//	result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", goodsurl);
+			//System.out.println("result = " + result);
+			//result = FSO.ReadFileName("E:/temp/Farfetch.html");
+			Document doc = Jsoup.connect(goodsurl).get();
+			//Document doc = Jsoup.parse(result);
+		//	System.out.println("doc = " + doc);
 			Elements section = doc.getElementsByTag("section");
 			for (Element element : section) {
 				if(element.attr("class") != null && !element.attr("class").equals("") && !element.attr("class").equals("footer")){
-					System.out.println(element.attr("class"));
+					Elements articles = element.getElementsByTag("article");
+					System.out.println("articles" + articles);
+					for(Element article : articles) {
+						System.out.println("article" + article);
+					}
+					//System.out.println(element.attr("class"));
 				}
 				
 			}
@@ -198,11 +231,6 @@ public class FarfetchController extends FigoCommonController{
 		goods.setCatId(catId);
 		try{
 
-			
-			
-			
-			
-			
 			Bean2Utils.printEntity(goods);
 			
 			entity.setGoods(goods);
@@ -215,26 +243,20 @@ public class FarfetchController extends FigoCommonController{
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
 //			String api = "http://localhost:8087/api/goods";
 //			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
-			
-			
+					
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return "";
 	}
 	
-	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.farfetch.cn/cn/shopping/women/items.aspx";
 		FarfetchController ac = new FarfetchController();
 //		ac.goodsModel(url,1);
-		
 		goodsurl = "https://www.farfetch.cn/cn/shopping/women/clothing-1/items.aspx?ffref=hd_snav";
-		ac.goodsUrl(null, goodsurl, 1);
-//		ac.category(null, goodsurl);
-		
+	//	ac.goodsUrl(null, goodsurl, 1);
+		ac.getArticlesToSaveFromCategory("https://www.farfetch.cn/cn/sets/women/new-in-this-week-eu-women.aspx?ffref=hd_mnav");
+//		ac.category(null, goodsurl);	
 	}
-	
-	
 }

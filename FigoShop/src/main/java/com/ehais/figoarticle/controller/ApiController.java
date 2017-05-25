@@ -78,20 +78,24 @@ public class ApiController extends FigoCommonController {
 		HaiCategoryExample example = new HaiCategoryExample();
 		HaiCategoryExample.Criteria c = example.createCriteria();
 		c.andCatNameEqualTo(haiCategory.getCatName().trim());
-		if(haiCategory.getCategoryUrl() != null && !haiCategory.getCategoryUrl().equals(""))c.andCategoryUrlEqualTo(haiCategory.getCategoryUrl().trim());
+		if(haiCategory.getCategoryUrl() != null && !haiCategory.getCategoryUrl().equals(""))
+			c.andCategoryUrlEqualTo(haiCategory.getCategoryUrl().trim());
 
 		haiCategory.setParentId(parentId);
 		
 		List<HaiCategory> listModel = haiCategoryMapper.selectByExample(example);
+			//如果数据库不存在这样的分类名，并且 url 不存在，则将分类插入到数据库中
 		if(listModel == null || listModel.size() == 0){
 			haiCategoryMapper.insertSelective(haiCategory);
 			catId = haiCategory.getCatId();
+			//否则更新数据库的信息，将 catId 设置为 null， 不改变它的值
 		}else{
 			catId = listModel.get(0).getCatId();
 			haiCategory.setCatId(null);
 			haiCategoryMapper.updateByExampleSelective(haiCategory, example);
 		}
 		
+		//如果这个分类还有子分类，在递归遍历分类
 		if(haiCategory.getChildren()!=null && haiCategory.getChildren().size()>0){
 			for (HaiCategory haiCategory2 : haiCategory.getChildren()) {
 				this.saveCategory(haiCategory2, catId);
@@ -145,15 +149,16 @@ public class ApiController extends FigoCommonController {
 			long count = haiGoodsMapper.countByExample(example);
 			
 			if(count == 0){
+				//如果还没存在，就存进数据库
 				haiGoodsMapper.insertSelective(goods);
 			}else{
+				//否则更新并把数据
 				goods.setGoodsId(null);
 				haiGoodsMapper.updateByExampleSelective(goods, example);
 				List<HaiGoods> listG = haiGoodsMapper.selectByExample(example);
 				goods.setGoodsId(listG.get(0).getGoodsId());; 
 			}
 
-			
 			HaiGoodsAttrExample exampleAttr = new HaiGoodsAttrExample();
 			exampleAttr.createCriteria().andGoodsIdEqualTo(goods.getGoodsId());
 			haiGoodsAttrMapper.deleteByExample(exampleAttr);
@@ -163,7 +168,6 @@ public class ApiController extends FigoCommonController {
 				haiGoodsAttr.setGoodsId(goods.getGoodsId());						
 				haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
 			}
-			
 			
 			List<HaiGoodsGallery> galleryList = entity.getGoodsGalleryList();
 			HaiGoodsGalleryExample exampleGallery = new HaiGoodsGalleryExample();
@@ -179,7 +183,4 @@ public class ApiController extends FigoCommonController {
 		}
 		return "";
 	}
-	
-	
-	
 }

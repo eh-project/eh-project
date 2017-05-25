@@ -31,7 +31,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Controller
-@RequestMapping("/lidiashopping")
+@RequestMapping("/Lindelepalais")
 public class LindelepalaisController extends FigoCommonController{
 
 	private static String url = "https://www.lidiashopping.it";
