@@ -172,12 +172,18 @@ public class FlannelsController extends FigoCommonController {
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
 		System.out.println("请求地址："+goodsurl);
+		if (goodsurl.endsWith("all") || goodsurl.endsWith("men")) {
+			System.out.println("xxxxxx");
+			return "";
+		}
 		String result = "";
 		try{
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
-			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+//			System.out.println("get result");
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).get();
 			Element product_list = doc.select(".s-productscontainer2").first();
 			if (product_list == null) {
 				return "";
@@ -206,9 +212,10 @@ public class FlannelsController extends FigoCommonController {
 
 			//获取下一页
 			Element page = doc.select("a.NextLink").first();
-			if(page != null){
+			if(page != null ){
 				String href_a = page.attr("href");
 				if(href_a.indexOf("http")<0) href_a = url + href_a;
+				if (href_a != goodsurl)
 				this.goodsUrl(request, href_a, catId);
 			}
 
@@ -226,6 +233,7 @@ public class FlannelsController extends FigoCommonController {
 	public String goodsAll(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
+
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
@@ -251,12 +259,13 @@ public class FlannelsController extends FigoCommonController {
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 
 		try{
-			//Bean2Utils.printEntity(goods);
-			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
-			Document doc = Jsoup.parse(result);
+//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).get();
 			String name = doc.getElementById("ProductName").text();
 			String priceS = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl04_ctl01_lblSellingPrice").text();
-			Integer price = Float.valueOf(priceS.substring(1)).intValue() * 100;
+			String priceL = priceS.replace(",","");
+			Integer price = Float.valueOf(priceL.substring(1)).intValue() * 100;
 			String desc = doc.select("[itemprop=description]").text();
 			String currency = doc.select(".spanCurrencyLanguageSelector").text().substring(2);
 
@@ -298,6 +307,7 @@ public class FlannelsController extends FigoCommonController {
 			//size
 			Element size = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl10_sizeDdl");
 			Elements size_option = size.select("option");
+			size_option.remove(0);
 			for(Element element : size_option) {
 				HaiGoodsAttr goodsSize = new HaiGoodsAttr();
 				goodsSize.setAttrValue(element.text());
@@ -307,7 +317,7 @@ public class FlannelsController extends FigoCommonController {
 			}
 
 //			Bean2Utils.printEntity(goods);
-
+			
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
 			entity.setGoodsGalleryList(goodsGalleryList);
@@ -317,18 +327,39 @@ public class FlannelsController extends FigoCommonController {
 			paramsMap.put("json", jsonObject.toString());
 			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
 //			String api = "http://localhost:8087/api/goods";
-
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			System.out.println(apiresult);
 			
 			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return "";
-
 	}
-	
+
+	@ResponseBody
+	@RequestMapping("/attr")
+	public String attr(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
+
+		try {
+
+			HaiGoodsAttrExample example = new HaiGoodsAttrExample();
+			List<HaiGoodsAttr> listGoodsAttr = haiGoodsAttrMapper.selectByExampleWithBLOBs(example);
+			for (HaiGoodsAttr haiGoodsAttr : listGoodsAttr) {
+				HaiGoodsExample example1 = new HaiGoodsExample();
+				HaiGoodsExample.Criteria c = example1.createCriteria();
+				c.andGoodsIdEqualTo(haiGoodsAttr.getGoodsId());
+				List<HaiGoods> goodsList = haiGoodsMapper.selectByExample(example1);
+				if (!goodsList.isEmpty())
+				System.out.println(goodsList);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return "";
+	}
+
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";
