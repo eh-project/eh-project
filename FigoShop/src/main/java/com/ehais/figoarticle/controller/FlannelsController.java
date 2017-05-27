@@ -251,9 +251,7 @@ public class FlannelsController extends FigoCommonController {
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 
 		try{
-<<<<<<< HEAD
-			Bean2Utils.printEntity(goods);
-=======
+			//Bean2Utils.printEntity(goods);
 			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 			Document doc = Jsoup.parse(result);
 			String name = doc.getElementById("ProductName").text();
@@ -309,8 +307,7 @@ public class FlannelsController extends FigoCommonController {
 			}
 
 //			Bean2Utils.printEntity(goods);
-			
->>>>>>> 75b31b492b4d4ba9673e4c2ab624ddf56b2bb437
+
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
 			entity.setGoodsGalleryList(goodsGalleryList);
@@ -320,14 +317,7 @@ public class FlannelsController extends FigoCommonController {
 			paramsMap.put("json", jsonObject.toString());
 			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
 //			String api = "http://localhost:8087/api/goods";
-<<<<<<< HEAD
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-				
-			}	catch(Exception e){
-				e.printStackTrace();
-			}
-			return "";
-=======
+
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -336,7 +326,7 @@ public class FlannelsController extends FigoCommonController {
 			e.printStackTrace();
 		}
 		return "";
->>>>>>> 75b31b492b4d4ba9673e4c2ab624ddf56b2bb437
+
 	}
 	
 	

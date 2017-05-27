@@ -103,8 +103,8 @@ public class HrPositionServiceImpl implements HrPositionService {
 		rm.setCode(0);
 		// 按条件返回职位数据
 		HaiHrPositionExample example = new HaiHrPositionExample();
-		example.setStart((param.getPage() - 1 ) * param.getLen());
-		example.setLen(param.getLen());
+		//example.setStart((param.getPage() - 1 ) * param.getLen());
+		//example.setLen(param.getLen());
 		HaiHrPositionExample.Criteria criteria = example.createCriteria();
 		if(hr_source != null && !hr_source.equals("")) criteria.andHrSourceEqualTo(hr_source);
 		
