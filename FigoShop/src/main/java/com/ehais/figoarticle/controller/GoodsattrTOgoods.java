@@ -10,14 +10,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Created by stephen on 5/27/17.
  */
 @Controller
-public class Testservice {
+public class GoodsattrTOgoods {
     @Autowired
     private GoodiesAttr goodiesAttr;
 
-    @RequestMapping("/testservice")
+    @RequestMapping("/GoodsattrTOgoods")
     @ResponseBody
-    public void test(){
+    public String transfer(){
         goodiesAttr.transfer();
+        return "successed";
     }
 
 }
