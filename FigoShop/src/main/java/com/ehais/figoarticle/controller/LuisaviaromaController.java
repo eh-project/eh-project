@@ -34,7 +34,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/luisaviaroma")
 public class LuisaviaromaController extends FigoCommonController{
 	private static String url = "http://www.luisaviaroma.com/";
-	
+	private int websiteId = 11;
 
 
 	@ResponseBody
@@ -190,6 +190,7 @@ public class LuisaviaromaController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			

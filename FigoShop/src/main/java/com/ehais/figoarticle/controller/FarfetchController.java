@@ -41,7 +41,7 @@ public class FarfetchController extends FigoCommonController{
 
 
 	private static String url = "https://www.farfetch.cn";
-
+	private int websiteId = 5;
 
 
 	@ResponseBody
@@ -86,6 +86,7 @@ public class FarfetchController extends FigoCommonController{
 					Element a0 = element2.select(">a").first();
 					cate.setCatName(a0.text());
 					cate.setCategoryUrl(a0.attr("href").indexOf("http") >= 0 ? a0.attr("href") : (url+a0.attr("href")));
+					cate.setWebsiteId(websiteId);
 					//得到每一个分类的数据
 					if(cate.getCategoryUrl() != null) {
 						  cateUrl = cate.getCategoryUrl();
@@ -229,6 +230,7 @@ public class FarfetchController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			Bean2Utils.printEntity(goods);

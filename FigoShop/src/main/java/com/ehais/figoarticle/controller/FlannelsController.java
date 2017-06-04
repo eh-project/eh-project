@@ -24,7 +24,7 @@ import java.util.Map;
 @RequestMapping("/flannels")
 public class FlannelsController extends FigoCommonController {
 	private static String url = "http://www.flannels.com";
-	
+	private int websiteId = 2;
 
 
 	@ResponseBody
@@ -84,7 +84,7 @@ public class FlannelsController extends FigoCommonController {
 				topcat.setCatName(sex.text());
 				topcat.setCategoryUrl(sexHref);
 				topcat.setIsShow(true);
-
+				topcat.setWebsiteId(websiteId);
 				List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
 				String parentHref = "";
 				for (Element element1 : mplevel) {
@@ -99,6 +99,7 @@ public class FlannelsController extends FigoCommonController {
 					cat2.setCatName(parentA.text());
 					cat2.setCategoryUrl(parentHref);
 					cat2.setIsShow(true);
+					cat2.setWebsiteId(websiteId);
 					topcatlist.add(cat2);
 
 					List<HaiCategory> catlist = new ArrayList<HaiCategory>();
@@ -112,7 +113,7 @@ public class FlannelsController extends FigoCommonController {
 						cat3.setCatName(childrenA.text());
 						cat3.setCategoryUrl(childrenHref);
 						cat3.setIsShow(true);
-
+						cat3.setWebsiteId(websiteId);
 						catlist.add(cat3);
 					}
 
@@ -276,6 +277,7 @@ public class FlannelsController extends FigoCommonController {
 			goods.setCurrency(currency);
 			goods.setGoodsUrl(goodsurl);
 			goods.setCatId(catId);
+			goods.setWebsiteId(websiteId);
 
 			//picture
 			Element gallery_ul = doc.getElementById("piThumbList");

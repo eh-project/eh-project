@@ -34,7 +34,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/theclutcher")
 public class TheclutcherController extends FigoCommonController{
 	private static String url = "www.theclutcher.com";
-	
+	private int websiteId = 22;
 
 
 	@ResponseBody
@@ -190,6 +190,7 @@ public class TheclutcherController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			

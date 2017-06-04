@@ -42,7 +42,7 @@ import net.sf.json.JSONObject;
 public class TopshopController extends FigoCommonController{
 	private static String url = "http://www.topshop.com/";
 	private int size = 0;
-	private int websiteId = 23;
+	private int websiteId = 3;
 	
 	@ResponseBody
 	@RequestMapping("/brand")
@@ -282,6 +282,7 @@ public class TopshopController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		
 		try{
 					//my add
@@ -295,9 +296,6 @@ public class TopshopController extends FigoCommonController{
 						return null;
 					String goodsName = doc.select(".product_details.pull-right").first().getElementsByTag("h1").first().text();
 					goods.setGoodsName(goodsName);
-					goods.setCatId(catId);
-					goods.setGoodsUrl(goodsurl);
-					goods.setWebsiteId(websiteId);
 					
 					Element price = detail.getElementsByClass("product_prices").get(0);
 					System.out.println(price.text());

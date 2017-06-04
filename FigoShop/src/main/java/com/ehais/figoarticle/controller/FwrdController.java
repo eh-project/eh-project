@@ -28,7 +28,7 @@ import java.util.Map;
 @RequestMapping("/fwrd")
 public class FwrdController extends FigoCommonController{
 	private static String url = "http://www.fwrd.com";
-	
+	private int websiteId = 6;
 
 
 	@ResponseBody
@@ -88,7 +88,7 @@ public class FwrdController extends FigoCommonController{
 				topcat.setCatName(sex.text());
 				topcat.setCategoryUrl(sexHref);
 				topcat.setIsShow(true);
-
+				topcat.setWebsiteId(websiteId);
 				List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
 				Elements pageitem = doc.select(".page_item");
 				for (Element element1 : pageitem) {
@@ -100,6 +100,7 @@ public class FwrdController extends FigoCommonController{
 					cat2.setCatName(item_a.text());
 					cat2.setCategoryUrl(itemHref);
 					cat2.setIsShow(true);
+					cat2.setWebsiteId(websiteId);
 					topcatlist.add(cat2);
 
 					Element sub_menu = element1.select(".sub_menu").first();
@@ -115,6 +116,7 @@ public class FwrdController extends FigoCommonController{
 							cat3.setCatName(aName);
 							cat3.setCategoryUrl(aHref);
 							cat3.setIsShow(true);
+							cat3.setWebsiteId(websiteId);
 							catlist.add(cat3);
 						}
 
@@ -246,6 +248,7 @@ public class FwrdController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			

@@ -45,7 +45,7 @@ public class LidiashoppingController extends FigoCommonController{
 
 	private static String url = "https://www.lidiashopping.it";
 	private static String url2 = "https://lidiashopping.it";
-	
+	private int websiteId = 9;
 	
 	@ResponseBody
 	@RequestMapping("/brand")
@@ -90,6 +90,7 @@ public class LidiashoppingController extends FigoCommonController{
 				cat.setCatName(a.text());
 				cat.setCategoryUrl(a.attr("href"));
 				cat.setIsShow(true);
+				cat.setWebsiteId(websiteId);
 				System.out.println(cid);
 				Element dId = doc.getElementById("lidia-"+cid);
 				System.out.println(dId.html());
@@ -102,7 +103,7 @@ public class LidiashoppingController extends FigoCommonController{
 					cat2.setCatName(a2.text());
 					cat2.setCategoryUrl(a2.attr("href"));
 					cat2.setIsShow(true);
-					
+					cat2.setWebsiteId(websiteId);
 					List<HaiCategory> list3 = new ArrayList<HaiCategory>();
 					Elements cli2 = element2.select(">ul").first().select(">li");
 					for (Element element3 : cli2) {
@@ -112,7 +113,7 @@ public class LidiashoppingController extends FigoCommonController{
 						cat3.setCatName(a3.text());
 						cat3.setCategoryUrl(a3.attr("href"));
 						cat3.setIsShow(true);
-						
+						cat3.setWebsiteId(websiteId);
 						list3.add(cat3);
 					}
 					cat2.setChildren(list3);
@@ -236,6 +237,7 @@ public class LidiashoppingController extends FigoCommonController{
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		NumberFormat nf1 = NumberFormat.getInstance();
 		try{
 			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);

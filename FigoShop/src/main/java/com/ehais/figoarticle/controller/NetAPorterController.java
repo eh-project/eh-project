@@ -46,7 +46,7 @@ public class NetAPorterController extends FigoCommonController {
 	
 	private static String url = "https://www.net-a-porter.com/";
 	
-	
+	private int websiteId = 15;
 	
 	@ResponseBody
 	@RequestMapping("/brand")
@@ -77,7 +77,7 @@ public class NetAPorterController extends FigoCommonController {
 				cat.setCatName(ap.text());
 				cat.setCategoryUrl(url+ap.attr("href"));
 				cat.setIsShow(true);
-				
+				cat.setWebsiteId(websiteId);
 				Elements li = element.select(">div").first().select(">div").first().select(">div").get(1).getElementsByTag("ul").first().getElementsByTag("li");
 				
 				List<HaiCategory> catList = new ArrayList<HaiCategory>();
@@ -88,7 +88,7 @@ public class NetAPorterController extends FigoCommonController {
 					cat2.setCatName(ea.text());
 					cat2.setCategoryUrl(url+ea.attr("href"));
 					cat2.setIsShow(true);
-					
+					cat2.setWebsiteId(websiteId);
 					catList.add(cat2);
 				}
 				cat.setChildren(catList);
@@ -221,6 +221,7 @@ public class NetAPorterController extends FigoCommonController {
 			String goodsName = main_product.getElementsByClass("product-name").text();
 			goods.setGoodsName(goodsName);
 			goods.setCatId(catId);
+			goods.setWebsiteId(websiteId);
 			
 			Element product_price = main_product.getElementsByClass("product-price").first();
 			String product_price_json = StringEscapeUtils.unescapeJava(product_price.attr("price")) ;
