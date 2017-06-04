@@ -82,9 +82,10 @@ public class TopshopController extends FigoCommonController{
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			Element ulNav = doc.getElementById("nav_catalog_menu");
 			//System.out.println(ulNav);
-			Elements lis = ulNav.getElementsByTag("li");
-			System.out.println("test");
+			Elements lis = ulNav.select(">li");
 			//System.out.println(lis);
+			
+			System.out.println(lis);
 			
 			String parentHref = "";
 			for(Element element : lis) {
@@ -112,11 +113,10 @@ public class TopshopController extends FigoCommonController{
 						cat2.setCatName(li.text());
 						cat2.setCategoryUrl(a.attr("href"));
 						cat2.setIsShow(true);
-						cat2.setParentId(cat.getParentId());
 						catList.add(cat2);
 					}
 					cat.setChildren(catList);
-				}
+				}			
 				list.add(cat);
 			}
 			
@@ -133,7 +133,7 @@ public class TopshopController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
 		//	String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8087/api/category";
+			String api = "http://localhost:8080/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -181,6 +181,8 @@ public class TopshopController extends FigoCommonController{
 			if(divProduct == null)
 			{
 				divProduct = doc.select(".products.col4").first();
+				if(divProduct == null)
+					return "";
 			}
 			Elements rows = divProduct.getElementsByClass("row");
 			List<String> list = new ArrayList<String>();
@@ -230,7 +232,7 @@ public class TopshopController extends FigoCommonController{
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = "http://localhost:8080/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
@@ -289,7 +291,7 @@ public class TopshopController extends FigoCommonController{
 					Element detail = doc.getElementById("product-detail");
 					//System.out.println(detail);
 					if(detail == null)
-						return null;
+						return "";
 					String goodsName = doc.select(".product_details.pull-right").first().getElementsByTag("h1").first().text();
 					goods.setGoodsName(goodsName);
 					goods.setCatId(catId);
@@ -297,6 +299,7 @@ public class TopshopController extends FigoCommonController{
 					
 					Element price = detail.getElementsByClass("product_prices").get(0);
 					System.out.println(price.text());
+					
 					Integer shopPrice = (int)(Float.parseFloat(price.text().substring(8, price.text().length() - 1))* 100);
 					String currency = price.text().substring(7,8);
 					goods.setShopPrice(shopPrice);
@@ -304,8 +307,9 @@ public class TopshopController extends FigoCommonController{
 					
 					Element productRightAjax = detail.getElementById("productInfo");
 					Element color = productRightAjax.getElementsByClass("product_colour").first();
+					Element goodcolor = color.getElementsByTag("span").first();
 					HaiGoodsAttr goodsColor = new HaiGoodsAttr();
-					goodsColor.setAttrValue(color.text());
+					goodsColor.setAttrValue(goodcolor.text());
 					goodsColor.setAttrType("color");
 					goodsColor.setAttrPrice(shopPrice.toString());
 					goodsAttrList.add(goodsColor);
@@ -313,6 +317,8 @@ public class TopshopController extends FigoCommonController{
 					
 					Element field = detail.getElementsByClass("field").first();
 					Elements lables = field.getElementsByTag("label");
+					System.out.println(lables);
+					String attrGroup;
 					for(Element lable : lables) {
 						if(lable != null) {
 							HaiGoodsAttr goodsAttr1 = new HaiGoodsAttr();
@@ -320,44 +326,49 @@ public class TopshopController extends FigoCommonController{
 							goodsAttr1.setAttrType("size");
 							goodsAttr1.setAttrPrice(shopPrice.toString());
 							goodsAttrList.add(goodsAttr1);
+							attrGroup = "颜色:" + goodcolor.text() + "|" + "尺寸:" + lable.text();
+							goods.setAttrGroup(attrGroup.trim());
+							
+							Element productDesc = productRightAjax.getElementsByTag("p").first();
+							goods.setGoodsDesc(productDesc.html());
+							
+							
+							Element imgUl = detail.getElementsByClass("product_hero__wrapper").first();
+							Elements imgLis = imgUl.getElementsByTag("li");
+							for(Element imgLi : imgLis) {
+								Element img =imgLi.getElementsByTag("a").first();
+								String imgUrl = img.getElementsByTag("img").first().attr("src");
+								String thumbUrl = img.attr("href");
+								HaiGoodsGallery gallery = new HaiGoodsGallery();
+								gallery.setThumbUrl(thumbUrl);
+								gallery.setImgUrl(imgUrl);
+								gallery.setImgOriginal(imgUrl);
+								goodsGalleryList.add(gallery);			
+							}
+							
+							if(goodsGalleryList.size() > 0) {
+								HaiGoodsGallery gallery = goodsGalleryList.get(0);
+								goods.setGoodsThumb(gallery.getThumbUrl());
+								goods.setGoodsImg(gallery.getImgUrl());
+								goods.setOriginalImg(gallery.getImgOriginal());
+							}
+							
+				//			Bean2Utils.printEntity(goods);	
+							entity.setGoods(goods);
+							entity.setGoodsAttrList(goodsAttrList);
+							entity.setGoodsGalleryList(goodsGalleryList);
+							JSONObject jsonObject = JSONObject.fromObject(entity);
+							System.out.println(jsonObject.toString());
+							Map<String, String> paramsMap = new HashMap<String,String>();
+							paramsMap.put("json", jsonObject.toString());
+				//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+							String api = "http://localhost:8080/api/goods";
+							String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+							System.out.println(apiresult);
+							goodsAttrList.clear();
 						}
 					}
 					
-					Element productDesc = productRightAjax.getElementsByTag("p").first();
-					goods.setGoodsDesc(productDesc.html());
-					
-					Element imgUl = detail.getElementsByClass("product_hero__wrapper").first();
-					Elements imgLis = imgUl.getElementsByTag("li");
-					for(Element imgLi : imgLis) {
-						Element img =imgLi.getElementsByTag("a").first();
-						String imgUrl = img.getElementsByTag("img").first().attr("src");
-						String thumbUrl = img.attr("href");
-						HaiGoodsGallery gallery = new HaiGoodsGallery();
-						gallery.setThumbUrl(thumbUrl);
-						gallery.setImgUrl(imgUrl);
-						gallery.setImgOriginal(imgUrl);
-						goodsGalleryList.add(gallery);			
-					}
-					
-					if(goodsGalleryList.size() > 0) {
-						HaiGoodsGallery gallery = goodsGalleryList.get(0);
-						goods.setGoodsThumb(gallery.getThumbUrl());
-						goods.setGoodsImg(gallery.getImgUrl());
-						goods.setOriginalImg(gallery.getImgOriginal());
-					}
-					
-		//			Bean2Utils.printEntity(goods);	
-					entity.setGoods(goods);
-					entity.setGoodsAttrList(goodsAttrList);
-					entity.setGoodsGalleryList(goodsGalleryList);
-					JSONObject jsonObject = JSONObject.fromObject(entity);
-					System.out.println(jsonObject.toString());
-					Map<String, String> paramsMap = new HashMap<String,String>();
-					paramsMap.put("json", jsonObject.toString());
-		//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
-					String api = "http://localhost:8087/api/goods";
-					String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-					System.out.println(apiresult);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
