@@ -9,6 +9,7 @@ import com.ehais.figoarticle.mapper.HaiGoodsAttrMapper;
 import com.ehais.figoarticle.mapper.HaiGoodsGalleryMapper;
 import com.ehais.figoarticle.mapper.HaiGoodsMapper;
 import com.ehais.figoarticle.mapper.HaiGoodsUrlMapper;
+import com.ehais.figoarticle.mapper.HaiWebsiteMapper;
 
 public class FigoCommonController extends CommonController{
 
@@ -24,6 +25,8 @@ public class FigoCommonController extends CommonController{
 	protected HaiGoodsAttrMapper haiGoodsAttrMapper;
 	@Autowired
 	protected HaiGoodsGalleryMapper haiGoodsGalleryMapper;
+	@Autowired
+	protected HaiWebsiteMapper haiWebsiteMapper;
 	
 	
 }

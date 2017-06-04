@@ -42,6 +42,7 @@ import net.sf.json.JSONObject;
 public class TopshopController extends FigoCommonController{
 	private static String url = "http://www.topshop.com/";
 	private int size = 0;
+	private int websiteId = 23;
 	
 	@ResponseBody
 	@RequestMapping("/brand")
@@ -101,6 +102,7 @@ public class TopshopController extends FigoCommonController{
 				cat.setCatName(parentA.text());
 				cat.setCategoryUrl(parentHref);
 				cat.setIsShow(true);
+				cat.setWebsiteId(websiteId);
 				List<HaiCategory> catList = new ArrayList<HaiCategory>();
 				for(Element ul : ulColumns) {
 					Elements liCategorys = ul.getElementsByTag("li");
@@ -113,6 +115,7 @@ public class TopshopController extends FigoCommonController{
 						cat2.setCategoryUrl(a.attr("href"));
 						cat2.setIsShow(true);
 						cat2.setParentId(cat.getParentId());
+						cat2.setWebsiteId(websiteId);
 						catList.add(cat2);
 					}
 					cat.setChildren(catList);
@@ -294,6 +297,7 @@ public class TopshopController extends FigoCommonController{
 					goods.setGoodsName(goodsName);
 					goods.setCatId(catId);
 					goods.setGoodsUrl(goodsurl);
+					goods.setWebsiteId(websiteId);
 					
 					Element price = detail.getElementsByClass("product_prices").get(0);
 					System.out.println(price.text());
@@ -303,7 +307,7 @@ public class TopshopController extends FigoCommonController{
 					goods.setCurrency(currency);
 					
 					Element productRightAjax = detail.getElementById("productInfo");
-					Element color = productRightAjax.getElementsByClass("product_colour").first();
+					Element color = productRightAjax.getElementsByClass("product_colour").first().getElementsByTag("span").first();
 					HaiGoodsAttr goodsColor = new HaiGoodsAttr();
 					goodsColor.setAttrValue(color.text());
 					goodsColor.setAttrType("color");
@@ -355,7 +359,7 @@ public class TopshopController extends FigoCommonController{
 					Map<String, String> paramsMap = new HashMap<String,String>();
 					paramsMap.put("json", jsonObject.toString());
 		//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
-					String api = "http://localhost:8087/api/goods";
+					String api = "http://localhost:8087/api/goodsAttr";
 					String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 					System.out.println(apiresult);
 		}catch(Exception e){

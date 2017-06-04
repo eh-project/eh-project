@@ -1,24 +1,17 @@
 package com.ehais.figoarticle.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.ehais.controller.CommonController;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ehais.figoarticle.mapper.HaiBrandMapper;
-import com.ehais.figoarticle.mapper.HaiCategoryMapper;
-import com.ehais.figoarticle.mapper.HaiGoodsAttrMapper;
-import com.ehais.figoarticle.mapper.HaiGoodsGalleryMapper;
-import com.ehais.figoarticle.mapper.HaiGoodsMapper;
-import com.ehais.figoarticle.mapper.HaiGoodsUrlMapper;
 import com.ehais.figoarticle.model.HaiCategory;
 import com.ehais.figoarticle.model.HaiCategoryExample;
 import com.ehais.figoarticle.model.HaiGoods;
@@ -64,7 +57,7 @@ public class ApiController extends FigoCommonController {
 			Gson gson = new Gson();
 			List<HaiCategory> list = gson.fromJson(json, new TypeToken<List<HaiCategory>>(){}.getType());  
 			for (HaiCategory haiCategory : list) {
-				this.saveCategory(haiCategory, 0);
+				this.saveCategory(haiCategory,0);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -145,37 +138,70 @@ public class ApiController extends FigoCommonController {
 			HaiGoodsEntity entity = gson.fromJson(json, HaiGoodsEntity.class);
 			HaiGoodsWithBLOBs goods = entity.getGoods();
 			HaiGoodsExample example = new HaiGoodsExample();
-			example.createCriteria().andGoodsUrlEqualTo(goods.getGoodsUrl());
+			example.createCriteria().andGoodsUrlEqualTo(goods.getGoodsUrl()).andFidEqualTo(0);
 			long count = haiGoodsMapper.countByExample(example);
 			
 			if(count == 0){
 				//如果还没存在，就存进数据库
 				haiGoodsMapper.insertSelective(goods);
-			}else{
+			}
+			else{
 				//否则更新并把数据
-				goods.setGoodsId(null);
-				haiGoodsMapper.updateByExampleSelective(goods, example);
-				List<HaiGoods> listG = haiGoodsMapper.selectByExample(example);
-				goods.setGoodsId(listG.get(0).getGoodsId());; 
+//				goods.setGoodsId(null);
+//				haiGoodsMapper.updateByExampleSelective(goods, example);
+//				List<HaiGoods> listG = haiGoodsMapper.selectByExample(example);
+//				goods.setGoodsId(listG.get(0).getGoodsId());
+				HaiGoods haigoods = haiGoodsMapper.selectByExample(example).get(0);
+				if(haigoods.getAttrGroup().equals(goods.getAttrGroup())){
+					goods.setGoodsId(null);
+					haiGoodsMapper.updateByExampleSelective(goods, example);
+					List<HaiGoods> listG = haiGoodsMapper.selectByExample(example);
+					goods.setGoodsId(listG.get(0).getGoodsId());
+				}
+				else{
+					example.clear();
+					example.createCriteria().andGoodsUrlEqualTo(goods.getGoodsUrl()).andAttrGroupEqualTo(goods.getAttrGroup());
+					if(haiGoodsMapper.countByExample(example)!=0){
+						goods.setGoodsId(null);
+						haiGoodsMapper.updateByExampleSelective(goods, example);
+						List<HaiGoods> listG = haiGoodsMapper.selectByExample(example);
+						goods.setGoodsId(listG.get(0).getGoodsId());
+					}
+					else{
+						Integer tempgoods =(int) (long) haigoods.getGoodsId();
+						goods.setFid(tempgoods);
+						haiGoodsMapper.insertSelective(goods);
+					}
+				}
 			}
-
-			HaiGoodsAttrExample exampleAttr = new HaiGoodsAttrExample();
-			exampleAttr.createCriteria().andGoodsIdEqualTo(goods.getGoodsId());
-			haiGoodsAttrMapper.deleteByExample(exampleAttr);
 			
-			List<HaiGoodsAttr> goodsAttrList = entity.getGoodsAttrList();
-			for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
-				haiGoodsAttr.setGoodsId(goods.getGoodsId());						
-				haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
-			}
-			
-			List<HaiGoodsGallery> galleryList = entity.getGoodsGalleryList();
-			HaiGoodsGalleryExample exampleGallery = new HaiGoodsGalleryExample();
-			exampleGallery.createCriteria().andGoodsIdEqualTo(goods.getGoodsId());
-			haiGoodsGalleryMapper.deleteByExample(exampleGallery);
-			for (HaiGoodsGallery haiGoodsGallery : galleryList) {
-				haiGoodsGallery.setGoodsId(goods.getGoodsId());
-				haiGoodsGalleryMapper.insertSelective(haiGoodsGallery);
+			if(goods.getFid() == 0) {
+				System.out.println("test= ");
+				HaiGoodsAttrExample exampleAttr = new HaiGoodsAttrExample();
+				exampleAttr.createCriteria().andGoodsIdEqualTo(goods.getGoodsId());
+				haiGoodsAttrMapper.deleteByExample(exampleAttr);
+				
+				List<HaiGoodsAttr> goodsAttrList = entity.getGoodsAttrList();
+				for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
+					haiGoodsAttr.setGoodsId(goods.getGoodsId());						
+					haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
+				}
+				
+				
+				List<HaiGoodsGallery> galleryList = entity.getGoodsGalleryList();
+				HaiGoodsGalleryExample exampleGallery = new HaiGoodsGalleryExample();
+				exampleGallery.createCriteria().andGoodsIdEqualTo(goods.getGoodsId());
+				haiGoodsGalleryMapper.deleteByExample(exampleGallery);
+				for (HaiGoodsGallery haiGoodsGallery : galleryList) {
+					haiGoodsGallery.setGoodsId(goods.getGoodsId());
+					haiGoodsGalleryMapper.insertSelective(haiGoodsGallery);
+				}
+			} else {
+				List<HaiGoodsAttr> goodsAttrList = entity.getGoodsAttrList();
+				for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
+						haiGoodsAttr.setGoodsId(goods.getGoodsId());						
+						haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
+				}
 			}
 			
 		}catch(Exception e){
@@ -183,4 +209,86 @@ public class ApiController extends FigoCommonController {
 		}
 		return "";
 	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/goodsAttr")
+	public String goodsAttr(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response,
+			@RequestParam(value = "json", required = true) String json){
+		System.out.println(json);
+		try{
+			Gson gson = new Gson();
+			HaiGoodsEntity entity = gson.fromJson(json, HaiGoodsEntity.class);
+			List<HaiGoodsAttr> goodsAttrList = entity.getGoodsAttrList();
+			List<HaiGoodsGallery> galleryList = entity.getGoodsGalleryList();
+			HaiGoodsWithBLOBs goods = entity.getGoods();
+			HaiGoodsExample example = new HaiGoodsExample();
+			example.createCriteria().andGoodsUrlEqualTo(goods.getGoodsUrl());
+			long count = haiGoodsMapper.countByExample(example);
+			
+			//整理属性组合
+			List<String> listAttr = new ArrayList<String>();
+			for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
+				if(haiGoodsAttr.getAttrType().equals("color")){
+					for (HaiGoodsAttr haiGoodsAttr2 : goodsAttrList) {
+						if(haiGoodsAttr2.getAttrType().equals("size")){
+							listAttr.add("颜色:"+haiGoodsAttr.getAttrValue()+"|尺寸:"+haiGoodsAttr2.getAttrValue());
+						}
+					}
+				}
+			}
+			
+			
+			
+			if(count == 0){//不存在此记录，进行插入商品
+				//根据商品属性，组合成多个商品列表
+				
+				
+				Integer fid = 0;
+				Long goodsId = 0l;
+				if(listAttr.size() > 0){//存在组合 属性
+					for (String string : listAttr) {
+						goods.setAttrGroup(string);
+						goods.setFid(fid);
+						if(goods.getStock() == null || goods.getStock()==0)goods.setStock(null);
+						haiGoodsMapper.insert(goods);
+						if(fid == 0){
+							fid = goods.getGoodsId().intValue();
+							goodsId = goods.getGoodsId();
+						}
+					}
+				}else{//不存在组合属性
+					goods.setFid(fid);
+					if(goods.getStock()==0)goods.setStock(null);
+					haiGoodsMapper.insert(goods);
+					fid = goods.getGoodsId().intValue();
+					goodsId = goods.getGoodsId();
+				}
+				
+				
+				//重新保存属性
+				for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
+					haiGoodsAttr.setGoodsId(goodsId);						
+					haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
+				}
+				
+				//保存相册
+								
+				for (HaiGoodsGallery haiGoodsGallery : galleryList) {
+					haiGoodsGallery.setGoodsId(goodsId);
+					haiGoodsGalleryMapper.insertSelective(haiGoodsGallery);
+				}
+				
+				
+			}else{
+				//更新操作
+			}
+			
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 }
