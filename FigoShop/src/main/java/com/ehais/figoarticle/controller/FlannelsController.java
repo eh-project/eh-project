@@ -4,6 +4,7 @@ import com.ehais.figoarticle.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -56,9 +57,9 @@ public class FlannelsController extends FigoCommonController {
 		String result = "";
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
-//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
+			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\flannels.html");
-//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.parse(result);
 //			Element topMenu = doc.getElementById("topMenu");
 //			Element firstUL = topMenu.select(">ul").first();
 //			Elements topcate = firstUL.select(">li");
@@ -66,7 +67,7 @@ public class FlannelsController extends FigoCommonController {
 //			topcate.remove(3);
 //			topcate.remove(1);
 
-			Document doc = Jsoup.connect(categoryUrl).get();
+//			Document doc = Jsoup.connect(categoryUrl).get();
 			Element shop = doc.getElementsByClass("shop").first();
 			Elements topcate = shop.select("div[data-level=2]");
 			topcate.remove(2);
@@ -283,7 +284,7 @@ public class FlannelsController extends FigoCommonController {
 			Element gallery_ul = doc.getElementById("piThumbList");
 			Elements gallery_a = gallery_ul.select("li>a");
 			for(Element element : gallery_a) {
-				String gHref = element.attr("href");
+				String gHref = "http:" + element.attr("href");
 				HaiGoodsGallery gallery = new HaiGoodsGallery();
 				gallery.setThumbUrl(gHref);
 				gallery.setImgUrl(gHref);
@@ -323,23 +324,23 @@ public class FlannelsController extends FigoCommonController {
 				goodsAttrList.add(goodsSize);
 			}
 
-			String attrgroup="";
-			attrgroup=attrgroup+"颜色:";
-			for( int i  = 0; i < colorList.size(); i++ ) {
-				attrgroup += colorList.get(i);
-				if( i != colorList.size()-1) {
-					attrgroup+=",";
-				}
-			}
-			attrgroup = attrgroup + "|尺寸:";
-			for( int j = 0; j < sizeList.size(); j++ ) {
-				attrgroup += sizeList.get(j);
-				if( j != sizeList.size()-1 ) {
-					attrgroup+=",";
-				}
-			}
-
-			goods.setAttrGroup(attrgroup);
+//			String attrgroup="";
+//			attrgroup=attrgroup+"颜色:";
+//			for( int i  = 0; i < colorList.size(); i++ ) {
+//				attrgroup += colorList.get(i);
+//				if( i != colorList.size()-1) {
+//					attrgroup+=",";
+//				}
+//			}
+//			attrgroup = attrgroup + "|尺寸:";
+//			for( int j = 0; j < sizeList.size(); j++ ) {
+//				attrgroup += sizeList.get(j);
+//				if( j != sizeList.size()-1 ) {
+//					attrgroup+=",";
+//				}
+//			}
+//
+//			goods.setAttrGroup(attrgroup);
 
 
 //			Bean2Utils.printEntity(goods);
@@ -351,7 +352,7 @@ public class FlannelsController extends FigoCommonController {
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
 //			String api = "http://localhost:8087/api/goods";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			

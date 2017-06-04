@@ -142,8 +142,8 @@ public class FwrdController extends FigoCommonController{
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8087/api/category";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+//			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
