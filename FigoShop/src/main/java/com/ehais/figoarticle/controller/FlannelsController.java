@@ -173,7 +173,7 @@ public class FlannelsController extends FigoCommonController {
 	}
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
-		System.out.println("请求地址："+goodsurl);
+		System.out.println("请求地址："+ goodsurl);
 		if (goodsurl.endsWith("all") || goodsurl.endsWith("men")) {
 			System.out.println("xxxxxx");
 			return "";

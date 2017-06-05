@@ -1,33 +1,19 @@
 package com.ehais.figoarticle.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.ehais.figoarticle.model.*;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import net.sf.json.JSONArray;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ehais.figoarticle.model.HaiCategory;
-import com.ehais.figoarticle.model.HaiCategoryExample;
-import com.ehais.figoarticle.model.HaiGoods;
-import com.ehais.figoarticle.model.HaiGoodsAttr;
-import com.ehais.figoarticle.model.HaiGoodsAttrExample;
-import com.ehais.figoarticle.model.HaiGoodsEntity;
-import com.ehais.figoarticle.model.HaiGoodsExample;
-import com.ehais.figoarticle.model.HaiGoodsGallery;
-import com.ehais.figoarticle.model.HaiGoodsGalleryExample;
-import com.ehais.figoarticle.model.HaiGoodsUrl;
-import com.ehais.figoarticle.model.HaiGoodsUrlExample;
-import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import net.sf.json.JSONArray;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Controller
