@@ -41,6 +41,7 @@ import net.sf.json.JSONObject;
 public class TheclutcherController extends FigoCommonController{
 	private static String url = "https://www.theclutcher.com";
 	
+	private int websiteId = 22;
 
 
 	@ResponseBody
@@ -336,6 +337,7 @@ public class TheclutcherController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			Bean2Utils.printEntity(goods);

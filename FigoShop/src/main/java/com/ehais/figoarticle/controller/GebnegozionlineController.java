@@ -26,7 +26,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 @Controller
 @RequestMapping("/Gebnegozionline")
 public class GebnegozionlineController extends FigoCommonController {
-
+	private int websiteId = 7;
 	
 	@ResponseBody
 	@RequestMapping("/brand")

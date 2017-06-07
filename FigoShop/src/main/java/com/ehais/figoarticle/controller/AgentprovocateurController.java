@@ -34,7 +34,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/agentprovocateur")
 public class AgentprovocateurController extends FigoCommonController{
 	private static String url = "http://www.agentprovocateur.com/";
-	
+	private int websiteId = 4;
 
 
 	@ResponseBody
@@ -190,6 +190,7 @@ public class AgentprovocateurController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			

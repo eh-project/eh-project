@@ -12,6 +12,8 @@
   <artifactId>FigoShop</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>FigoShop</name>
+
+
   <url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,7 +37,7 @@
 		<project.tomcat.version>8.0.0-RC5</project.tomcat.version>
 
 
-		<component.package>com.ehais.figoarticle.service,org.ehais.weixin.service,org.ehais.epublic.service</component.package>
+		<component.package>com.ehais.figoarticle.Service,org.ehais.weixin.service,org.ehais.epublic.service</component.package>
 		<mapper.package>com.ehais.figoarticle.mapper,org.ehais.weixin.mapper,org.ehais.shop.mapper,org.ehais.epublic.mapper</mapper.package>
 		<model.package>com.ehais.figoarticle.model,org.ehais.shop.model,org.ehais.epublic.model</model.package>
 		<controller.package>com.ehais.figoarticle.controller,org.ehais.epublic.controller,org.ehais.weixin.controller</controller.package>

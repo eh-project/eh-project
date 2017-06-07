@@ -26,7 +26,7 @@ public class LindelepalaisController extends FigoCommonController{
 
 	private static String url = "https://www.lindelepalais.com/";
 	
-
+	private int websiteId = 10;
 
 	@ResponseBody
 	@RequestMapping("/brand")
@@ -182,6 +182,7 @@ public class LindelepalaisController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			

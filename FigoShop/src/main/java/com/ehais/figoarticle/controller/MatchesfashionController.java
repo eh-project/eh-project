@@ -35,7 +35,7 @@ import net.sf.json.JSONObject;
 public class MatchesfashionController extends FigoCommonController{
 	
 	private static String url = "http://www.matchesfashion.com/";
-	
+	private int websiteId = 12;
 
 
 	@ResponseBody
@@ -191,6 +191,7 @@ public class MatchesfashionController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			

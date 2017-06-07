@@ -25,7 +25,7 @@ import java.util.Map;
 @RequestMapping("/flannels")
 public class FlannelsController extends FigoCommonController {
 	private static String url = "http://www.flannels.com";
-	
+	private int websiteId = 2;
 
 
 	@ResponseBody
@@ -57,9 +57,9 @@ public class FlannelsController extends FigoCommonController {
 		String result = "";
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
-			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
+//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\flannels.html");
-			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.parse(result);
 //			Element topMenu = doc.getElementById("topMenu");
 //			Element firstUL = topMenu.select(">ul").first();
 //			Elements topcate = firstUL.select(">li");
@@ -67,6 +67,7 @@ public class FlannelsController extends FigoCommonController {
 //			topcate.remove(3);
 //			topcate.remove(1);
 
+			Document doc = Jsoup.connect(categoryUrl).get();
 			Element shop = doc.getElementsByClass("shop").first();
 			Elements topcate = shop.select("div[data-level=2]");
 			topcate.remove(2);
@@ -84,7 +85,7 @@ public class FlannelsController extends FigoCommonController {
 				topcat.setCatName(sex.text());
 				topcat.setCategoryUrl(sexHref);
 				topcat.setIsShow(true);
-
+				topcat.setWebsiteId(websiteId);
 				List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
 				String parentHref = "";
 				for (Element element1 : mplevel) {
@@ -99,6 +100,7 @@ public class FlannelsController extends FigoCommonController {
 					cat2.setCatName(parentA.text());
 					cat2.setCategoryUrl(parentHref);
 					cat2.setIsShow(true);
+					cat2.setWebsiteId(websiteId);
 					topcatlist.add(cat2);
 
 					List<HaiCategory> catlist = new ArrayList<HaiCategory>();
@@ -112,7 +114,7 @@ public class FlannelsController extends FigoCommonController {
 						cat3.setCatName(childrenA.text());
 						cat3.setCategoryUrl(childrenHref);
 						cat3.setIsShow(true);
-
+						cat3.setWebsiteId(websiteId);
 						catlist.add(cat3);
 					}
 
@@ -172,12 +174,18 @@ public class FlannelsController extends FigoCommonController {
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
 		System.out.println("请求地址："+goodsurl);
+		if (goodsurl.endsWith("all") || goodsurl.endsWith("men")) {
+			System.out.println("xxxxxx");
+			return "";
+		}
 		String result = "";
 		try{
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
-			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+//			System.out.println("get result");
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).get();
 			Element product_list = doc.select(".s-productscontainer2").first();
 			if (product_list == null) {
 				return "";
@@ -206,9 +214,10 @@ public class FlannelsController extends FigoCommonController {
 
 			//获取下一页
 			Element page = doc.select("a.NextLink").first();
-			if(page != null){
+			if(page != null ){
 				String href_a = page.attr("href");
 				if(href_a.indexOf("http")<0) href_a = url + href_a;
+				if (href_a != goodsurl)
 				this.goodsUrl(request, href_a, catId);
 			}
 
@@ -226,6 +235,7 @@ public class FlannelsController extends FigoCommonController {
 	public String goodsAll(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
+
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
@@ -256,9 +266,13 @@ public class FlannelsController extends FigoCommonController {
 
 			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 			Document doc = Jsoup.parse(result);
+//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+//			Document doc = Jsoup.parse(result);
+
 			String name = doc.getElementById("ProductName").text();
 			String priceS = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl04_ctl01_lblSellingPrice").text();
-			Integer price = Float.valueOf(priceS.substring(1)).intValue() * 100;
+			String priceL = priceS.replace(",","");
+			Integer price = Float.valueOf(priceL.substring(1)).intValue() * 100;
 			String desc = doc.select("[itemprop=description]").text();
 			String currency = doc.select(".spanCurrencyLanguageSelector").text().substring(2);
 
@@ -268,6 +282,7 @@ public class FlannelsController extends FigoCommonController {
 			goods.setCurrency(currency);
 			goods.setGoodsUrl(goodsurl);
 			goods.setCatId(catId);
+			goods.setWebsiteId(websiteId);
 
 			//picture
 			Element gallery_ul = doc.getElementById("piThumbList");
@@ -289,24 +304,48 @@ public class FlannelsController extends FigoCommonController {
 			//color
 			Element color = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl08_colourDdl");
 			Elements color_option = color.select("option");
+			List<String> colorList = new ArrayList<>();
 			for(Element element : color_option) {
 				HaiGoodsAttr goodsColor = new HaiGoodsAttr();
 				goodsColor.setAttrValue(element.text());
 				goodsColor.setAttrType("color");
 				goodsColor.setAttrPrice(price.toString());
+				colorList.add(element.text());
 				goodsAttrList.add(goodsColor);
 			}
 
 			//size
 			Element size = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl10_sizeDdl");
 			Elements size_option = size.select("option");
+			size_option.remove(0);
+			List<String> sizeList = new ArrayList<>();
 			for(Element element : size_option) {
 				HaiGoodsAttr goodsSize = new HaiGoodsAttr();
 				goodsSize.setAttrValue(element.text());
 				goodsSize.setAttrType("size");
 				goodsSize.setAttrPrice(price.toString());
+				sizeList.add(element.text());
 				goodsAttrList.add(goodsSize);
 			}
+
+			String attrgroup="";
+			attrgroup=attrgroup+"颜色:";
+			for( int i  = 0; i < colorList.size(); i++ ) {
+				attrgroup += colorList.get(i);
+				if( i != colorList.size()-1) {
+					attrgroup+=",";
+				}
+			}
+			attrgroup = attrgroup + "|尺寸:";
+			for( int j = 0; j < sizeList.size(); j++ ) {
+				attrgroup += sizeList.get(j);
+				if( j != sizeList.size()-1 ) {
+					attrgroup+=",";
+				}
+			}
+
+			goods.setAttrGroup(attrgroup);
+
 
 //			Bean2Utils.printEntity(goods);
 			
@@ -327,7 +366,7 @@ public class FlannelsController extends FigoCommonController {
 			}
 			return "";
 	}
-	
+
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";

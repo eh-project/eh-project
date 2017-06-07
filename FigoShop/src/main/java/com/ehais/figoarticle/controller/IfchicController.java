@@ -44,7 +44,7 @@ import net.sf.json.JSONObject;
 @RequestMapping("/ifchic")
 public class IfchicController extends FigoCommonController {
 
-	
+	private int websiteId = 8;
 	private static String url = "https://www.ifchic.com";
 
 	@ResponseBody
@@ -105,7 +105,8 @@ public class IfchicController extends FigoCommonController {
 				HaiCategory cat = new HaiCategory();
 				cat.setCatName(parentA.text());
 				cat.setCategoryUrl(parentHref);
-				cat.setIsShow(true);			
+				cat.setIsShow(true);		
+				cat.setWebsiteId(websiteId);
 				List<HaiCategory> catList = new ArrayList<HaiCategory>();
 				for (Element element2 : childrenLi) {
 					Elements childrenA = element2.getElementsByTag("a");
@@ -118,6 +119,7 @@ public class IfchicController extends FigoCommonController {
 						System.out.println("======" + element3.text());					
 						HaiCategory cat2 = new HaiCategory();
 						cat2.setCatName(element3.text());
+						cat2.setWebsiteId(websiteId);
 					//	System.out.println(element3.attr("href") + element3.attr("href").indexOf("http"));
 						if((element3.attr("href").indexOf("http")) < 0)
 							cat2.setCategoryUrl(url + element3.attr("href"));
@@ -267,6 +269,7 @@ public class IfchicController extends FigoCommonController {
 			goods.setGoodsName(goodsName);
 			goods.setCatId(catId);
 			goods.setGoodsUrl(goodsurl);
+			goods.setWebsiteId(websiteId);
 			
 			Element price = primary_block.select("p.price").first();
 			Integer shopPrice = Float.valueOf(price.select(">span").select(">span").text().trim()).intValue() * 100;

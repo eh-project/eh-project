@@ -40,6 +40,7 @@ public class TessabitController extends FigoCommonController{
 	//用于 tessabit/url goodsAll
 	private static String url2 = "https://www.tessabit.com/";
 	
+	private int websiteId = 21;
 
 
 	@ResponseBody
@@ -280,6 +281,7 @@ public class TessabitController extends FigoCommonController{
 		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
+		goods.setWebsiteId(websiteId);
 		try{
 
 			//TODO
