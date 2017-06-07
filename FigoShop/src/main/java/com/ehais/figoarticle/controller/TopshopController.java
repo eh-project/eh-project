@@ -83,9 +83,10 @@ public class TopshopController extends FigoCommonController{
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			Element ulNav = doc.getElementById("nav_catalog_menu");
 			//System.out.println(ulNav);
-			Elements lis = ulNav.getElementsByTag("li");
-			System.out.println("test");
+			Elements lis = ulNav.select(">li");
 			//System.out.println(lis);
+			
+			System.out.println(lis);
 			
 			String parentHref = "";
 			for(Element element : lis) {
@@ -119,7 +120,7 @@ public class TopshopController extends FigoCommonController{
 						catList.add(cat2);
 					}
 					cat.setChildren(catList);
-				}
+				}			
 				list.add(cat);
 			}
 			
@@ -136,7 +137,7 @@ public class TopshopController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
 		//	String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8087/api/category";
+			String api = "http://localhost:8080/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -170,10 +171,6 @@ public class TopshopController extends FigoCommonController{
 	//	System.out.println(goodsurl);
 		String result = "";
 		try{
-			//result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
-		//	result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", goodsurl);
-			//result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			
 			//my add
 			Document doc = Jsoup.connect(goodsurl).get();
 			if(doc == null)
@@ -184,6 +181,8 @@ public class TopshopController extends FigoCommonController{
 			if(divProduct == null)
 			{
 				divProduct = doc.select(".products.col4").first();
+				if(divProduct == null)
+					return "";
 			}
 			Elements rows = divProduct.getElementsByClass("row");
 			List<String> list = new ArrayList<String>();
@@ -233,7 +232,7 @@ public class TopshopController extends FigoCommonController{
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = "http://localhost:8080/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
@@ -274,12 +273,10 @@ public class TopshopController extends FigoCommonController{
 	
 	public String goodsModel(HttpServletRequest request , String goodsurl ,Integer catId){
 		System.out.println(goodsurl);
-		String result = "";
 		HaiGoodsEntity entity = new HaiGoodsEntity();
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
-		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
@@ -293,21 +290,23 @@ public class TopshopController extends FigoCommonController{
 					Element detail = doc.getElementById("product-detail");
 					//System.out.println(detail);
 					if(detail == null)
-						return null;
+						return "";
 					String goodsName = doc.select(".product_details.pull-right").first().getElementsByTag("h1").first().text();
 					goods.setGoodsName(goodsName);
 					
 					Element price = detail.getElementsByClass("product_prices").get(0);
 					System.out.println(price.text());
+					
 					Integer shopPrice = (int)(Float.parseFloat(price.text().substring(8, price.text().length() - 1))* 100);
 					String currency = price.text().substring(7,8);
 					goods.setShopPrice(shopPrice);
 					goods.setCurrency(currency);
 					
 					Element productRightAjax = detail.getElementById("productInfo");
-					Element color = productRightAjax.getElementsByClass("product_colour").first().getElementsByTag("span").first();
+					Element color = productRightAjax.getElementsByClass("product_colour").first();
+					Element goodcolor = color.getElementsByTag("span").first();
 					HaiGoodsAttr goodsColor = new HaiGoodsAttr();
-					goodsColor.setAttrValue(color.text());
+					goodsColor.setAttrValue(goodcolor.text());
 					goodsColor.setAttrType("color");
 					goodsColor.setAttrPrice(shopPrice.toString());
 					goodsAttrList.add(goodsColor);
@@ -315,13 +314,14 @@ public class TopshopController extends FigoCommonController{
 					
 					Element field = detail.getElementsByClass("field").first();
 					Elements lables = field.getElementsByTag("label");
+					System.out.println(lables);
 					for(Element lable : lables) {
 						if(lable != null) {
 							HaiGoodsAttr goodsAttr1 = new HaiGoodsAttr();
 							goodsAttr1.setAttrValue(lable.text());
 							goodsAttr1.setAttrType("size");
 							goodsAttr1.setAttrPrice(shopPrice.toString());
-							goodsAttrList.add(goodsAttr1);
+							goodsAttrList.add(goodsAttr1);					
 						}
 					}
 					
@@ -356,8 +356,7 @@ public class TopshopController extends FigoCommonController{
 					System.out.println(jsonObject.toString());
 					Map<String, String> paramsMap = new HashMap<String,String>();
 					paramsMap.put("json", jsonObject.toString());
-		//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
-					String api = "http://localhost:8087/api/goodsAttr";
+					String api = "http://localhost:8080/api/goodsAttr";
 					String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 					System.out.println(apiresult);
 		}catch(Exception e){
@@ -367,10 +366,6 @@ public class TopshopController extends FigoCommonController{
 	}
 	
 	public static void main(String[] args) throws Exception {
-		//		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";
-		//		DemoController ac = new DemoController();
-		//		ac.goodsModel(url,1);
-		//		ac.goodsUrl(null, goodsurl, 1);
 		String topUrl = "http://www.topshop.com/";
 		TopshopController top = new TopshopController();
 		top.category(null,topUrl);

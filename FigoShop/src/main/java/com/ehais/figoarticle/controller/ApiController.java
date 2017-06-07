@@ -157,10 +157,8 @@ public class ApiController extends FigoCommonController {
 						Integer tempgoods =(int) (long) haigoods.getGoodsId();
 						goods.setFid(tempgoods);
 						haiGoodsMapper.insertSelective(goods);
-					}
-				}
 			}
-			
+		
 			if(goods.getFid() == 0) {
 				System.out.println("test= ");
 				HaiGoodsAttrExample exampleAttr = new HaiGoodsAttrExample();
@@ -189,7 +187,8 @@ public class ApiController extends FigoCommonController {
 						haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
 				}
 			}
-			
+		}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -225,9 +224,7 @@ public class ApiController extends FigoCommonController {
 					}
 				}
 			}
-			
-			
-			
+
 			if(count == 0){//不存在此记录，进行插入商品
 				//根据商品属性，组合成多个商品列表
 				
@@ -247,12 +244,13 @@ public class ApiController extends FigoCommonController {
 					}
 				}else{//不存在组合属性
 					goods.setFid(fid);
-					if(goods.getStock()==0)goods.setStock(null);
+					if(goods.getStock()==0)
+						goods.setStock(null);
 					haiGoodsMapper.insert(goods);
 					fid = goods.getGoodsId().intValue();
 					goodsId = goods.getGoodsId();
 				}
-				
+		
 				
 				//重新保存属性
 				for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
@@ -260,23 +258,18 @@ public class ApiController extends FigoCommonController {
 					haiGoodsAttrMapper.insertSelective(haiGoodsAttr);
 				}
 				
-				//保存相册
-								
+				//保存相册	
 				for (HaiGoodsGallery haiGoodsGallery : galleryList) {
 					haiGoodsGallery.setGoodsId(goodsId);
 					haiGoodsGalleryMapper.insertSelective(haiGoodsGallery);
-				}
-				
-				
+				}		
 			}else{
 				//更新操作
 			}
-			
 			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return "";
 	}
-	
 }

@@ -20,5 +20,4 @@ public class GoodsattrTOgoods {
         goodiesAttr.transfer();
         return "successed";
     }
-
 }
