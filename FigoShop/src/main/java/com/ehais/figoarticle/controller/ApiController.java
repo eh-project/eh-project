@@ -217,8 +217,10 @@ public class ApiController extends FigoCommonController {
 			for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
 				if(haiGoodsAttr.getAttrType().equals("color")){
 					for (HaiGoodsAttr haiGoodsAttr2 : goodsAttrList) {
-						if(haiGoodsAttr2.getAttrType().equals("size")){
-							listAttr.add("颜色:"+haiGoodsAttr.getAttrValue()+"|尺寸:"+haiGoodsAttr2.getAttrValue());
+						if (haiGoodsAttr2.getAttrType().equals("size") && Integer.parseInt(haiGoodsAttr.getAttrPrice()) != goods.getShopPrice()) {
+							listAttr.add("颜色:"+haiGoodsAttr.getAttrValue()+"|尺寸:"+haiGoodsAttr2.getAttrValue()+"|价格："+haiGoodsAttr.getAttrPrice());
+						}else if(haiGoodsAttr2.getAttrType().equals("size")) {
+							listAttr.add("颜色:" + haiGoodsAttr.getAttrValue() + "|尺寸:" + haiGoodsAttr2.getAttrValue());
 						}
 					}
 				}

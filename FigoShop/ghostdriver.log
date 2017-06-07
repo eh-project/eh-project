@@ -1,18 +1,5 @@
-[INFO  - 2017-06-04T13:46:57.568Z] GhostDriver - Main - running on port 46615
-[INFO  - 2017-06-04T13:47:00.803Z] Session [48dde5e0-492c-11e7-a0fa-912d47fa3f2b] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
-[INFO  - 2017-06-04T13:47:00.803Z] Session [48dde5e0-492c-11e7-a0fa-912d47fa3f2b] - page.customHeaders:  - {}
-[INFO  - 2017-06-04T13:47:00.803Z] Session [48dde5e0-492c-11e7-a0fa-912d47fa3f2b] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-06-04T13:47:00.803Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 48dde5e0-492c-11e7-a0fa-912d47fa3f2b
-[INFO  - 2017-06-04T13:51:57.576Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
-[INFO  - 2017-06-04T13:56:57.579Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
-[INFO  - 2017-06-04T14:01:57.593Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
-[ERROR - 2017-06-04T14:03:00.947Z] Session [48dde5e0-492c-11e7-a0fa-912d47fa3f2b] - page.onError - msg: ReferenceError: Can't find variable: insertRakutenPageView
-
-  phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-06-04T14:03:00.948Z] Session [48dde5e0-492c-11e7-a0fa-912d47fa3f2b] - page.onError - stack:
-  doOnLoad (http://www.fwrd.com/:1512)
-  (anonymous function) (http://www.fwrd.com/:1518)
-  dispatch (http://www.fwrd.com/fw/js/head.js:3)
-  handle (http://www.fwrd.com/fw/js/head.js:3)
-
-  phantomjs://platform/console++.js:263 in error
+[INFO  - 2017-06-07T06:13:57.773Z] GhostDriver - Main - running on port 60307
+[INFO  - 2017-06-07T06:13:58.880Z] Session [7e6adab0-4b48-11e7-9dfd-417d29cd3359] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2017-06-07T06:13:58.880Z] Session [7e6adab0-4b48-11e7-9dfd-417d29cd3359] - page.customHeaders:  - {}
+[INFO  - 2017-06-07T06:13:58.881Z] Session [7e6adab0-4b48-11e7-9dfd-417d29cd3359] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"windows-10-32bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2017-06-07T06:13:58.881Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 7e6adab0-4b48-11e7-9dfd-417d29cd3359
