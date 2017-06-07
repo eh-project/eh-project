@@ -3,11 +3,7 @@ package com.ehais.figoarticle.controller;
 import com.ehais.figoarticle.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.FSO;
-import org.ehais.util.PythonUtil;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -44,7 +40,8 @@ public class FwrdController extends FigoCommonController{
 		
 		try {
 			
-			this.category(request, url);
+			this.category(request, url + "/?navsrc=global");
+			this.category(request,url + "/?d=Mens&navsrc=global");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -58,28 +55,34 @@ public class FwrdController extends FigoCommonController{
 	private void category(HttpServletRequest request,String categoryUrl){
 		System.out.println("请求地址：" + categoryUrl);
 		String result = "";
-		Connection.Response response = null;
+//		Connection.Response response = null;
 
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getEnWebForFwrd.py", categoryUrl);
-			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrd.html");
+//			if (categoryUrl==url){
+//				result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrd.html");
+//			}else{
+//				result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrdman.html");
+//			}
 //			response = Jsoup.connect(categoryUrl).execute();
 //			System.out.println(response.body());
-			Document doc = Jsoup.parse(result);
-			Element sex_ul = doc.select(".ui-list.clearfix").first();
-			Elements sex_li = sex_ul.select("a");
-			String sexresult = "";
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(categoryUrl).get();
+//			Element sex_ul = doc.select(".ui-list.clearfix").first();
+//			Elements sex_li = sex_ul.select("a");
+//			String sexresult = "";
 
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 
-			for(Element element : sex_li) {
-				String sex_url = url + element.attr("href");
-				System.out.println("请求地址：" + sex_url);
-				sexresult = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getEnWebForFwrd.py", sex_url);
+//			for(Element element : sex_li) {
+//				String sex_url = url + element.attr("href");
+//				System.out.println("请求地址：" + sex_url);
+//				sexresult = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getEnWebForFwrd.py", sex_url);
 //				sexresult = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrd.html");
-				Document doc_sex = Jsoup.parse(sexresult);
-				Element sex = doc_sex.select(".current").first();
+//				Document doc_sex = Jsoup.parse(sexresult);
+//				Document doc_sex = Jsoup.connect(sex_url).get();
+				Element sex = doc.select(".current").first();
 				System.out.println(sex.text());
 				Element sex_a = sex.select("a").first();
 				String sexHref = sex_a.attr("href");
@@ -106,7 +109,13 @@ public class FwrdController extends FigoCommonController{
 					Element sub_menu = element1.select(".sub_menu").first();
 					if ( sub_menu != null ) {
 						List<HaiCategory> catlist = new ArrayList<HaiCategory>();
-						Elements taga = sub_menu.select("a");
+						Elements taga = sub_menu.select(".spread");
+						if (taga.size() == 0) {
+							taga = sub_menu.select("li").not("[style^=display]");
+							taga = taga.select("a");
+						} else {
+							taga = sub_menu.select("a.u-padding-a--none");
+						}
 						for(Element element2 : taga) {
 							String aName = element2.text();
 							System.out.println("======" + aName);
@@ -127,7 +136,7 @@ public class FwrdController extends FigoCommonController{
 
 				topcat.setChildren(topcatlist);
 				list.add(topcat);
-			}
+
 
 			
 			
@@ -142,8 +151,8 @@ public class FwrdController extends FigoCommonController{
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8087/api/category";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+//			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -178,17 +187,35 @@ public class FwrdController extends FigoCommonController{
 	}
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
-		System.out.println(goodsurl);
+		System.out.println("请求地址："+ goodsurl);
 		String result = "";
 		try{
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
-			List<String> list = new ArrayList<String>();
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).get();
 
-			// TODO
-			
+			List<String> list = new ArrayList<String>();
+			Elements page = doc.select(".pagination__list");
+			if (page.isEmpty()) return "";
+			int lastpage = Integer.parseInt(page.select("li").last().text().toString());
+			for (int i = 1; i <= lastpage; i++) {
+				if (lastpage != 1 ) {
+					doc = Jsoup.connect(goodsurl + "&pageNum=" + i).get();
+				}
+
+				Elements productlist = doc.select(".product__link");
+				if (productlist == null) {
+					return "";
+				}
+				for (Element element : productlist) {
+					String productHref = element.attr("href");
+					if (element.attr("href").indexOf("http") < 0) productHref = url + productHref;
+					System.out.println(productHref);
+					list.add(productHref);
+				}
+			}
 			
 			JSONArray arr = JSONArray.fromObject(list);
 			Map<String, String> paramsMap = new HashMap<String,String>();
@@ -199,6 +226,7 @@ public class FwrdController extends FigoCommonController{
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
+
 			/**			 
 			Element page_chooser = page.getElementById("page-chooser");
 			Element next = page_chooser.getElementsByClass("next").first();
@@ -239,24 +267,97 @@ public class FwrdController extends FigoCommonController{
 	
 	
 	public String goodsModel(HttpServletRequest request , String goodsurl ,Integer catId){
-		System.out.println(goodsurl);
+		System.out.println("请求地址：" + goodsurl);
 		String result = "";
 		HaiGoodsEntity entity = new HaiGoodsEntity();
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
-		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
 		try{
+			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 
-			
-			
-			
-			
-			
-			Bean2Utils.printEntity(goods);
+			Element info = doc.select(".product_info").first();
+			String name = info.select(".product-titles__brand").text();
+			String priceS = "";
+			Element priceE = info.select("#tr-pdp-price").first();
+			if ( info.select("#tr-pdp-price").isEmpty() ) {
+				priceS = info.select(".prices__markdown").first().text().substring(3);
+			} else {
+				priceS = priceE.select(".prices_retail").text().substring(3);
+			}
+			String priceL = priceS.replace(",","");
+			Integer price = Float.valueOf(priceL).intValue() * 100;
+			String currency = doc.select(".currency_select").select("a").first().text();
+			String desc = info.select("#details").text();
+
+			goods.setGoodsName(name);
+			goods.setShopPrice(price);
+			goods.setGoodsDesc(desc);
+			goods.setCurrency(currency);
+
+			//picture
+			Elements gallery_ul = doc.select("img.product-detail-image");
+			for (Element element : gallery_ul) {
+				String gHref = element.attr("data-zoom-image");
+				HaiGoodsGallery gallery = new HaiGoodsGallery();
+				gallery.setImgOriginal(gHref);
+				gallery.setImgUrl(gHref);
+				gallery.setThumbUrl(gHref);
+				goodsGalleryList.add(gallery);
+			}
+
+			HaiGoodsGallery gallery = goodsGalleryList.get(0);
+			goods.setGoodsThumb(gallery.getThumbUrl());
+			goods.setGoodsImg(gallery.getImgUrl());
+			goods.setOriginalImg(gallery.getImgOriginal());
+
+			//color
+			Element color = doc.select(".color_dd").first();
+			if ( !color.select(".one_sizeonly").isEmpty() ) {
+				HaiGoodsAttr goodsColor = new HaiGoodsAttr();
+				goodsColor.setAttrType("color");
+				goodsColor.setAttrValue(color.select(".one_sizeonly").text());
+				goodsColor.setAttrPrice(price.toString());
+				goodsAttrList.add(goodsColor);
+			} else {
+				Element colors = doc.select("#color-select").first();
+				Elements coloroption = colors.select("option");
+				coloroption.remove(0);
+				for (Element element : coloroption) {
+					HaiGoodsAttr goodsColor = new HaiGoodsAttr();
+					goodsColor.setAttrValue(element.attr("value"));
+					goodsColor.setAttrType("color");
+					goodsColor.setAttrPrice(price.toString());
+					goodsAttrList.add(goodsColor);
+				}
+			}
+
+			//size
+
+			Element size = doc.select(".size_dd").first();
+			if ( !size.select("#one-size-div").isEmpty() ) {
+				HaiGoodsAttr goodsSize = new HaiGoodsAttr();
+				goodsSize.setAttrType("size");
+				goodsSize.setAttrValue(size.select("#one-size-div").text());
+				goodsSize.setAttrPrice(price.toString());
+			} else {
+				Element sizes = doc.select("#size-select").first();
+				Elements sizeoption = sizes.select("option");
+				sizeoption.remove(0);
+				for ( Element element : sizeoption) {
+					HaiGoodsAttr goodsSize = new HaiGoodsAttr();
+					goodsSize.setAttrValue(element.attr("value"));
+					goodsSize.setAttrType("size");
+					goodsSize.setAttrPrice(price.toString());
+					goodsAttrList.add(goodsSize);
+				}
+			}
+
+
+//			Bean2Utils.printEntity(goods);
 			
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
@@ -265,10 +366,10 @@ public class FwrdController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
 //			String api = "http://localhost:8087/api/goods";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
+			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+			System.out.println(apiresult);
 			
 			
 		}catch(Exception e){
