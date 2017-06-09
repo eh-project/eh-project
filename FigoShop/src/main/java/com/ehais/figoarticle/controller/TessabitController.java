@@ -94,6 +94,7 @@ public class TessabitController extends FigoCommonController{
 				HaiCategory hc = new HaiCategory();
 				hc.setCatName(menuLiA.text());
 				hc.setCategoryUrl(parentHref);
+				hc.setWebsiteId(websiteId);
 				hc.setIsShow(true);
 				
 				Element colDiv = menuLi.getElementsByClass("col-sm-4").first();
@@ -109,6 +110,7 @@ public class TessabitController extends FigoCommonController{
 					HaiCategory hc1 = new HaiCategory();
 					hc1.setCatName(la.text());
 					hc1.setCategoryUrl(la.attr("href"));
+					hc1.setWebsiteId(websiteId);
 					hc1.setIsShow(true);
 					
 					catList.add(hc1);
@@ -151,8 +153,6 @@ public class TessabitController extends FigoCommonController{
 			List<HaiCategory> listCategory = haiCategoryMapper.selectByExample(example);
 			for (HaiCategory haiCategory : listCategory) {
 				System.out.println(haiCategory.getCategoryUrl());
-				if(haiCategory.getCategoryUrl().contains("https://www.tessabit.com/cn/woman/"))
-					continue;
 				this.goodsUrl(request, haiCategory.getCategoryUrl(), haiCategory.getCatId());
 			}
 			
@@ -278,14 +278,14 @@ public class TessabitController extends FigoCommonController{
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
-		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
 		try{
 
-			//TODO
-			result = GetPostTest.sendGet(goodsurl, null);
+			//
+			result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", goodsurl);
+			//result = GetPostTest.sendGet(goodsurl, null);
 			Document doc = Jsoup.parse(result);
 //			System.out.println(doc);
 			if(doc == null)
@@ -307,7 +307,6 @@ public class TessabitController extends FigoCommonController{
 			Integer price;
 			Element priceInfo = doc.getElementsByClass("price-info").first();
 			Element productPrice = priceInfo.getElementsByClass("special-price").first();
-			
 			if(productPrice != null) {
 				Element priceSpan = productPrice.getElementsByClass("price").first();
 				System.out.println(priceSpan.text());
@@ -356,11 +355,11 @@ public class TessabitController extends FigoCommonController{
 			goodsColor.setAttrType("color");
 			goodsColor.setAttrPrice(price.toString());
 			goodsAttrList.add(goodsColor);
+			
 			//设置 size
 			Element sizeSelect = doc.select(".size-selector.col-xs-12").first();
-			Element heading  = sizeSelect.getElementsByClass("heading").first();
-			Elements sizeLabels =  heading.getElementsByTag("a");
-			String attrGroup = "颜色:" + color + "|" + "尺寸:";
+			Elements sizeLabels = sizeSelect.getElementsByTag("a");
+			System.out.println(sizeLabels);
 			for(Element sizeLabel : sizeLabels) {
 				if(sizeLabel != null) {
 					HaiGoodsAttr goodsAttr1 = new HaiGoodsAttr();
@@ -368,22 +367,20 @@ public class TessabitController extends FigoCommonController{
 					goodsAttr1.setAttrType("size");
 					goodsAttr1.setAttrPrice(price.toString());
 					goodsAttrList.add(goodsAttr1);
-					attrGroup = attrGroup + sizeLabel.text() + " ";
 				}
 			}
-			goods.setAttrGroup(attrGroup.trim());
 			
 			
 			//设置图片链接
-			Element image = doc.select(".product-gallery-carousel.owl-carousel.owl-theme.owl-text-select-on.owl-loaded").first(); 
-			System.out.println(image);
-			Element owl = image.select(".owl-stage").first();
-			System.out.println(owl);
-			Elements imgDivs = owl.select(">div");
+			Element row = doc.getElementById("product-gallery");
+			Element div = row.select(".product-gallery-carousel.owl-carousel.owl-theme.owl-loaded").first();
+			Elements imgDivs = div.select(".item.easyzoom.easyzoom--overlay.container-image");
+			System.out.println(imgDivs);
 			for(Element imgDiv : imgDivs) {
 				Element imgA = imgDiv.getElementsByClass("product-image").first();
+				
 				Element responseImg = imgDiv.getElementsByTag("img").first();
-				System.out.println("test5");
+				System.out.println(responseImg);
 				HaiGoodsGallery gallery = new HaiGoodsGallery();
 				gallery.setThumbUrl(imgA.attr("href"));
 				gallery.setImgUrl(responseImg.attr("src"));
@@ -405,10 +402,8 @@ public class TessabitController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-			//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
-		String api = "http://localhost:8080/api/goods";
+			String api = "http://localhost:8080/api/goodsAttr";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-				
 		}catch(Exception e){
 			e.printStackTrace();
 		}
