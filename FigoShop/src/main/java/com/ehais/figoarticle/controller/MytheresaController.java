@@ -1,39 +1,30 @@
 package com.ehais.figoarticle.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.ehais.figoarticle.model.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.ehais.figoarticle.model.HaiCategory;
-import com.ehais.figoarticle.model.HaiCategoryExample;
-import com.ehais.figoarticle.model.HaiGoodsAttr;
-import com.ehais.figoarticle.model.HaiGoodsEntity;
-import com.ehais.figoarticle.model.HaiGoodsGallery;
-import com.ehais.figoarticle.model.HaiGoodsUrl;
-import com.ehais.figoarticle.model.HaiGoodsUrlExample;
-import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/mytheresa")
 public class MytheresaController extends FigoCommonController{
-	private static String url = "http://www.mytheresa.com/int_en/";
+	private static String url = "https://www.mytheresa.com";
 	private int websiteId = 14;
 
 
@@ -49,14 +40,14 @@ public class MytheresaController extends FigoCommonController{
 	public String category(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
-			
-			this.category(request, url);
+
+			this.category(request, url + "/int_en/");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return "";
 	}
 	
@@ -64,16 +55,41 @@ public class MytheresaController extends FigoCommonController{
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
-			
-			// TODO 
-			
-			
-			
+
+			Element nav = doc.select(".nav-primary").first();
+			Elements navli = nav.select("li.level0");
+			for (Element element : navli) {
+				Element parent = element.select("a.level0.has-children").first();
+				System.out.println(parent.text());
+				HaiCategory pCate = new HaiCategory();
+				pCate.setCatName(parent.text());
+				pCate.setCategoryUrl(parent.attr("href"));
+				pCate.setIsShow(true);
+				pCate.setWebsiteId(websiteId);
+
+				Elements childrenLi = element.select("a.level1");
+				List<HaiCategory> children = new ArrayList<>();
+				for (Element element1 : childrenLi) {
+					String chil = element1.text();
+					System.out.println(chil);
+					String cHref = element1.attr("href");
+					HaiCategory cCate = new HaiCategory();
+					cCate.setCatName(element1.text());
+					cCate.setCategoryUrl(cHref);
+					cCate.setIsShow(true);
+					cCate.setWebsiteId(websiteId);
+					children.add(cCate);
+				}
+				pCate.setChildren(children);
+				list.add(pCate);
+			}
+
 			System.out.println("==========================================");
 			System.out.println("==========================================");
 			
@@ -106,7 +122,7 @@ public class MytheresaController extends FigoCommonController{
 			c.andCategoryUrlLike(url+"%");
 			List<HaiCategory> listCategory = haiCategoryMapper.selectByExample(example);
 			for (HaiCategory haiCategory : listCategory) {
-				System.out.println(haiCategory.getCategoryUrl());
+//				System.out.println(haiCategory.getCategoryUrl());
 				this.goodsUrl(request, haiCategory.getCategoryUrl(), haiCategory.getCatId());
 			}
 			
@@ -120,17 +136,24 @@ public class MytheresaController extends FigoCommonController{
 	}
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
-		System.out.println(goodsurl);
-		String result = "";
+		System.out.println("请求地址：" + goodsurl);
+//		String result = "";
 		try{
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			Element prolist = doc.select(".products-grid").first();
+			if (prolist == null || prolist.equals("")) return "";
+			Elements proli = prolist.select("li.item");
 			List<String> list = new ArrayList<String>();
 
-			// TODO
-			
+			for (Element element : proli) {
+				String href = element.select("a").first().attr("href");
+				System.out.println(href);
+				list.add(href);
+			}
 			
 			JSONArray arr = JSONArray.fromObject(list);
 			Map<String, String> paramsMap = new HashMap<String,String>();
@@ -141,19 +164,17 @@ public class MytheresaController extends FigoCommonController{
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
-			/**			 
-			Element page_chooser = page.getElementById("page-chooser");
-			Element next = page_chooser.getElementsByClass("next").first();
-			if(next != null){
-				String href_a = next.attr("href");
-				this.goodsUrl(request, href_a, catId);
+			Element next = doc.select("li.next").first();
+			if (next != null) {
+				String nHref = next.select("a").attr("href");
+				this.goodsUrl(request, nHref, catId);
 			}
-			**/
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
-		return result;
+		return "";
 	}
 	
 	
@@ -182,21 +203,72 @@ public class MytheresaController extends FigoCommonController{
 	
 	public String goodsModel(HttpServletRequest request , String goodsurl ,Integer catId){
 		System.out.println(goodsurl);
-		String result = "";
+//		String result = "";
 		HaiGoodsEntity entity = new HaiGoodsEntity();
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
-		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
-		goods.setGoodsUrl(goodsurl);
-		goods.setCatId(catId);
-		goods.setWebsiteId(websiteId);
-		try{
 
+		try{
+			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			String name = doc.select(".product-name").first().text();
+			String sPrice = "";
+			Elements sale = doc.select(".special-price");
+			if (sale.size() == 0) {
+				sPrice = doc.select(".regular-price").first().text().substring(2);
+			} else {
+				sPrice = sale.first().select(".price").first().text().substring(2);
+			}
+			sPrice = sPrice.replace(",", "");
+			Integer price = Float.valueOf(sPrice).intValue() * 100;
+			String desc = doc.select(".product-description").first().text();
+			String currency = doc.select(".price").first().text().substring(0,1);
+
+			goods.setGoodsName(name);
+			goods.setShopPrice(price);
+			goods.setGoodsDesc(desc);
+			goods.setCurrency(currency);
+			goods.setGoodsUrl(goodsurl);
+			goods.setCatId(catId);
+			goods.setWebsiteId(websiteId);
+
+			//picture
+			Elements gallery_li = doc.select("[id^=image-]");
+			for (Element element : gallery_li) {
+				String gHref = element.attr("src");
+				gHref = "http:" + gHref;
+				HaiGoodsGallery gallery = new HaiGoodsGallery();
+				gallery.setThumbUrl(gHref);
+				gallery.setImgUrl(gHref);
+				gallery.setImgOriginal(gHref);
+				goodsGalleryList.add(gallery);
+			}
+
+			HaiGoodsGallery gallery = goodsGalleryList.get(0);
+			goods.setGoodsThumb(gallery.getThumbUrl());
+			goods.setGoodsImg(gallery.getImgUrl());
+			goods.setOriginalImg(gallery.getImgOriginal());
 			
-			
-			
-			
+			//size
+			Element sizes = doc.select("ul.sizes").first();
+			if (sizes != null) {
+				Elements size = sizes.select("li");
+				List<String> sizeList = new ArrayList<>();
+				for (Element element : size) {
+					HaiGoodsAttr goodsSize = new HaiGoodsAttr();
+					goodsSize.setAttrType("size");
+					goodsSize.setAttrPrice(price.toString());
+					Element sizea = element.select("a").first();
+					if (sizea.select("span").isEmpty()) {
+						goodsSize.setAttrValue(sizea.text());
+					} else {
+						goodsSize.setAttrValue(sizea.select("span").first().text());
+					}
+					sizeList.add(goodsSize.getAttrValue());
+					goodsAttrList.add(goodsSize);
+				}
+			}
+
 			
 			Bean2Utils.printEntity(goods);
 			
@@ -207,10 +279,10 @@ public class MytheresaController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
 //			String api = "http://localhost:8087/api/goods";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
+			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+			System.out.println(apiresult);
 			
 			
 		}catch(Exception e){

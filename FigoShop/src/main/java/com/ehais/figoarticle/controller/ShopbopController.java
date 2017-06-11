@@ -4,7 +4,6 @@ import com.ehais.figoarticle.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.FSO;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,7 +23,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/shopbop")
 public class ShopbopController extends FigoCommonController{
-	private static String url = "http://www.shopbop.com";
+	private static String url = "https://www.shopbop.com";
 	private int websiteId = 17;
 
 
@@ -57,9 +56,9 @@ public class ShopbopController extends FigoCommonController{
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
-			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\shopbop.html");
-			Document doc = Jsoup.parse(result);
-//			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+//			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\shopbop.html");
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 
 			Elements navCategory = doc.select(".navCategory");
@@ -278,7 +277,7 @@ public class ShopbopController extends FigoCommonController{
 					goodsColor.setAttrValue(element.attr("title"));
 					goodsColor.setAttrType("color");
 					goodsColor.setAttrPrice(goods.getShopPrice().toString());
-					colorList.add(element.text());
+					colorList.add(goodsColor.getAttrValue());
 					goodsAttrList.add(goodsColor);
 				}
 			}else{
