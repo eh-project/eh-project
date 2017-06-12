@@ -13,6 +13,8 @@ import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
 import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,7 +46,6 @@ public class SixpmController extends FigoCommonController{
 	@ResponseBody
 	@RequestMapping("/brand")
 	public String brand(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
-		
 		return "";
 	}
 	
@@ -53,9 +54,7 @@ public class SixpmController extends FigoCommonController{
 	public String category(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
-			
 			this.category(request, url);
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,6 +136,25 @@ public class SixpmController extends FigoCommonController{
 				parentList.add(parent);
 			}
 			System.out.println("parentList:  " + parentList);
+			
+			List<HaiCategory> list = new ArrayList<HaiCategory>();
+			
+			// TODO 		
+			result = GetPostTest.sendGet(categoryUrl, null);
+			Document doc = Jsoup.parse(result);
+			Element header = doc.getElementsByClass("header").first();
+			Element div = header.select(".header-nav.refresh-container").first();
+			Element ul = div.getElementsByTag("ul").first();
+			Elements menuLis = ul.select(">li");
+			System.out.println(menuLis);
+			String parentHref = "";
+			for(Element li : menuLis) {
+				Element a = li.select(">a").first();
+				
+			}
+			
+			
+		
 			System.out.println("==========================================");
 			System.out.println("==========================================");
 			
@@ -148,7 +166,6 @@ public class SixpmController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
 			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-//			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -172,8 +189,6 @@ public class SixpmController extends FigoCommonController{
 				System.out.println(haiCategory.getCategoryUrl());
 				this.goodsUrl(request, haiCategory.getCategoryUrl(), haiCategory.getCatId());
 			}
-			
-
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -185,9 +200,7 @@ public class SixpmController extends FigoCommonController{
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
 		System.out.println("goodsurl:   " + goodsurl);
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
-//			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
-//			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
+
 			Document doc = Jsoup.connect(goodsurl).get();
 			if(doc == null){
 				return "";
@@ -207,13 +220,18 @@ public class SixpmController extends FigoCommonController{
 			}
 			
 			
+
+			List<String> list = new ArrayList<String>();
+
+			// TODO
+
 			JSONArray arr = JSONArray.fromObject(list);
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
 			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+
 			
 			
 			//遍历所有页
@@ -234,6 +252,7 @@ public class SixpmController extends FigoCommonController{
 				}
 			}
 			
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -361,7 +380,8 @@ public class SixpmController extends FigoCommonController{
 				goods.setGoodsImg(gallery.getImgUrl());
 				goods.setOriginalImg(gallery.getImgOriginal());
 			}
-//			Bean2Utils.printEntity(goods);
+
+
 			
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
@@ -370,13 +390,12 @@ public class SixpmController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
-//			String api = "http://localhost:8087/api/goods";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+
 			String api = "http://localhost:8087/api/goodsAttr";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
+
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -388,11 +407,5 @@ public class SixpmController extends FigoCommonController{
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "http://www.6pm.com/";
 		DemoController ac = new DemoController();
-//		ac.goodsModel(url,1);
-//		ac.goodsUrl(null, goodsurl, 1);
 	}
-	
-	
-	
-	
 }
