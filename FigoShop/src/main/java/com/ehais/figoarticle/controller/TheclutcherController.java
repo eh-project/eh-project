@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
@@ -57,7 +56,7 @@ public class TheclutcherController extends FigoCommonController{
 		
 		try {
 			
-			this.category(request, url);
+			this.category(request, url+"/en-US");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -73,24 +72,21 @@ public class TheclutcherController extends FigoCommonController{
 		try {
 		/*	result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", categoryUrl);
 			Document doc  = Jsoup.parse(result);*/
-
-			Document doc = Jsoup.connect(categoryUrl).userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36").data("Accept-Language:","zh-CN,zh;q=0.8 ").post();
-			System.out.println(doc);
+			result = GetPostTest.sendGet(categoryUrl,null);
+			Document doc = Jsoup.parse(result);
+			//System.out.println(doc);
 			Element header = doc.getElementsByClass("header").first();
-			//System.out.println("header" + header);
-			Element nav = header.getElementsByClass("nav").first();
+			Element blackClearfix = header.select(".black-banner.clearfix").first();
+			Element nav = blackClearfix.getElementsByClass("nav").first();
 			
 			Element women = header.select(".women-move-on.sub-menu-bck.cur").first();
-
 			Element men = header.select(".men-move-on.sub-menu-bck ").first();
-
 			Element babyGirl = header.select(".baby-girl-move-on.sub-menu-bck ").first();
-
 			Element babyBoy = header.select(".baby-boy-move-on.sub-menu-bck ").first();
 			//分类的 List
 			List<HaiCategory> list = new ArrayList<HaiCategory>();		
 			
-			System.out.println(nav);
+		//	System.out.println(nav);
 			
 			// TODO 
 			Elements mainCategorys = nav.getElementsByTag("li");
@@ -110,6 +106,7 @@ public class TheclutcherController extends FigoCommonController{
 				cat.setCategoryUrl(parentHref);
 				cat.setCatName(a.text());
 				cat.setIsShow(true);
+				cat.setWebsiteId(websiteId);
 				
 				List<HaiCategory> catList = new ArrayList<HaiCategory>();
 				if(a.text().equals("WOMAN")) {
@@ -127,6 +124,7 @@ public class TheclutcherController extends FigoCommonController{
 						hc.setCategoryUrl(href);
 						hc.setCatName(la.text());
 						hc.setIsShow(true);
+						hc.setWebsiteId(websiteId);
 						catList.add(hc);
 					}
 					cat.setChildren(catList);
@@ -147,6 +145,7 @@ public class TheclutcherController extends FigoCommonController{
 						hc.setCategoryUrl(href);
 						hc.setCatName(la.text());
 						hc.setIsShow(true);
+						hc.setWebsiteId(websiteId);
 						catList.add(hc);
 					}
 					cat.setChildren(catList);
@@ -167,6 +166,7 @@ public class TheclutcherController extends FigoCommonController{
 						hc.setCategoryUrl(href);
 						hc.setCatName(la.text());
 						hc.setIsShow(true);
+						hc.setWebsiteId(websiteId);
 						catList.add(hc);
 					}
 					cat.setChildren(catList);
@@ -187,6 +187,7 @@ public class TheclutcherController extends FigoCommonController{
 						hc.setCategoryUrl(href);
 						hc.setCatName(la.text());
 						hc.setIsShow(true);
+						hc.setWebsiteId(websiteId);
 						catList.add(hc);
 					}
 					cat.setChildren(catList);
@@ -207,7 +208,7 @@ public class TheclutcherController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
 //			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8080/api/category";
+			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -245,30 +246,37 @@ public class TheclutcherController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-			Document doc = Jsoup.connect(goodsurl).get();
+			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			if(doc == null)
 				return "";
 //			System.out.println(doc);
 			List<String> list = new ArrayList<String>();
 
 			// TODO
-			Element clearfixParent = doc.select(".container.list-box.clearfix").first();
+			Element hinder = doc.getElementsByClass("hider").first();
+			Element clearfixParent = hinder.select(".container.list-box.clearfix").first();
 			Element clearfix = clearfixParent.getElementsByClass("clearfix").first();
 			Element products = clearfix.getElementsByTag("ol").first();
-			Element bottomPager = clearfix.getElementsByClass("bottom-pager").first();
+			Element bottomPager = clearfixParent.getElementsByClass("pager").first();
 			
-		//	System.out.println(clearfix);
-		//	System.out.println(products);
-		//	System.out.println(bottomPager);
+			/*System.out.println(hinder);
+			System.out.println(clearfixParent);
+			System.out.println(clearfix);
+			System.out.println(products);
+			System.out.println(bottomPager);*/
 			
-			Elements lis = products.getElementsByTag("li");
+			Elements lis = products.getElementsByClass("product");
+	//		System.out.println(lis);
 			if(lis == null)
 				return "";
 			for(Element li : lis) {
+			//	System.out.println(li);
 				Element la = li.getElementsByTag("p").first().getElementsByTag("a").first();
+		//		System.out.println(la);
 				String href = la.attr("href");
 				if(href.indexOf("http") < 0)
 					href = url + href;
+				System.out.println(href);
 				list.add(href);
 			}
 			
@@ -276,26 +284,19 @@ public class TheclutcherController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8080/api/url";
+			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
-			Element currentSpan = bottomPager.getElementsByTag("span").first();
+			Element currentSpan = bottomPager.getElementsByClass("curr").first();
 			if(currentSpan != null && currentSpan.text().equals("1") ) {
+				System.out.println("page 1 start!!!");
 				Elements pageLis = bottomPager.getElementsByTag("li");
-				
-				int pageSize = Integer.valueOf(pageLis.get(pageLis.size() - 				2).getElementsByTag("a").text());
-				this.goodsUrl(request, goodsurl + "currPage=" + pageSize, catId);
+				int pageSize = Integer.valueOf(pageLis.get(pageLis.size() - 2).getElementsByTag("a").text());	
+				for(int i = 2;  i < pageSize;  i++) {
+					System.out.println("pageSize = " + i);
+					this.goodsUrl(request, goodsurl + "?currPage=" + i, catId);
+				}
 			}
-			//获取下一页
-			/**			 
-			Element page_chooser = page.getElementById("page-chooser");
-			Element next = page_chooser.getElementsByClass("next").first();
-			if(next != null){
-				String href_a = next.attr("href");
-				this.goodsUrl(request, href_a, catId);
-			}
-			**/
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -339,9 +340,120 @@ public class TheclutcherController extends FigoCommonController{
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
 		try{
-
-			Bean2Utils.printEntity(goods);
+			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			if(doc == null)
+				return "";
 			
+			Element boxClearfix = doc.select(".box.clearfix").first();
+			Element col = boxClearfix.getElementsByClass("col").first();
+			Element colDetails = boxClearfix.select(".box.clearfix").first();
+			
+			Element info = colDetails.getElementsByClass("info").first();
+			Element detail = info.getElementsByTag("p").first(); 
+			goods.setGoodsDesc(detail.toString());
+			
+			//设置商品名字
+			Element productName = colDetails.getElementsByTag("h1").first().getElementsByTag("a").first();
+			System.out.println(productName.text());
+			goods.setGoodsName(productName.text());
+			
+			//设置价格
+			Integer pri;
+			Element priceBox =	 colDetails.getElementsByClass("price-box").first();
+			if(priceBox == null)
+				return "";
+			Element price = priceBox.getElementsByClass("promo").first();
+			if(price == null)
+				return "";
+			int index1 = price.text().indexOf(' ');
+			int index2 = price.text().indexOf('.');
+			int index3 = price.text().indexOf(',');
+			if(index1 < 0 || index2 < 0 || index3 < 0)
+				return "";
+			pri = Integer.parseInt(price.text().substring(index1 + 1 , index2)) * 1000 + Integer.parseInt(price.text().substring(index2 + 1 , index3));
+			System.out.println(pri);
+			goods.setShopPrice(pri);
+			String currency = price.text().substring(0,4);
+			System.out.println(currency);
+			goods.setCurrency(currency);
+			
+			//设置size
+			Element sizeandcolor = colDetails.getElementsByClass("size-and-color").first();
+			Element sizes = sizeandcolor.getElementsByClass("sizes").first();
+			Elements labels = sizes.getElementsByTag("label");
+			for(Element label : labels) {
+				goodsAttr = new HaiGoodsAttr();
+				goodsAttr.setAttrValue(label.text());
+				goodsAttr.setAttrType("size");
+				goodsAttr.setAttrPrice(pri.toString());
+				goodsAttrList.add(goodsAttr);
+			}
+			
+			//设置color
+			Element description = info.getElementsByTag("p").first();
+			String color="";
+			String colorstr="";
+			System.out.println(description.ownText());
+			int index4 = description.ownText().indexOf("Color: ");
+			if(index4 < 0) {
+				int index6 = description.ownText().indexOf("Colour: ");
+				System.out.println(index6);
+				if(index6 < 0) {
+					int index7 = description.ownText().indexOf("Color. ");
+					System.out.println(index7);
+					if(index7 < 0) 
+						return "";
+					colorstr = description.ownText().substring(index7 + 7);
+					System.out.println(colorstr);
+					int index5 = colorstr.indexOf(' ');
+					System.out.println(index5);
+					if(index5 < 0)
+						return "";
+					color = colorstr.substring(0,index5);
+				}
+				else {
+					colorstr = description.ownText().substring(index6 + 8);
+					System.out.println(colorstr);
+					int index5 = colorstr.indexOf(' ');
+					System.out.println(index5);
+					if(index5 < 0)
+						return "";
+					color = colorstr.substring(0,index5);
+				}
+			}else {
+				colorstr = description.ownText().substring(index4 + 7);
+				System.out.println(colorstr);
+				int index5 = colorstr.indexOf(' ');
+				System.out.println(index5);
+				if(index5 < 0)
+					return "";
+				color = colorstr.substring(0,index5);
+			}			
+			HaiGoodsAttr goodsColor = new HaiGoodsAttr();
+			goodsColor.setAttrValue(color);
+			goodsColor.setAttrType("color");
+			goodsColor.setAttrPrice(pri.toString());
+			goodsAttrList.add(goodsColor);
+			
+			//设置图片
+			Element big = col.getElementsByClass("photo-big").first();
+			Elements divs = big.select(">div");
+			for(Element dataThumb : divs) {
+				Element img = dataThumb.getElementsByTag("img").first();
+				HaiGoodsGallery gallery = new HaiGoodsGallery();
+				gallery.setThumbUrl(dataThumb.attr("data-thumb"));
+				gallery.setImgUrl(img.attr("src"));
+				gallery.setImgOriginal(img.attr("src"));
+				goodsGalleryList.add(gallery);
+			}
+			
+			if(goodsGalleryList.size() > 0) {
+				HaiGoodsGallery gallery = goodsGalleryList.get(0);
+				goods.setGoodsThumb(gallery.getThumbUrl());
+				goods.setGoodsImg(gallery.getImgUrl());
+				goods.setOriginalImg(gallery.getImgOriginal());
+			}
+					
 			entity.setGoods(goods);
 			entity.setGoodsAttrList(goodsAttrList);
 			entity.setGoodsGalleryList(goodsGalleryList);
@@ -349,10 +461,8 @@ public class TheclutcherController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
-//			String api = "http://localhost:8087/api/goods";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-						
+			String api = "http://localhost:8087/api/goodsAttr";
+			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);		
 		}catch(Exception e){
 			e.printStackTrace();
 		}
