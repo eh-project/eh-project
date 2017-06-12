@@ -136,25 +136,7 @@ public class SixpmController extends FigoCommonController{
 				parentList.add(parent);
 			}
 			System.out.println("parentList:  " + parentList);
-			
-			List<HaiCategory> list = new ArrayList<HaiCategory>();
-			
-			// TODO 		
-			result = GetPostTest.sendGet(categoryUrl, null);
-			Document doc = Jsoup.parse(result);
-			Element header = doc.getElementsByClass("header").first();
-			Element div = header.select(".header-nav.refresh-container").first();
-			Element ul = div.getElementsByTag("ul").first();
-			Elements menuLis = ul.select(">li");
-			System.out.println(menuLis);
-			String parentHref = "";
-			for(Element li : menuLis) {
-				Element a = li.select(">a").first();
-				
-			}
-			
-			
-		
+	
 			System.out.println("==========================================");
 			System.out.println("==========================================");
 			
@@ -218,11 +200,6 @@ public class SixpmController extends FigoCommonController{
 				list.add(productUrl);
 				System.out.println(productUrl);
 			}
-			
-			
-
-			List<String> list = new ArrayList<String>();
-
 			// TODO
 
 			JSONArray arr = JSONArray.fromObject(list);
