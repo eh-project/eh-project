@@ -383,6 +383,6 @@ public class SixpmController extends FigoCommonController{
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "http://www.6pm.com/";
-		DemoController ac = new DemoController();
+		SixpmController ac = new SixpmController();
 	}
 }
