@@ -222,8 +222,6 @@ public class ApiController extends FigoCommonController {
 							listAttr.add("颜色:" + haiGoodsAttr.getAttrValue() + "|尺寸:" + haiGoodsAttr2.getAttrValue());
 						}
 					}
-				} else if (haiGoodsAttr.getAttrType().equals("size")) {
-					listAttr.add("尺寸：" + haiGoodsAttr.getAttrValue());
 				}
 			}
 
