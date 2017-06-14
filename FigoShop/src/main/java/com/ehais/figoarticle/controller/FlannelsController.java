@@ -264,11 +264,11 @@ public class FlannelsController extends FigoCommonController {
 
 			//Bean2Utils.printEntity(goods);
 
-			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
-			Document doc = Jsoup.parse(result);
+//			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+//			Document doc = Jsoup.parse(result);
 //			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 //			Document doc = Jsoup.parse(result);
-
+			Document doc = Jsoup.connect(goodsurl).get();
 			String name = doc.getElementById("ProductName").text();
 			String priceS = doc.getElementById("dnn_ctr176031_ViewTemplate_ctl00_ctl04_ctl01_lblSellingPrice").text();
 			String priceL = priceS.replace(",","");
@@ -359,12 +359,12 @@ public class FlannelsController extends FigoCommonController {
 			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
 //			String api = "http://localhost:8087/api/goods";
 
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-				
-			}	catch(Exception e){
-				e.printStackTrace();
-			}
-			return "";
+			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+			System.out.println(apiresult);
+		}	catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	

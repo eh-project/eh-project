@@ -1,12 +1,14 @@
 package com.ehais.figoarticle.controller;
 
 import com.ehais.figoarticle.model.*;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.FSO;
-import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,12 +61,12 @@ public class LuisaviaromaController extends FigoCommonController{
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
-			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\aaa.html");
-			Document doc = Jsoup.parse(result);
-//			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+//			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\aaa.html");
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			Element nav = doc.getElementById("megamenu");
-			Elements navli = nav.select("li.submenu");
+			Elements navli = nav.select("li[id]");
 
 			for (Element element : navli) {
 				Element parent = element.select(".context__title").first();
@@ -78,7 +80,7 @@ public class LuisaviaromaController extends FigoCommonController{
 				pCate.setWebsiteId(websiteId);
 
 				List<HaiCategory> children = new ArrayList<>();
-				Elements cates = element.select("div.context__wrapper__sub").first().select("li>a");
+				Elements cates = element.select("div.context__wrapper__sub").first().select("li").select("a");
 				for (Element element1 : cates) {
 					String cName = element1.text();
 					System.out.println("===" + cName );
@@ -94,10 +96,6 @@ public class LuisaviaromaController extends FigoCommonController{
 				pCate.setChildren(children);
 				list.add(pCate);
 			}
-
-
-			
-			
 			
 			System.out.println("==========================================");
 			System.out.println("==========================================");
@@ -131,7 +129,7 @@ public class LuisaviaromaController extends FigoCommonController{
 			c.andCategoryUrlLike(url+"%");
 			List<HaiCategory> listCategory = haiCategoryMapper.selectByExample(example);
 			for (HaiCategory haiCategory : listCategory) {
-				System.out.println(haiCategory.getCategoryUrl());
+//				System.out.println(haiCategory.getCategoryUrl());
 				this.goodsUrl(request, haiCategory.getCategoryUrl(), haiCategory.getCatId());
 			}
 			
@@ -148,32 +146,43 @@ public class LuisaviaromaController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.parse(result);
+			Document doc = Jsoup.connect(goodsurl).timeout(20000).get();
 			List<String> list = new ArrayList<String>();
+			Element productList = doc.getElementById("div_lp_body");
+			if (productList == null || productList.equals("")) return "";
+			Elements product_li = productList.select("div>div>a");
+//			System.out.println(product_li.size());
 
-			// TODO
+			for (Element element : product_li) {
+				String Href = element.attr("href");
+				if (Href.indexOf("http") < 0) Href = url + Href;
+				System.out.println(Href);
+				list.add(Href);
+			}
 			
 			
 			JSONArray arr = JSONArray.fromObject(list);
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+			System.out.println(apiresult);
 			
 			//获取下一页
-			/**			 
-			Element page_chooser = page.getElementById("page-chooser");
-			Element next = page_chooser.getElementsByClass("next").first();
+			Element page_chooser = doc.getElementById("div_lp_menutop_paging");
+			Element next = page_chooser.select("li>a.next_page").first();
 			if(next != null){
-				String href_a = next.attr("href");
-				this.goodsUrl(request, href_a, catId);
+				String nHref = next.attr("href");
+				if (nHref.indexOf("http") < 0) nHref = url + nHref;
+				this.goodsUrl(request, nHref, catId);
 			}
-			**/
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -212,17 +221,97 @@ public class LuisaviaromaController extends FigoCommonController{
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
-		HaiGoodsAttr goodsAttr = new HaiGoodsAttr();
-		goods.setGoodsUrl(goodsurl);
-		goods.setCatId(catId);
-		goods.setWebsiteId(websiteId);
-		try{
 
-			
-			
-			
-			
-			
+		try{
+			// 模拟一个浏览器
+			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);
+
+			//设置webClient的相关参数
+			//启动JS
+			webClient.getOptions().setJavaScriptEnabled(true);
+			webClient.getOptions().setActiveXNative(false);
+			//禁用Css，可避免自动二次请求CSS进行渲染
+			webClient.getOptions().setCssEnabled(false);
+			//JS运行错误时，是否抛出异常
+			webClient.getOptions().setThrowExceptionOnScriptError(false);
+//			webClient.waitForBackgroundJavaScript(10*1000);
+			webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+
+			//模拟浏览器打开一个目标网址
+			final HtmlPage page = webClient.getPage(goodsurl);
+			//该方法在getPage()方法之后调用才能生效
+			webClient.waitForBackgroundJavaScript(1000*3);
+			webClient.setJavaScriptTimeout(0);
+			result = page.asXml();
+//			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+			Document doc = Jsoup.parse(result);
+			Element info = doc.getElementById("div_right_sp");
+			String name = info.getElementById("sp_p_category_nolink").text();
+			String desc = info.getElementById("div_prodDetailstxt").text();
+			Element priceSale = info.getElementById("sp_span_discountedprice");
+			String priceS = "";
+			if (priceSale.hasText()) {
+				priceS = priceSale.text();
+				priceS = priceS.substring(3);
+			} else {
+				priceS = info.getElementById("sp_span_price").text();
+				priceS = priceS.substring(2);
+			}
+			Integer price = Float.valueOf(priceS).intValue() * 100;
+			String currency = doc.getElementById("div_currencies").select("span").first().text();
+
+			goods.setGoodsName(name);
+			goods.setGoodsDesc(desc);
+			goods.setCurrency(currency);
+			goods.setShopPrice(price);
+			goods.setGoodsUrl(goodsurl);
+			goods.setCatId(catId);
+			goods.setWebsiteId(websiteId);
+
+			//picture
+			Element gallery_ul = doc.select("ul#sp_ul_slides").first();
+			Elements gallery_li = gallery_ul.select("img");
+			for (Element element : gallery_li) {
+				String gHref = "http:" + element.attr("src");
+				HaiGoodsGallery gallery = new HaiGoodsGallery();
+				gallery.setThumbUrl(gHref);
+				gallery.setImgUrl(gHref);
+				gallery.setImgOriginal(gHref);
+				goodsGalleryList.add(gallery);
+			}
+
+			HaiGoodsGallery gallery = goodsGalleryList.get(0);
+			goods.setGoodsThumb(gallery.getThumbUrl());
+			goods.setGoodsImg(gallery.getImgUrl());
+			goods.setOriginalImg(gallery.getImgOriginal());
+
+			//color
+			Element color = doc.getElementById("sp_prod_color");
+			Elements color_option = color.select("option");
+			List<String> colorList = new ArrayList<>();
+			for(Element element : color_option) {
+				HaiGoodsAttr goodsColor = new HaiGoodsAttr();
+				goodsColor.setAttrValue(element.text());
+				goodsColor.setAttrType("color");
+				goodsColor.setAttrPrice(price.toString());
+				colorList.add(element.text());
+				goodsAttrList.add(goodsColor);
+			}
+
+			//size
+			Element size = doc.getElementById("sp_prod_size");
+			Elements size_option = size.select("option");
+			size_option.remove(0);
+			List<String> sizeList = new ArrayList<>();
+			for(Element element : size_option) {
+				HaiGoodsAttr goodsSize = new HaiGoodsAttr();
+				goodsSize.setAttrValue(element.text());
+				goodsSize.setAttrType("size");
+				goodsSize.setAttrPrice(price.toString());
+				sizeList.add(element.text());
+				goodsAttrList.add(goodsSize);
+			}
+
 			Bean2Utils.printEntity(goods);
 			
 			entity.setGoods(goods);
@@ -232,10 +321,10 @@ public class LuisaviaromaController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
 //			String api = "http://localhost:8087/api/goods";
-//			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
-			
+			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
+			System.out.println(apiresult);
 			
 			
 		}catch(Exception e){

@@ -1,26 +1,21 @@
 package com.ehais.figoarticle.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.LogFactory;
-import org.ehais.controller.CommonController;
-import org.ehais.util.EHtmlUnit;
-import org.ehais.util.EHttpClientUtil;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.List;
 
 
 @Controller
@@ -75,7 +70,7 @@ public class GebnegozionlineController extends FigoCommonController {
 		try{
 			
 			
-			String url = "http://v.youku.com/v_show/id_XNDc2MDkzMTIw.html";  
+			String url = "http://v.youku.com/v_show/id_XNDc2MDkzMTIw.html";
 	        String xurl = "http://v.youku.com/v_vpofficiallistv5/id_119023280_showid_271942_page_2?__rt=1&__ro=listitem_page2";  
 	        // String a = "<a page=\"2\">178-101</a>";  
 	        // String url="http://www.baidu.com";  
@@ -109,7 +104,7 @@ public class GebnegozionlineController extends FigoCommonController {
 	        webClient.waitForBackgroundJavaScript(600*1000);   
 	        */  
 	//      webClient.waitForBackgroundJavaScript(600*1000);  
-	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());   
+	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
 	          
 	        // 模拟浏览器打开一个目标网址  
 	        final HtmlPage page = webClient.getPage(url);  
