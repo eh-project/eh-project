@@ -222,11 +222,16 @@ public class ApiController extends FigoCommonController {
 							listAttr.add("颜色:" + haiGoodsAttr.getAttrValue() + "|尺寸:" + haiGoodsAttr2.getAttrValue());
 						}
 					}
-				} else if (haiGoodsAttr.getAttrType().equals("size")) {
-					listAttr.add("尺寸：" + haiGoodsAttr.getAttrValue());
 				}
 			}
 
+			if (listAttr.isEmpty()) {
+				for (HaiGoodsAttr haiGoodsAttr : goodsAttrList) {
+					if (haiGoodsAttr.getAttrType().equals("size")) {
+						listAttr.add("尺寸：" + haiGoodsAttr.getAttrValue());
+					}
+				}
+			}
 			if(count == 0){//不存在此记录，进行插入商品
 				//根据商品属性，组合成多个商品列表
 				

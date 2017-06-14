@@ -264,7 +264,7 @@ public class FlannelsController extends FigoCommonController {
 
 			//Bean2Utils.printEntity(goods);
 
-			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 			Document doc = Jsoup.parse(result);
 //			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 //			Document doc = Jsoup.parse(result);

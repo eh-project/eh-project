@@ -60,86 +60,66 @@ public class FwrdController extends FigoCommonController{
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getEnWebForFwrd.py", categoryUrl);
-//			if (categoryUrl==url){
-//				result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrd.html");
-//			}else{
-//				result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrdman.html");
-//			}
 //			response = Jsoup.connect(categoryUrl).execute();
 //			System.out.println(response.body());
 //			Document doc = Jsoup.parse(result);
 			Document doc = Jsoup.connect(categoryUrl).get();
-//			Element sex_ul = doc.select(".ui-list.clearfix").first();
-//			Elements sex_li = sex_ul.select("a");
-//			String sexresult = "";
 
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
+			Element sex = doc.select(".current").first();
+			System.out.println(sex.text());
+			Element sex_a = sex.select("a").first();
+			String sexHref = sex_a.attr("href");
+			if (sexHref.indexOf("http") < 0) sexHref = url + sexHref;
+			HaiCategory topcat = new HaiCategory();
+			topcat.setCatName(sex.text());
+			topcat.setCategoryUrl(sexHref);
+			topcat.setIsShow(true);
+			topcat.setWebsiteId(websiteId);
+			List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
+			Elements pageitem = doc.select(".page_item");
+			for (Element element1 : pageitem) {
+				Element item_a = element1.select("a").first();
+				String itemHref = item_a.attr("href");
+				System.out.println("===" + item_a.text());
+				if (itemHref.indexOf("http") < 0 ) itemHref = url + itemHref;
+				HaiCategory cat2 = new HaiCategory();
+				cat2.setCatName(item_a.text());
+				cat2.setCategoryUrl(itemHref);
+				cat2.setIsShow(true);
+				cat2.setWebsiteId(websiteId);
+				topcatlist.add(cat2);
 
-//			for(Element element : sex_li) {
-//				String sex_url = url + element.attr("href");
-//				System.out.println("请求地址：" + sex_url);
-//				sexresult = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getEnWebForFwrd.py", sex_url);
-//				sexresult = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\fwrd.html");
-//				Document doc_sex = Jsoup.parse(sexresult);
-//				Document doc_sex = Jsoup.connect(sex_url).get();
-				Element sex = doc.select(".current").first();
-				System.out.println(sex.text());
-				Element sex_a = sex.select("a").first();
-				String sexHref = sex_a.attr("href");
-				if (sexHref.indexOf("http") < 0) sexHref = url + sexHref;
-				HaiCategory topcat = new HaiCategory();
-				topcat.setCatName(sex.text());
-				topcat.setCategoryUrl(sexHref);
-				topcat.setIsShow(true);
-				topcat.setWebsiteId(websiteId);
-				List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
-				Elements pageitem = doc.select(".page_item");
-				for (Element element1 : pageitem) {
-					Element item_a = element1.select("a").first();
-					String itemHref = item_a.attr("href");
-					System.out.println("===" + item_a.text());
-					if (itemHref.indexOf("http") < 0 ) itemHref = url + itemHref;
-					HaiCategory cat2 = new HaiCategory();
-					cat2.setCatName(item_a.text());
-					cat2.setCategoryUrl(itemHref);
-					cat2.setIsShow(true);
-					cat2.setWebsiteId(websiteId);
-					topcatlist.add(cat2);
-
-					Element sub_menu = element1.select(".sub_menu").first();
-					if ( sub_menu != null ) {
-						List<HaiCategory> catlist = new ArrayList<HaiCategory>();
-						Elements taga = sub_menu.select(".spread");
-						if (taga.size() == 0) {
-							taga = sub_menu.select("li").not("[style^=display]");
-							taga = taga.select("a");
-						} else {
-							taga = sub_menu.select("a.u-padding-a--none");
-						}
-						for(Element element2 : taga) {
-							String aName = element2.text();
-							System.out.println("======" + aName);
-							String aHref = element2.attr("href");
-							if (aHref.indexOf("http") < 0) aHref = url + aHref;
-							HaiCategory cat3 = new HaiCategory();
-							cat3.setCatName(aName);
-							cat3.setCategoryUrl(aHref);
-							cat3.setIsShow(true);
-							cat3.setWebsiteId(websiteId);
-							catlist.add(cat3);
-						}
-
-						cat2.setChildren(catlist);
-
-						}
+				Element sub_menu = element1.select(".sub_menu").first();
+				if ( sub_menu != null ) {
+					List<HaiCategory> catlist = new ArrayList<HaiCategory>();
+					Elements taga = sub_menu.select(".spread");
+					if (taga.size() == 0) {
+						taga = sub_menu.select("li").not("[style^=display]");
+						taga = taga.select("a");
+					} else {
+						taga = sub_menu.select("a.u-padding-a--none");
+					}
+					for(Element element2 : taga) {
+						String aName = element2.text();
+						System.out.println("======" + aName);
+						String aHref = element2.attr("href");
+						if (aHref.indexOf("http") < 0) aHref = url + aHref;
+						HaiCategory cat3 = new HaiCategory();
+						cat3.setCatName(aName);
+						cat3.setCategoryUrl(aHref);
+						cat3.setIsShow(true);
+						cat3.setWebsiteId(websiteId);
+						catlist.add(cat3);
 					}
 
-				topcat.setChildren(topcatlist);
-				list.add(topcat);
+					cat2.setChildren(catlist);
 
+					}
+				}
 
-			
-			
+			topcat.setChildren(topcatlist);
+			list.add(topcat);
 			
 			System.out.println("==========================================");
 			System.out.println("==========================================");
