@@ -2,67 +2,90 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<#include "/include/BootStrap_Include.html">
-<title>航院微信管理后台</title>
-<link href="/themes/default/admin/index.css" rel="stylesheet" />
-<style type="text/css">
-.layout-split-north{border-bottom:0;}
-.layout-split-west{border-right: 1px solid #2c3e50;}
-.layout-split-west .panel-body{background: #f2f2f2;}
-.panel-body-noheader{border-top-width:0;}
-.panel-header, .panel-body{border-width:0;}
-.panel-body{padding:0;}
-</style>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>商城管理后台</title>
+<link rel="stylesheet" href="/themes/bootstrap/css/bootstrap.min.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/themes/bootstrap/bootstrap.addtabs.css" type="text/css" media="screen" />
+
+<script src="/themes/bootstrap/js/jquery.min.js"></script>
+<script src="/themes/bootstrap/js/bootstrap.min.js"></script>
+<script src="/themes/bootstrap/bootstrap.addtabs.js"></script>
+
+
+<script type="text/javascript">
+   $(function() {
+       $.addtabs({
+           iframeHeight: 320
+       });
+   })
+</script>
 </head>
-<body class="easyui-layout" data-options="fit : true,border : false">
-    <div data-options="region:'north',title:'',split:true" style="height:45px;background: #2c3e50;">
-    	<div class="container-fluid">
-    		<div href="/index.php?g=admin&amp;m=index&amp;a=index" class="brand pull-left"> 
-    			<span>航院微信管理中心</span>
-			</div>
-			<div class="pull-left nav_shortcuts">					
-					<a class="btn btn-small btn-warning" href="/" title="网站首页" target="_blank">
-						<i class="fa fa-home"></i>
-					</a>
-					
-					<a class="btn btn-small btn-success" href="javascript:openapp('/index.php?g=portal&amp;m=AdminTerm&amp;a=index','index_termlist','分类管理');" title="分类管理">
-						<i class="fa fa-th"></i>
-					</a>					
-					<a class="btn btn-small btn-info" href="javascript:openapp('/index.php?g=portal&amp;m=AdminPost&amp;a=index','index_postlist','文章管理');" title="文章管理">
-						<i class="fa fa-pencil"></i>
-					</a>
-					<a class="btn btn-small btn-danger" href="javascript:openapp('/index.php?g=admin&amp;m=setting&amp;a=clearcache','index_clearcache','清除缓存');" title="清除缓存">
-						<i class="fa fa-trash-o"></i>
-					</a>					
-					<a class="btn btn-small" href="javascript:openapp('/index.php?g=admin&amp;m=menu&amp;a=index','index_menu','后台菜单');" title="后台菜单">
-						<i class="fa fa-list"></i>
-					</a>				
-			</div>
-			
-			<ul class="nav simplewind-nav pull-right">
-				<li class="light-blue">
-					<a data-toggle="dropdown" href="javascript:;" class="dropdown-toggle">
-   						<i class="fa fa-user"></i>
-   						<span class="user-info">
-							欢迎, <#if session_admin_name??>${session_admin_name }</#if><#if session_admin_id??>【${session_admin_id }】</#if>
-						</span>
-						<i class="fa fa-caret-down"></i>
-					</a>
-					<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-closer">
-						<li><a href="javascript:;"><i class="fa fa-cog"></i> 网站信息</a></li>
-						<li><a href="javascript:;"><i class="fa fa-user"></i> 修改信息</a></li>							
-						<li><a href="javascript:;"><i class="fa fa-lock"></i> 修改密码</a></li>							
-						<li><a href="/admin_logout"><i class="fa fa-sign-out"></i> 退出</a></li>
-					</ul>
-				</li>
-			</ul>
-					
-    	</div>
+<body>
+    <div class="container">
+
+        <div class="row">
+            
+
+            <div class="col-sm-9">
+                <h4>Example</h4>
+                <hr>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <ul class="list-group">
+                                    <a class="list-group-item" data-addtab="mail" data-url="./ajax/mailbox.txt">mailbox</a>
+                                    <a class="list-group-item" data-addtab="mail1" data-url="./ajax/mailbox.txt" data-ajax="true">Use Ajax</a>
+                                    <a class="list-group-item" data-addtab="message" data-url="./ajax/mailbox.txt" data-content="Customize the content">
+                                        <i class="glyphicon glyphicon-bullhorn"></i>指定内容
+                                    </a>
+                                    <a class="list-group-item" data-addtab="setting" data-url="./ajax/mailbox.txt" data-title="Customize the title">
+                                        <i class="glyphicon glyphicon-cog"></i>指定标题
+                                    </a>
+                                    <a class="list-group-item" data-addtab="userMenu1" data-url="./ajax/mailbox.txt">
+                                    用户菜单1
+                                </a>
+                                    <a class="list-group-item" data-addtab="userMenu2" data-url="./ajax/button.html">
+                                    用户菜单2
+                                </a>
+                                    <a class="list-group-item" data-addtab="sina" data-url="http://sina.com.cn">
+                                    新浪
+                                </a>
+                                    <a class="list-group-item" data-addtab="baidu" data-url="http://baidu.com">
+                                    百度
+                                </a>
+                                    <a class="list-group-item" onclick="Addtabs.closeAll();">
+                                    关闭所有
+                                </a>
+                                </ul>
+                            </div>
+                            <div class="col-sm-9">
+                                <div id="tabs">
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="home">I'm a homepage.</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                
+            </div>
+        </div>
     </div>
-    <div data-options="region:'west',title:'',split:true" style="width:190px;"><#include "menu.html"></div>
-    <div  data-options="region:'center',title:''"  style="padding:0px;" >
-    	<div id="web_main" class="easyui-tabs" fit="true" ></div>
-    </div>
-    
 </body>
 </html>

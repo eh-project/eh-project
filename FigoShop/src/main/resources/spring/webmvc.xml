@@ -80,6 +80,7 @@
 
 	<!-- 登录拦截器 -->
 	 
+<!-- 	
 	<mvc:interceptors>
 
 		<mvc:interceptor>
@@ -100,6 +101,6 @@
 			</list>
 		</property>
 	</bean>
-
+ -->
 	 
 </beans>

@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="renderer" content="webkit">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="/ehais/js/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/ehais/js/easyui/themes/default/easyui.css">
+<script type="text/javascript" src="/ehais/js/jquery/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="/ehais/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/ehais/js/easyui/jquery.easyui.min.js"></script>
+</head>
+<body class="easyui-layout" >
+<div class="container-full" id="bootstrapForm" style="text-align: center;">
+
+<form id="form" class="form-inline" action="" method="post">
+  <div class="form-group">
+    <label for="keyword" class="control-label">关键字</label>
+    <input type="text" class="form-control" id="keyword" name="keyword" placeholder="keyword">
+  </div>
+  <div class="form-group">
+    <label for="offset" class="control-label">开始页</label>
+    <input type="text" class="form-control" id="offset" name="offset" placeholder="offset" value="0">
+  </div>
+  <div class="form-group">
+    <label for="count" class="control-label">返回记录数</label>
+    <input type="text" class="form-control" id="count" name="count" placeholder="count" value="2000">
+  </div>
+  <div class="form-group">
+    <button id="getArticle" type="button" class="btn btn-default" >获取<img id="loading" src="/ehais/js/loading/images/progress.gif" style="display: none;"></button>
+  </div>
+  <div class="form-group" id="ajax-status"></div>
+</form>
+</div>
+
+<table id="datagrid"  data-options="fit:true"></table>
+<script type="text/javascript">
+var mydatagrid ;
+$(function(){
+    mydatagrid = $('#datagrid').datagrid({
+        url:'article.api',
+        method:"post",
+        columns:[[
+    		{field:'id',title:'编号',width:150},
+    		{field:'title',title:'标题',width:250},
+    		{field:'keyword',title:'关键字',width:350},
+    		{field:' ',title:'获取评论',width:150,formatter : function(value, row, index) {
+				return "<a href='/comment?article_id="+row.id+"' target='_blank'>获取评论</a>";
+			}
+    		},
+    		//{field:'release_time',title:'发布日期',width:120},
+    		//{field:'abstracts',title:'摘要',width:550}
+        ]],
+        toolbar : "#bootstrapForm",
+        pageList:[10,20,30,40,50],
+        pageSize:50,
+        pagination:true,
+    });
+    
+    $("#getArticle").click(function(){getArticle();});
+});
+
+function getArticle(){
+	$.ajax({
+		url : "toutiaoApiDB",
+		data : {"keyword":$("#keyword").val(),"offset":$("#offset").val(),"count":$("#count").val()},
+		method : 'POST',
+		dataType : 'json',
+		beforeSend : function(jqXHR) {
+            $("#loading").show();
+       	},
+       	complete : function(){
+       		$("#loading").hide();
+       	},
+       	success : function(){
+       		mydatagrid.datagrid("reload");
+       	}
+	});
+}
+
+</script>
+</body>
+</html>
