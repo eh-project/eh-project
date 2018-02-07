@@ -1,8 +1,13 @@
 package com.ehais.figoarticle.controller;
 
-import com.ehais.figoarticle.model.*;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
 import org.ehais.util.PythonUtil;
@@ -13,15 +18,22 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ehais.figoarticle.model.HaiCategory;
+import com.ehais.figoarticle.model.HaiCategoryExample;
+import com.ehais.figoarticle.model.HaiGoodsAttr;
+import com.ehais.figoarticle.model.HaiGoodsEntity;
+import com.ehais.figoarticle.model.HaiGoodsGallery;
+import com.ehais.figoarticle.model.HaiGoodsUrl;
+import com.ehais.figoarticle.model.HaiGoodsUrlExample;
+import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+//完成
 @Controller
 @RequestMapping("/agentprovocateur")
 public class AgentprovocateurController extends FigoCommonController{
@@ -42,7 +54,7 @@ public class AgentprovocateurController extends FigoCommonController{
 		
 		try {
 			
-			this.category(request, url + "/int_en");
+			this.category(request, "http://www.agentprovocateur.com/gb_en");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -52,19 +64,36 @@ public class AgentprovocateurController extends FigoCommonController{
 		return "";
 	}
 	
+//	@Test
+//	public void test_category(){
+//		try{
+//
+//			String url = "http://www.agentprovocateur.com/gb_en";
+//			url = "http://www.ehais.com";
+////			Document doc = Jsoup.connect(url).get();
+//			String req = EHtmlUnit.getAjaxPage(url);
+//			Document doc = Jsoup.parse(req);
+//			System.out.println(doc.toString());
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		
+//	}
 	
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
+		System.out.println(categoryUrl);
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\aaa.html");
 //			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+			Document doc = Jsoup.connect(categoryUrl).get();
+			Element navp = doc.getElementById("nac");
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
-			Elements nav = doc.select(".level0.parent");
+			Elements nav = navp.select(">li");
 			for (Element element : nav) {
-				Element parent = element.select("a.menu-link").first();
+				Element parent = element.select(">a.menu-link").first();
 				System.out.println(parent.text());
 				String pHref = parent.attr("href");
 				if (pHref.indexOf("http") < 0 ) pHref = url + pHref;
@@ -142,11 +171,11 @@ public class AgentprovocateurController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			Element productList = doc.getElementById("products-grid");
 			if (productList == null || productList.equals("")) return "";
 			Elements product_li = productList.select("li");
@@ -197,6 +226,7 @@ public class AgentprovocateurController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -219,7 +249,8 @@ public class AgentprovocateurController extends FigoCommonController{
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 
 		try{
-			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+//			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 			Document doc = Jsoup.parse(result);
 //			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			Element info = doc.select(".product-shop").first();
@@ -292,6 +323,22 @@ public class AgentprovocateurController extends FigoCommonController{
 		return "";
 	}
 	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";

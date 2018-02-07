@@ -46,6 +46,8 @@ $(function(){
     		{field:'id',title:'编号',width:150},
     		{field:'title',title:'标题',width:250},
     		{field:'keyword',title:'关键字',width:350},
+    		{field:'reply',title:'回复',width:150},
+    		{field:'preReply',title:'上次回复',width:150},
     		{field:' ',title:'获取评论',width:150,formatter : function(value, row, index) {
 				return "<a href='/comment?article_id="+row.id+"' target='_blank'>获取评论</a>";
 			}

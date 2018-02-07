@@ -501,7 +501,7 @@
 				<configuration>
 					<path>/</path>
 					<uriEncoding>UTF-8</uriEncoding>
-					<port>8087</port>
+					<port>8085</port>
 					<!--<java.util.logging.manager>org.apache.juli.ClassLoaderLogManager</java.util.logging.manager>-->
 					<mode>context</mode>
 					<contextFile>${basedir}/../context.xml</contextFile>
@@ -533,6 +533,18 @@
 			<id>deploy</id>
 			<properties>
 				<system.config>config/config-deploy.properties</system.config>
+			</properties>
+		</profile>
+		<profile>
+			<id>hkdeploy</id>
+			<properties>
+				<system.config>config/config-hkdeploy.properties</system.config>
+			</properties>
+		</profile>
+		<profile>
+			<id>hqh</id>
+			<properties>
+				<system.config>config/config-hqh.properties</system.config>
 			</properties>
 		</profile>
 	</profiles>

@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehais.figoarticle.model.HaiCategory;
@@ -39,6 +40,7 @@ public class TessabitController extends FigoCommonController{
 	private static String url = "https://www.tessabit.com/cn/woman/";
 	//用于 tessabit/url goodsAll
 	private static String url2 = "https://www.tessabit.com/";
+	private static String url3 = "https://www.tessabit.com/cn/man/";
 	
 	private int websiteId = 21;
 
@@ -70,7 +72,8 @@ public class TessabitController extends FigoCommonController{
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-			result = GetPostTest.sendGet(categoryUrl, "country=CN");
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+//			result = GetPostTest.sendGet(categoryUrl, "country=CN");
 			Document doc = Jsoup.parse(result);
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			
@@ -169,8 +172,10 @@ public class TessabitController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-			result = GetPostTest.sendGet(goodsurl, null);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 			Document doc = Jsoup.parse(result);
+//			result = GetPostTest.sendGet(goodsurl, null);
+//			Document doc = Jsoup.parse(result);
 			if(doc == null)
 				return "";
 			List<String> list = new ArrayList<String>();
@@ -258,6 +263,7 @@ public class TessabitController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url2+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -284,8 +290,10 @@ public class TessabitController extends FigoCommonController{
 		try{
 
 			//
-			result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", goodsurl);
+//			result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", goodsurl);
 			//result = GetPostTest.sendGet(goodsurl, null);
+//			Document doc = Jsoup.parse(result);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 			Document doc = Jsoup.parse(result);
 //			System.out.println(doc);
 			if(doc == null)
@@ -410,6 +418,23 @@ public class TessabitController extends FigoCommonController{
 		return "";
 	}
 	
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";

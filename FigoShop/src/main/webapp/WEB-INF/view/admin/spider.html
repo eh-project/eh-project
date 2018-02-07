@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" href="/ehais/js/bootstrap/css/bootstrap.min.css">
+
+<script src="/ehais/js/jquery/jquery-2.1.4.min.js"></script>
+<script src="/ehais/js/bootstrap/js/bootstrap.min.js"></script>
+
+<title>Insert title here</title>
+
+</head>
+<body>
+<div>
+<dl>
+	<dt>特殊请求页面</dt>
+	<dd><a href="flannels" target="_blank">flannels分类</a></dd>
+	<dd></dd>
+	<dd></dd>
+</dl>
+</div>
+<div>
+<#list websiteList as website>
+<div style="float: left;width:400px;height:100px;margin-bottom: 20px;">
+	<div>名称：${website.websiteName}</div>
+	<div>
+		获取分类【<span id="category_${website.websiteId}"></span>】
+		<a href="javascript:;" onclick="category('${website.websiteName}');">获取</a>
+		<img id="load_category_${website.websiteName}" src="/ehais/js/loading/images/progress.gif" style="display: none;">
+	</div>
+	<div>
+		获取所有商品链接【<span id="url_${website.websiteId}"></span>】
+		<a href="javascript:;" onclick="url('${website.websiteName}');">获取</a>
+		<img id="load_url_${website.websiteName}" src="/ehais/js/loading/images/progress.gif" style="display: none;">
+	</div>
+	<div>
+		获取所有商品详情【<span id="goodsAll_${website.websiteId}"></span>】
+		<a href="javascript:;" onclick="goodsAll('${website.websiteName}');">获取</a>
+		<img id="load_goodsAll_${website.websiteName}" src="/ehais/js/loading/images/progress.gif" style="display: none;">
+	</div>
+	<div id="getGoodsUrl_${website.websiteId}">
+		<input type="text" id="txt_goods_url_${website.websiteId}" name="txt_goods_url_${website.websiteId}">
+		<input type="button" value="获取" style="background: none;border: 1px solid #e5e5e5; " id="btn_goods_url__${website.websiteId}" name="btn_goods_url__${website.websiteId}" onclick="getGoodsUrl('${website.websiteName}','${website.websiteId}');"/>
+	</div>
+</div>
+</#list>
+
+</div>
+
+<script type="text/javascript">
+$(function(){
+	website_count();
+});
+function website_count(){
+	$.ajax({
+		url : "website_count",type:"post",dataType:"json",data:null,
+		success:function(result){
+			var categoryWebSiteCount = result.map.categoryWebSiteCount;
+			var goodsUrlWebSiteCount = result.map.goodsUrlWebSiteCount;
+			var goodsWebSiteCount = result.map.goodsWebSiteCount;
+			$.each(categoryWebSiteCount,function(index,ele){$("#category_"+ele.websiteId).html(ele.count);});
+			$.each(goodsUrlWebSiteCount,function(index,ele){$("#url_"+ele.websiteId).html(ele.count);});
+			$.each(goodsWebSiteCount,function(index,ele){$("#goodsAll_"+ele.websiteId).html(ele.count);});
+		}
+	});
+}
+function category(websitename){
+	$.ajax({
+		url : "/"+websitename+"/category",type:"post",dataType:"txt",
+		success:function(result){
+			$("#load_category_"+websitename).hide();
+		},error:function(err,xhr){
+			$("#load_category_"+websitename).hide();
+		},beforeSend: function(){
+			$("#load_category_"+websitename).show();
+		},complete: function(){
+			$("#load_category_"+websitename).hide();
+		}
+	});
+}
+
+function url(websitename){
+	$.ajax({
+		url : "/"+websitename+"/url",type:"post",dataType:"txt",
+		success:function(result){
+			$("#load_url_"+websitename).hide();
+		},error:function(err,xhr){
+			$("#load_url_"+websitename).hide();
+		},beforeSend: function(){
+			$("#load_url_"+websitename).show();
+		},complete: function(){
+			$("#load_url_"+websitename).hide();
+		}
+	});
+}
+
+function goodsAll(websitename){
+	$.ajax({
+		url : "/"+websitename+"/goodsAll",type:"post",dataType:"txt",
+		success:function(result){
+			$("#load_goodsAll_"+websitename).hide();
+		},error:function(err,xhr){
+			$("#load_goodsAll_"+websitename).hide();
+		},beforeSend: function(){
+			$("#load_goodsAll_"+websitename).show();
+		},complete: function(){
+			$("#load_goodsAll_"+websitename).hide();
+		}
+	});
+}
+
+function getGoodsUrl(websitename,websiteid){
+	if($("#txt_goods_url_"+websiteid).val() == ""){
+		alert("链接为空");
+		return ;
+	}
+	$.ajax({
+		url : "/"+websitename+"/getGoodsUrl",type:"post",dataType:"txt",
+		data : { "goodsurl":$("#txt_goods_url_"+websiteid).val() , catId:0 },
+		success:function(result){
+			$("#load_goodsAll_"+websitename).hide();
+		},error:function(err,xhr){
+			$("#load_goodsAll_"+websitename).hide();
+		},beforeSend: function(){
+			$("#load_goodsAll_"+websitename).show();
+		},complete: function(){
+			$("#load_goodsAll_"+websitename).hide();
+		}
+	});
+}
+
+</script>
+</body>
+</html>

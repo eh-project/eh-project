@@ -1,10 +1,14 @@
 package com.ehais.figoarticle.controller;
 
-import com.ehais.figoarticle.model.*;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ehais.util.EHttpClientUtil;
-import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,15 +16,22 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ehais.figoarticle.model.HaiCategory;
+import com.ehais.figoarticle.model.HaiCategoryExample;
+import com.ehais.figoarticle.model.HaiGoodsAttr;
+import com.ehais.figoarticle.model.HaiGoodsEntity;
+import com.ehais.figoarticle.model.HaiGoodsGallery;
+import com.ehais.figoarticle.model.HaiGoodsUrl;
+import com.ehais.figoarticle.model.HaiGoodsUrlExample;
+import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+//完成
 @Controller
 @RequestMapping("/flannels")
 public class FlannelsController extends FigoCommonController {
@@ -28,6 +39,20 @@ public class FlannelsController extends FigoCommonController {
 	private int websiteId = 2;
 
 
+//	@Test
+//	public void test(){
+//		
+//		try {
+//			String result = EHtmlUnit.getAjaxPage(url);
+////			String result = Jsoup.connect(url).get().toString();
+//			System.out.println(result);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//	}
+	
 	@ResponseBody
 	@RequestMapping("/brand")
 	public String brand(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
@@ -40,8 +65,9 @@ public class FlannelsController extends FigoCommonController {
 	public String category(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
+			String result = Jsoup.connect(url).get().toString();
 			
-			this.category(request, url);
+			this.category_content(request, result);
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -52,14 +78,17 @@ public class FlannelsController extends FigoCommonController {
 	}
 	
 	
-	private void category(HttpServletRequest request,String categoryUrl){
-		System.out.println("请求地址：" + categoryUrl);
-		String result = "";
+	public void category_content(HttpServletRequest request,String result){
+//		System.out.println("请求地址：" + categoryUrl);
+		
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
-			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
+//			result = EHtmlUnit.getAjaxPage(categoryUrl);
+//			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\flannels.html");
+//			System.out.println(result);
 			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(categoryUrl).get();
 //			Element topMenu = doc.getElementById("topMenu");
 //			Element firstUL = topMenu.select(">ul").first();
 //			Elements topcate = firstUL.select(">li");
@@ -68,19 +97,21 @@ public class FlannelsController extends FigoCommonController {
 //			topcate.remove(1);
 
 //			Document doc = Jsoup.connect(categoryUrl).get();
-			Element shop = doc.getElementsByClass("shop").first();
-			Elements topcate = shop.select("div[data-level=2]");
-			topcate.remove(2);
+			Element shop = doc.getElementById("topMenu");
+			System.out.println(shop.toString());
+			
+			Elements topcate = shop.select(".mmHasChild");
+//			topcate.remove(2);
 
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			String sexHref = "";
 			for (Element element : topcate) {
 
 				Element sex = element.getElementsByTag("a").get(0);
-				System.out.println(sex.text());
+				System.out.println(sex.text());//第一级名称
 				sexHref = sex.attr("href");
 				if (sexHref.indexOf("http") < 0) sexHref = url + sexHref;
-				Elements mplevel = element.select("div[data-level=3]");
+				Elements mplevel = element.select(".level1");
 				HaiCategory topcat = new HaiCategory();
 				topcat.setCatName(sex.text());
 				topcat.setCategoryUrl(sexHref);
@@ -89,11 +120,12 @@ public class FlannelsController extends FigoCommonController {
 				List<HaiCategory> topcatlist = new ArrayList<HaiCategory>();
 				String parentHref = "";
 				for (Element element1 : mplevel) {
-					Element parentP = element1.getElementsByClass("menulevelheader").first();
-					Element parentA = parentP.select(">a").first();
+//					Element parentP = element1.getElementsByClass("menulevelheader").first();
+					Element parentA = element1.select(">a").first();
 					System.out.println("===" + parentA.text());
-					parentHref = parentA.attr("href");
-					if (parentHref.indexOf("http") < 0) parentHref = url + parentHref;
+					parentHref = "";
+//					parentHref = parentA.attr("href");
+//					if (parentHref.indexOf("http") < 0) parentHref = url + parentHref;
 					Elements childrenLi = element1.select(".level2");
 
 					HaiCategory cat2 = new HaiCategory();
@@ -207,8 +239,8 @@ public class FlannelsController extends FigoCommonController {
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 
@@ -239,6 +271,7 @@ public class FlannelsController extends FigoCommonController {
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -263,10 +296,11 @@ public class FlannelsController extends FigoCommonController {
 		try{
 
 			//Bean2Utils.printEntity(goods);
-
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
 //			Document doc = Jsoup.parse(result);
 //			result = PythonUtil.python("E:\\code\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+//			result = EHtmlUnit.getAjaxPage(goodsurl);
 //			Document doc = Jsoup.parse(result);
 			Document doc = Jsoup.connect(goodsurl).get();
 			String name = doc.getElementById("ProductName").text();
@@ -288,7 +322,7 @@ public class FlannelsController extends FigoCommonController {
 			Element gallery_ul = doc.getElementById("piThumbList");
 			Elements gallery_a = gallery_ul.select("li>a");
 			for(Element element : gallery_a) {
-				String gHref = "http:" + element.attr("href");
+				String gHref = element.attr("href").indexOf("http") >= 0 ?  element.attr("href") : "http:" + element.attr("href");
 				HaiGoodsGallery gallery = new HaiGoodsGallery();
 				gallery.setThumbUrl(gHref);
 				gallery.setImgUrl(gHref);
@@ -368,12 +402,29 @@ public class FlannelsController extends FigoCommonController {
 	}
 
 	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 	public static void main(String[] args) throws Exception {
-		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";
+		String goodsurl = "https://www.flannels.com/paul-smith-jacquard-polo-shirt-548074?colcode=54807422";
 		String categoryUrl = "";
 		FlannelsController ac = new FlannelsController();
-		ac.category(null, categoryUrl);
-//		ac.goodsModel(url,1);
+//		ac.category(null, categoryUrl);
+//		ac.goodsModel(goodsurl,1);
 //		ac.goodsUrl(null, goodsurl, 1);
 	}
 	

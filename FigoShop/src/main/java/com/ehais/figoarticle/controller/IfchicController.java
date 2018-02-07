@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehais.figoarticle.mapper.HaiBrandMapper;
@@ -40,6 +41,7 @@ import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+//完成
 @Controller
 @RequestMapping("/ifchic")
 public class IfchicController extends FigoCommonController {
@@ -71,11 +73,11 @@ public class IfchicController extends FigoCommonController {
 	private void categorys(HttpServletRequest request,String websiteUrl){
 		String result = "";
 		try {
-			//result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), websiteUrl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), websiteUrl);
 	//		result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", websiteUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			Document doc = Jsoup.connect(websiteUrl).get(); 
-			//Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(websiteUrl).get(); 
+			Document doc = Jsoup.parse(result);
 			//得到菜单项
 			Element menu = doc.getElementById("menu");
 			//得到菜单的子列表
@@ -144,8 +146,8 @@ public class IfchicController extends FigoCommonController {
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8087/api/category";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+//			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -180,11 +182,11 @@ public class IfchicController extends FigoCommonController {
 		System.out.println("请求地址："+goodsurl);
 		String result = "";
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), websiteUrl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 		//	result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-		//	Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).get();
 			Element product_list = doc.getElementById("product_list");
 			Elements product_li = product_list.select(">li");
 			
@@ -235,6 +237,7 @@ public class IfchicController extends FigoCommonController {
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -259,11 +262,11 @@ public class IfchicController extends FigoCommonController {
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 		
 		try{
-		//	result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", goodsurl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-			//Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).get();
 			Element primary_block = doc.getElementById("primary_block");
 			String goodsName = primary_block.select("h1.product_name").first().text();
 			goods.setGoodsName(goodsName);
@@ -327,7 +330,7 @@ public class IfchicController extends FigoCommonController {
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goods";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
 //			String api = "http://localhost:8087/api/goods";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
@@ -337,6 +340,23 @@ public class IfchicController extends FigoCommonController {
 		return "";
 	}
 	
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.ifchic.com/110-new-arrivals";

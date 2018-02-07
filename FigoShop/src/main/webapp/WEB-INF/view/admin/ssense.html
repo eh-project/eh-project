@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/ehais/js/bootstrap/css/bootstrap.min.css">
+
+<script src="/ehais/js/jquery/jquery-2.1.4.min.js"></script>
+<script src="/ehais/js/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<textarea id="content" rows="" cols="" style="width: 100%; height: 400px"></textarea>
+<button id="getSsenseCategory">获取分类</button>
+<script type="text/javascript">
+$(function(){
+	$("#getSsenseCategory").click(function(){
+		$.ajax({
+			url:"/spider/ssense-category",
+			data:{content:$("#content").val()},
+			dataType:"json",type:"post",
+			success:function(result){
+				alert("获取成功");
+				$("#content").val("")
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>

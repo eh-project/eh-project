@@ -1,9 +1,15 @@
 package com.ehais.figoarticle.controller;
 
-import com.ehais.figoarticle.model.*;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,15 +17,22 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ehais.figoarticle.model.HaiCategory;
+import com.ehais.figoarticle.model.HaiCategoryExample;
+import com.ehais.figoarticle.model.HaiGoodsAttr;
+import com.ehais.figoarticle.model.HaiGoodsEntity;
+import com.ehais.figoarticle.model.HaiGoodsGallery;
+import com.ehais.figoarticle.model.HaiGoodsUrl;
+import com.ehais.figoarticle.model.HaiGoodsUrlExample;
+import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+//完成
 @Controller
 @RequestMapping("/stylebop")
 public class StylebopController extends FigoCommonController {
@@ -55,11 +68,11 @@ public class StylebopController extends FigoCommonController {
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\stylebop.html");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 
 			Element nav = doc.getElementById("nav");
@@ -144,11 +157,11 @@ public class StylebopController extends FigoCommonController {
 		System.out.println("请求地址：" + goodsurl);
 		String result = "";
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			Element productList = doc.getElementById("products-grid");
 			if (productList == null || productList.equals("")) return "";
 			Elements product_li = productList.select("li");
@@ -166,8 +179,8 @@ public class StylebopController extends FigoCommonController {
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
@@ -195,6 +208,7 @@ public class StylebopController extends FigoCommonController {
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -218,7 +232,9 @@ public class StylebopController extends FigoCommonController {
 
 
 		try{
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			String name = doc.select(".product-name").first().text();
 			String sPrice = "";
 			Elements sale = doc.select(".special-price");
@@ -312,6 +328,23 @@ public class StylebopController extends FigoCommonController {
 		return "";
 	}
 	
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";

@@ -1,9 +1,17 @@
 package com.ehais.figoarticle.controller;
 
-import com.ehais.figoarticle.model.*;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.ehais.util.EHtmlUnit;
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,18 +21,23 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ehais.figoarticle.model.HaiCategory;
+import com.ehais.figoarticle.model.HaiCategoryExample;
+import com.ehais.figoarticle.model.HaiGoodsAttr;
+import com.ehais.figoarticle.model.HaiGoodsEntity;
+import com.ehais.figoarticle.model.HaiGoodsGallery;
+import com.ehais.figoarticle.model.HaiGoodsUrl;
+import com.ehais.figoarticle.model.HaiGoodsUrlExample;
+import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/matchesfashion")
 public class MatchesfashionController extends FigoCommonController{
 	
-	private static String url = "http://www.matchesfashion.com";
+	private static String url = "https://www.matchesfashion.com";
 	private int websiteId = 12;
 
 
@@ -57,10 +70,12 @@ public class MatchesfashionController extends FigoCommonController{
 		String result = "";
 		try {
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+//			this.fso_write(categoryUrl, result);
 //			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\my.html");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+			result = EHtmlUnit.getAjaxPage(categoryUrl);
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			Elements nav = doc.select(".main-menu__item");
 			nav.remove(5);
@@ -187,10 +202,12 @@ public class MatchesfashionController extends FigoCommonController{
 		String result = "";
 		try{
 //			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+//			this.fso_write(goodsurl, result);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			result = EHtmlUnit.getAjaxPage(goodsurl);
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			Element productList = doc.select("ul.lister__wrapper").first();
 			if (productList == null || productList.equals("")) return "";
 			Elements product_li = productList.select("li.lister__item");
@@ -208,8 +225,8 @@ public class MatchesfashionController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
@@ -237,6 +254,7 @@ public class MatchesfashionController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -259,7 +277,14 @@ public class MatchesfashionController extends FigoCommonController{
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 
 		try{
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			
+			result = EHtmlUnit.getAjaxPage(goodsurl);
+			this.fso_write(goodsurl, result);
+			
+			Document doc = Jsoup.parse(result);
+			
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			Element info = doc.select(".pdp__description-wrapper").first();
 			String name = info.select(".pdp-description").first().text();
 			Element priceE = info.select(".pdp-price").first();
@@ -282,24 +307,41 @@ public class MatchesfashionController extends FigoCommonController{
 			goods.setGoodsUrl(goodsurl);
 			goods.setCatId(catId);
 			goods.setWebsiteId(websiteId);
-
-			//picture
-			Elements gallery_ul = doc.select(".thumbs-gallery__thumb");
-			Elements gallery_li = gallery_ul.select("img");
-			for (Element element : gallery_li) {
-				String gHref = "http:" + element.attr("src");
-				HaiGoodsGallery gallery = new HaiGoodsGallery();
-				gallery.setThumbUrl(gHref);
-				gallery.setImgUrl(gHref);
-				gallery.setImgOriginal(gHref);
-				goodsGalleryList.add(gallery);
+			
+			Elements slick_track = doc.getElementsByClass("slick-track");
+			for (Element element : slick_track) {
+				Elements ediv = element.select(">div");
+				for (Element element2 : ediv) {
+					String imgstr = element2.attr("data-main-img-url");
+					if(StringUtils.isNotBlank(imgstr)){
+						String gHref = "http:" + imgstr;
+						HaiGoodsGallery gallery = new HaiGoodsGallery();
+						gallery.setThumbUrl(gHref);
+						gallery.setImgUrl(gHref);
+						gallery.setImgOriginal(gHref);
+						goodsGalleryList.add(gallery);
+					}
+				}
 			}
+			//picture
+//			Elements gallery_ul = doc.select(".thumbs-gallery__thumb");
+//			Elements gallery_li = gallery_ul.select("img");
+//			for (Element element : gallery_li) {
+//				String gHref = "http:" + element.attr("src");
+//				HaiGoodsGallery gallery = new HaiGoodsGallery();
+//				gallery.setThumbUrl(gHref);
+//				gallery.setImgUrl(gHref);
+//				gallery.setImgOriginal(gHref);
+//				goodsGalleryList.add(gallery);
+//			}
 
-			HaiGoodsGallery gallery = goodsGalleryList.get(0);
-			goods.setGoodsThumb(gallery.getThumbUrl());
-			goods.setGoodsImg(gallery.getImgUrl());
-			goods.setOriginalImg(gallery.getImgOriginal());
-
+			if(goodsGalleryList.size() > 0){
+				HaiGoodsGallery gallery = goodsGalleryList.get(0);
+				goods.setGoodsThumb(gallery.getThumbUrl());
+				goods.setGoodsImg(gallery.getImgUrl());
+				goods.setOriginalImg(gallery.getImgOriginal());
+			}
+			
 			//size
 			Elements size = doc.select(".sg__table");
 			if (size.isEmpty()) {

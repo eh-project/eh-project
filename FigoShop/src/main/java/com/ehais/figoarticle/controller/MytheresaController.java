@@ -1,10 +1,16 @@
 package com.ehais.figoarticle.controller;
 
-import com.ehais.figoarticle.model.*;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,15 +18,22 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ehais.figoarticle.model.HaiCategory;
+import com.ehais.figoarticle.model.HaiCategoryExample;
+import com.ehais.figoarticle.model.HaiGoodsAttr;
+import com.ehais.figoarticle.model.HaiGoodsEntity;
+import com.ehais.figoarticle.model.HaiGoodsGallery;
+import com.ehais.figoarticle.model.HaiGoodsUrl;
+import com.ehais.figoarticle.model.HaiGoodsUrlExample;
+import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+//完成
 @Controller
 @RequestMapping("/mytheresa")
 public class MytheresaController extends FigoCommonController{
@@ -55,11 +68,11 @@ public class MytheresaController extends FigoCommonController{
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 
 			Element nav = doc.select(".nav-primary").first();
@@ -137,13 +150,13 @@ public class MytheresaController extends FigoCommonController{
 	
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
 		System.out.println("请求地址：" + goodsurl);
-//		String result = "";
+		String result = "";
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			Element prolist = doc.select(".products-grid").first();
 			if (prolist == null || prolist.equals("")) return "";
 			Elements proli = prolist.select("li.item");
@@ -159,8 +172,8 @@ public class MytheresaController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
@@ -188,6 +201,7 @@ public class MytheresaController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -203,14 +217,16 @@ public class MytheresaController extends FigoCommonController{
 	
 	public String goodsModel(HttpServletRequest request , String goodsurl ,Integer catId){
 		System.out.println(goodsurl);
-//		String result = "";
+		String result = "";
 		HaiGoodsEntity entity = new HaiGoodsEntity();
 		HaiGoodsWithBLOBs goods = new HaiGoodsWithBLOBs();
 		List<HaiGoodsGallery> goodsGalleryList = new ArrayList<HaiGoodsGallery>();
 		List<HaiGoodsAttr> goodsAttrList = new ArrayList<HaiGoodsAttr>();
 
 		try{
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			String name = doc.select(".product-name").first().text();
 			String sPrice = "";
 			Elements sale = doc.select(".special-price");
@@ -285,6 +301,23 @@ public class MytheresaController extends FigoCommonController{
 			System.out.println(apiresult);
 			
 			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

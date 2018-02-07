@@ -1,14 +1,16 @@
 package com.ehais.figoarticle.controller;
 
-import com.ehais.figoarticle.model.*;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,14 +18,24 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.ehais.figoarticle.model.HaiCategory;
+import com.ehais.figoarticle.model.HaiCategoryExample;
+import com.ehais.figoarticle.model.HaiGoodsAttr;
+import com.ehais.figoarticle.model.HaiGoodsEntity;
+import com.ehais.figoarticle.model.HaiGoodsGallery;
+import com.ehais.figoarticle.model.HaiGoodsUrl;
+import com.ehais.figoarticle.model.HaiGoodsUrlExample;
+import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/luisaviaroma")
@@ -59,11 +71,11 @@ public class LuisaviaromaController extends FigoCommonController{
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("C:\\Users\\wugang\\Desktop\\aaa.html");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(categoryUrl).timeout(10000).get();
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
 			Element nav = doc.getElementById("megamenu");
 			Elements navli = nav.select("li[id]");
@@ -146,11 +158,11 @@ public class LuisaviaromaController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-//			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 //			result = PythonUtil.python("D:/workspace_jee/figoarticle/src/main/webapp/getAjaxWeb.py", categoryUrl);
 //			result = FSO.ReadFileName("E:/temp/IFCHIC.htm");
-//			Document doc = Jsoup.parse(result);
-			Document doc = Jsoup.connect(goodsurl).timeout(20000).get();
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).timeout(20000).get();
 			List<String> list = new ArrayList<String>();
 			Element productList = doc.getElementById("div_lp_body");
 			if (productList == null || productList.equals("")) return "";
@@ -201,6 +213,7 @@ public class LuisaviaromaController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -224,26 +237,27 @@ public class LuisaviaromaController extends FigoCommonController{
 
 		try{
 			// 模拟一个浏览器
-			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);
-
-			//设置webClient的相关参数
-			//启动JS
-			webClient.getOptions().setJavaScriptEnabled(true);
-			webClient.getOptions().setActiveXNative(false);
-			//禁用Css，可避免自动二次请求CSS进行渲染
-			webClient.getOptions().setCssEnabled(false);
-			//JS运行错误时，是否抛出异常
-			webClient.getOptions().setThrowExceptionOnScriptError(false);
-//			webClient.waitForBackgroundJavaScript(10*1000);
-			webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-
-			//模拟浏览器打开一个目标网址
-			final HtmlPage page = webClient.getPage(goodsurl);
-			//该方法在getPage()方法之后调用才能生效
-			webClient.waitForBackgroundJavaScript(1000*3);
-			webClient.setJavaScriptTimeout(0);
-			result = page.asXml();
+//			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);
+//
+//			//设置webClient的相关参数
+//			//启动JS
+//			webClient.getOptions().setJavaScriptEnabled(true);
+//			webClient.getOptions().setActiveXNative(false);
+//			//禁用Css，可避免自动二次请求CSS进行渲染
+//			webClient.getOptions().setCssEnabled(false);
+//			//JS运行错误时，是否抛出异常
+//			webClient.getOptions().setThrowExceptionOnScriptError(false);
+////			webClient.waitForBackgroundJavaScript(10*1000);
+//			webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+//
+//			//模拟浏览器打开一个目标网址
+//			final HtmlPage page = webClient.getPage(goodsurl);
+//			//该方法在getPage()方法之后调用才能生效
+//			webClient.waitForBackgroundJavaScript(1000*3);
+//			webClient.setJavaScriptTimeout(0);
+//			result = page.asXml();
 //			result = PythonUtil.python("D:\\eh-project\\FigoShop\\getAjaxWeb.py", goodsurl);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 			Document doc = Jsoup.parse(result);
 			Element info = doc.getElementById("div_right_sp");
 			String name = info.getElementById("sp_p_category_nolink").text();
@@ -327,6 +341,23 @@ public class LuisaviaromaController extends FigoCommonController{
 			System.out.println(apiresult);
 			
 			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

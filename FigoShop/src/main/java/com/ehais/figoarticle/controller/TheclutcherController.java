@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ehais.util.Bean2Utils;
 import org.ehais.util.EHttpClientUtil;
+import org.ehais.util.PythonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Document;
@@ -17,6 +18,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehais.figoarticle.model.HaiCategory;
@@ -35,6 +37,7 @@ import net.sf.json.JSONObject;
  * @author oldbiwang
  *
  */
+//完成
 @Controller
 @RequestMapping("/theclutcher")
 public class TheclutcherController extends FigoCommonController{
@@ -72,7 +75,9 @@ public class TheclutcherController extends FigoCommonController{
 		try {
 		/*	result = PythonUtil.python("C:/Users/cjc/Desktop/eh-project/FigoShop/getAjaxWeb.py", categoryUrl);
 			Document doc  = Jsoup.parse(result);*/
-			result = GetPostTest.sendGet(categoryUrl,null);
+//			result = GetPostTest.sendGet(categoryUrl,null);
+//			Document doc = Jsoup.parse(result);
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
 			Document doc = Jsoup.parse(result);
 			//System.out.println(doc);
 			Element header = doc.getElementsByClass("header").first();
@@ -207,8 +212,8 @@ public class TheclutcherController extends FigoCommonController{
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8087/api/category";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+//			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -246,7 +251,9 @@ public class TheclutcherController extends FigoCommonController{
 		System.out.println(goodsurl);
 		String result = "";
 		try{
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			Document doc = Jsoup.parse(result);
 			if(doc == null)
 				return "";
 //			System.out.println(doc);
@@ -284,7 +291,8 @@ public class TheclutcherController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			Element currentSpan = bottomPager.getElementsByClass("curr").first();
@@ -315,6 +323,7 @@ public class TheclutcherController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -340,7 +349,9 @@ public class TheclutcherController extends FigoCommonController{
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
 		try{
-			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+//			Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			Document doc = Jsoup.parse(result);
 			if(doc == null)
 				return "";
 			
@@ -461,13 +472,35 @@ public class TheclutcherController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-			String api = "http://localhost:8087/api/goodsAttr";
+			
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
+//			String api = "http://localhost:8087/api/goodsAttr";
+			
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);		
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return "";
 	}
+	
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
 	
 	public static void main(String[] args) throws Exception {
 		String goodsurl = "https://www.net-a-porter.com/cn/zh/d/Shop/Lingerie/All?cm_sp=topnav-_-clothing-_-lingerie";

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/ehais/js/bootstrap/css/bootstrap.min.css">
+
+<script src="/ehais/js/jquery/jquery-2.1.4.min.js"></script>
+<script src="/ehais/js/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+<textarea id="content" rows="" cols="" style="width: 100%; height: 400px"></textarea>
+<button id="getCategory">获取分类</button>
+注：用google浏览器打开http://www.flannels.com，查看源代码，复制当前所有源代码，粘贴到上面文本中，点击“获取分类”按钮
+<script type="text/javascript">
+$(function(){
+	$("#getCategory").click(function(){
+		$.ajax({
+			url:"/spider/flannels-category",
+			data:{content:$("#content").val()},
+			dataType:"json",type:"post",
+			success:function(result){
+				alert("获取成功");
+				$("#content").val("")
+			}
+		});
+	});
+});
+</script>
+</body>
+</html>

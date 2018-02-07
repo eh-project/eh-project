@@ -19,6 +19,7 @@ import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehais.figoarticle.model.HaiCategory;
@@ -74,7 +75,10 @@ public class SelfridgesController extends FigoCommonController{
 		try {
 			// TODO 
 			List<HaiCategory> list = new ArrayList<HaiCategory>();
-			result = GetPostTest.sendGet(categoryUrl + "/CN/en/", null);
+//			result = GetPostTest.sendGet(categoryUrl + "/CN/en/", null);
+//			Document doc = Jsoup.parse(result);
+			
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl + "/CN/en/");
 			Document doc = Jsoup.parse(result);
 			
 			Element megaMenu = doc.getElementById("megaMenu");
@@ -152,7 +156,8 @@ public class SelfridgesController extends FigoCommonController{
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-			String api = "http://localhost:8087/api/category";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+//			String api = "http://localhost:8087/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -194,26 +199,26 @@ public class SelfridgesController extends FigoCommonController{
 			// TODO
 			//Document doc = Jsoup.connect(goodsurl).timeout(10000).get();
 			
-			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);        			LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log","org.apache.commons.logging.impl.NoOpLog");  
-			java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(java.util.logging.Level.OFF);  
-	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
-	        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);  
-	        // 设置webClient的相关参数  
-	        webClient.getOptions().setJavaScriptEnabled(true);  
-	        webClient.getOptions().setActiveXNative(false);  
-	        webClient.getOptions().setCssEnabled(false);  
-	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
-	        webClient.waitForBackgroundJavaScript(600*1000);  
-	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());       
-	        
-	          
-	        // 模拟浏览器打开一个目标网址  
-	        final HtmlPage page = webClient.getPage(goodsurl);  
-	        // 该方法在getPage()方法之后调用才能生效  
-	        webClient.waitForBackgroundJavaScript(1000*3);  
-	        webClient.setJavaScriptTimeout(0);
-	        result = page.asXml();
-			
+//			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);        			LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log","org.apache.commons.logging.impl.NoOpLog");  
+//			java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(java.util.logging.Level.OFF);  
+//	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
+//	        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);  
+//	        // 设置webClient的相关参数  
+//	        webClient.getOptions().setJavaScriptEnabled(true);  
+//	        webClient.getOptions().setActiveXNative(false);  
+//	        webClient.getOptions().setCssEnabled(false);  
+//	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
+//	        webClient.waitForBackgroundJavaScript(600*1000);  
+//	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());       
+//	        
+//	          
+//	        // 模拟浏览器打开一个目标网址  
+//	        final HtmlPage page = webClient.getPage(goodsurl);  
+//	        // 该方法在getPage()方法之后调用才能生效  
+//	        webClient.waitForBackgroundJavaScript(1000*3);  
+//	        webClient.setJavaScriptTimeout(0);
+//	        result = page.asXml();
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 			Document doc = Jsoup.parse(result);
 			
 			if(doc == null)
@@ -250,7 +255,8 @@ public class SelfridgesController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
@@ -305,6 +311,7 @@ public class SelfridgesController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -330,26 +337,30 @@ public class SelfridgesController extends FigoCommonController{
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
 		try{
-			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);        			LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log","org.apache.commons.logging.impl.NoOpLog");  
-			java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(java.util.logging.Level.OFF);  
-	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
-	        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);  
-	        // 设置webClient的相关参数  
-	        webClient.getOptions().setJavaScriptEnabled(true);  
-	        webClient.getOptions().setActiveXNative(false);  
-	        webClient.getOptions().setCssEnabled(false);  
-	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
-	        webClient.waitForBackgroundJavaScript(600*1000);  
-	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());       
-	        
-	          
-	        // 模拟浏览器打开一个目标网址  
-	        final HtmlPage page = webClient.getPage(goodsurl);  
-	        // 该方法在getPage()方法之后调用才能生效  
-	        webClient.waitForBackgroundJavaScript(1000*3);  
-	        webClient.setJavaScriptTimeout(0);
-	        result = page.asXml();
+//			final WebClient webClient = new WebClient(BrowserVersion.FIREFOX_45);        			LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log","org.apache.commons.logging.impl.NoOpLog");  
+//			java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(java.util.logging.Level.OFF);  
+//	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
+//	        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);  
+//	        // 设置webClient的相关参数  
+//	        webClient.getOptions().setJavaScriptEnabled(true);  
+//	        webClient.getOptions().setActiveXNative(false);  
+//	        webClient.getOptions().setCssEnabled(false);  
+//	        webClient.getOptions().setThrowExceptionOnScriptError(false);  
+//	        webClient.waitForBackgroundJavaScript(600*1000);  
+//	        webClient.setAjaxController(new NicelyResynchronizingAjaxController());       
+//	        
+//	          
+//	        // 模拟浏览器打开一个目标网址  
+//	        final HtmlPage page = webClient.getPage(goodsurl);  
+//	        // 该方法在getPage()方法之后调用才能生效  
+//	        webClient.waitForBackgroundJavaScript(1000*3);  
+//	        webClient.setJavaScriptTimeout(0);
+//	        result = page.asXml();
+//			Document doc = Jsoup.parse(result);
+			
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
 			Document doc = Jsoup.parse(result);
+			
 			if(doc == null)
 				return "";
 			Element masterContent = doc.getElementById("masterContent");
@@ -434,9 +445,27 @@ public class SelfridgesController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-			String api = "http://localhost:8087/api/goodsAttr";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
+//			String api = "http://localhost:8087/api/goodsAttr";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 						
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

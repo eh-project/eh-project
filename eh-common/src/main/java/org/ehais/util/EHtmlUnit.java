@@ -71,7 +71,31 @@ public class EHtmlUnit {
 	    return result;
 	}
 	
-	
+	public static String getAjaxPage(String url,BrowserVersion browserVersion) throws Exception{ 
+		WebClient webClient = new WebClient(browserVersion);  
+        webClient.getOptions().setJavaScriptEnabled(true);  
+        webClient.getOptions().setCssEnabled(false);  
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());  
+        webClient.getOptions().setTimeout(Integer.MAX_VALUE);  
+        webClient.getOptions().setThrowExceptionOnScriptError(false);  
+        HtmlPage rootPage = webClient.getPage(url);  
+        String htmlContent = rootPage.asXml();
+		webClient.close();
+		return htmlContent;
+	} 
+	public static String getAjaxPage(String url) throws Exception{  
+        WebClient webClient = new WebClient(BrowserVersion.CHROME);  
+        webClient.getOptions().setJavaScriptEnabled(true);  
+        webClient.getOptions().setCssEnabled(false);  
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());  
+        webClient.getOptions().setTimeout(Integer.MAX_VALUE);  
+        webClient.getOptions().setThrowExceptionOnScriptError(false);  
+        HtmlPage rootPage = webClient.getPage(url);  
+        String htmlContent = rootPage.asXml();
+		webClient.close();
+		return htmlContent;
+		
+    }
 	public static String httpUnitAjaxRequest(String url) throws Exception {
 		//创建一个可执行js,css,ajax的多功能WebClient
 		WebClient multiWebClient = new WebClient(BrowserVersion.CHROME);

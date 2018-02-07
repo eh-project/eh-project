@@ -22,6 +22,7 @@ import org.sonatype.inject.EagerSingleton;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.ehais.figoarticle.model.HaiCategory;
@@ -36,6 +37,7 @@ import com.ehais.figoarticle.model.HaiGoodsWithBLOBs;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+//完成
 @Controller
 @RequestMapping("/6pm")
 public class SixpmController extends FigoCommonController{
@@ -67,7 +69,9 @@ public class SixpmController extends FigoCommonController{
 	private void category(HttpServletRequest request,String categoryUrl){
 		String result = "";
 		try {
-			Document doc = Jsoup.connect(categoryUrl).get();
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), categoryUrl);
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(categoryUrl).get();
 			System.out.println(doc.toString());
 			List<HaiCategory> parentList = new ArrayList<HaiCategory>();
 			// TODO 
@@ -182,8 +186,9 @@ public class SixpmController extends FigoCommonController{
 	private String goodsUrl(HttpServletRequest request,String goodsurl,Integer catId){
 		System.out.println("goodsurl:   " + goodsurl);
 		try{
-
-			Document doc = Jsoup.connect(goodsurl).get();
+			String result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			Document doc = Jsoup.parse(result);
+//			Document doc = Jsoup.connect(goodsurl).get();
 			if(doc == null){
 				return "";
 			}
@@ -206,7 +211,8 @@ public class SixpmController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-			String api = "http://localhost:8087/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8087/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 
 			
@@ -248,6 +254,7 @@ public class SixpmController extends FigoCommonController{
 			HaiGoodsUrlExample example = new HaiGoodsUrlExample();
 			HaiGoodsUrlExample.Criteria c = example.createCriteria();
 			c.andGoodsUrlLike(url+"%");
+			c.andFinishEqualTo(false);
 			List<HaiGoodsUrl> listGoodsUrl = haiGoodsUrlMapper.selectByExample(example);
 			for (HaiGoodsUrl haiGoodsUrl : listGoodsUrl) {
 				goodsModel(request,haiGoodsUrl.getGoodsUrl(),haiGoodsUrl.getCatId());
@@ -270,8 +277,13 @@ public class SixpmController extends FigoCommonController{
 		goods.setGoodsUrl(goodsurl);
 		goods.setCatId(catId);
 		goods.setWebsiteId(websiteId);
+		String result = "";
 		try{
-			Document document = Jsoup.connect(goodsurl).get();
+//			Document document = Jsoup.connect(goodsurl).get();
+			
+			result = PythonUtil.python(request.getRealPath("/getAjaxWeb.py"), goodsurl);
+			Document document = Jsoup.parse(result);
+			
 			if(document == null) return "";
 			Element allDetail = document.getElementById("theater");
 			if(allDetail == null) return "";
@@ -367,13 +379,30 @@ public class SixpmController extends FigoCommonController{
 			System.out.println(jsonObject.toString());
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", jsonObject.toString());
-
-			String api = "http://localhost:8087/api/goodsAttr";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/goodsAttr";
+//			String api = "http://localhost:8087/api/goodsAttr";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
 
 			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	//单商品的地址请求
+	@ResponseBody
+	@RequestMapping("/getGoodsUrl")
+	public String getGoodsUrl(ModelMap modelMap, 
+			HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam(value = "catId", required = true) Integer catId,
+			@RequestParam(value = "goodsurl", required = true) String goodsurl
+			){
+		try{
+			return goodsModel(request,goodsurl,catId);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
