@@ -81,6 +81,7 @@ public class DownLoadImagesController extends FigoCommonController {
 			String name = list.get(0).getGoodsThumb().substring(list.get(0).getGoodsThumb().lastIndexOf("/")+1);
 			String path = request.getRealPath("/uploads/");
 			String thumb = list.get(0).getGoodsThumb();
+			if(thumb.indexOf("http")<0)thumb="http:"+thumb;
 			System.out.println(thumb);
 			boolean b = this.download(thumb , name , path );
 			if(b){

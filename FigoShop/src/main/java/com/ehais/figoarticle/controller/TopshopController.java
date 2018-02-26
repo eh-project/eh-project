@@ -139,8 +139,8 @@ public class TopshopController extends FigoCommonController{
 			
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("json", arr.toString());
-		//	String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
-			String api = "http://localhost:8080/api/category";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/category";
+//			String api = "http://localhost:8080/api/category";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			System.out.println(apiresult);
 			
@@ -236,8 +236,8 @@ public class TopshopController extends FigoCommonController{
 			Map<String, String> paramsMap = new HashMap<String,String>();
 			paramsMap.put("catId", catId.toString());
 			paramsMap.put("json", arr.toString());
-//			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
-			String api = "http://localhost:8080/api/url";
+			String api = request.getScheme()+"://"+ request.getServerName()+":"+request.getServerPort()+"/api/url";
+//			String api = "http://localhost:8080/api/url";
 			String apiresult = EHttpClientUtil.httpPost(api, paramsMap);
 			
 			//获取下一页
