@@ -302,59 +302,57 @@ public class FarfetchController extends FigoCommonController{
 //			result = FSO.ReadFileName("E:/temp/farfetch.html");
 //			FSO.WriteTextFile("E:/temp/farfetch2.html", result);
 			Document doc = Jsoup.parse(result);
-			Element PDPContainer = doc.getElementById("PDPContainer");
-			String goodsName = PDPContainer.select("span.heading-regular").text();
+			String goodsName = "";
+			String prices = "";
+			Elements meta = doc.getElementsByTag("meta");
+			for (Element e : meta) {
+				if(e.attr("itemProp").equals("name")) {
+					goodsName = e.attr("content");
+					System.out.println("商品名称："+e.attr("content"));
+				}else if(e.attr("itemProp").equals("price")) {
+					prices = e.attr("content");
+					System.out.println("商品价格："+prices);
+				}
+				
+				if(e.attr("property").equals("og:image")) {
+					HaiGoodsGallery gallery = new HaiGoodsGallery();
+					gallery.setImgOriginal(e.attr("content"));
+					gallery.setImgUrl(e.attr("content"));
+					gallery.setThumbUrl(e.attr("content"));
+					goodsGalleryList.add(gallery);
+				}
+				
+			}
+			
 			goods.setGoodsName(goodsName);
-			
-			Element productDetailModules = doc.select(".productDetailModule").first();
-			
-			
-			Elements absalesdetail = productDetailModules.select("span.ab-sales-detail");
-			
-			String prices = absalesdetail.last().text();
-			
-			prices = prices.replace(",", "").replace("¥", "");
 			Float price = Float.parseFloat(prices) * 100;
 			goods.setShopPrice(price.intValue());
 			goods.setCurrency("¥");
 			
-//			Elements div = doc.getElementsByTag("p").attr("itemprop", "description");
-			
-			Elements content = productDetailModules.getElementsByTag("div").attr("data-tstid", "Content_Description").attr("class", "pl10");
-			Elements accordion = doc.getElementsByClass("product-detail");
-//			System.out.println("=element============================"+accordion.size());
-			
-			
-//			for (Element element : content) {
-//				System.out.println(element);
-//			}
-			
-			
-//			Element detailSizeDropdown = doc.getElementById("detailSizeDropdown");
-			
-//			System.out.println(detailSizeDropdown.html());
-//			Elements sizeLi = detailSizeDropdown.getElementsByTag("li");
-//			System.out.println("=size============================");
-//			System.out.println(sizeLi);
-//			if(sizeLi.size() > 1)sizeLi.remove(sizeLi.last());
-//			System.out.println("=size r============================");
-//			System.out.println(sizeLi);
-			
-			
-			
-			
-			Elements imgLi = doc.select("li.sliderProduct-slide");
-			for (Element element : imgLi) {
-				Element img = element.getElementsByTag("img").first();
-				if(img.attr("data-medium") != null){
-					String goodsImg = img.attr("data-medium");
-					HaiGoodsGallery gallery = new HaiGoodsGallery();
-					gallery.setImgOriginal(goodsImg);
-					gallery.setImgUrl(goodsImg);
-					gallery.setThumbUrl(goodsImg);
-					goodsGalleryList.add(gallery);
+			String goodsDesc = "";
+			Elements div = doc.getElementsByTag("div");
+			for (Element e : div) {
+				if(e.attr("data-tstid").equals("productDetails")) {
+					goodsDesc = e.html();
 				}
 			}
+			goods.setGoodsDesc(goodsDesc);
+			
+			
+			
+			
+//			Elements imgLi = doc.select("li.sliderProduct-slide");
+//			for (Element element : imgLi) {
+//				Element img = element.getElementsByTag("img").first();
+//				if(img.attr("data-medium") != null){
+//					String goodsImg = img.attr("data-medium");
+//					HaiGoodsGallery gallery = new HaiGoodsGallery();
+//					gallery.setImgOriginal(goodsImg);
+//					gallery.setImgUrl(goodsImg);
+//					gallery.setThumbUrl(goodsImg);
+//					goodsGalleryList.add(gallery);
+//				}
+//			}
 			
 			if(goodsGalleryList.size() > 0){
 				HaiGoodsGallery gallery = goodsGalleryList.get(0);
