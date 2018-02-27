@@ -47,7 +47,7 @@ import net.sf.json.JSONObject;
 public class FarfetchController extends FigoCommonController{
 
 
-	private static String url = "https://www.farfetch.com/hk";
+	private static String url = "https://www.farfetch.com";
 	private int websiteId = 5;
 
 
