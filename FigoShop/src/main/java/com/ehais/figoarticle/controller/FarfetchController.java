@@ -47,7 +47,7 @@ import net.sf.json.JSONObject;
 public class FarfetchController extends FigoCommonController{
 
 
-	private static String url = "https://www.farfetch.cn";
+	private static String url = "https://www.farfetch.com/hk";
 	private int websiteId = 5;
 
 
@@ -63,13 +63,13 @@ public class FarfetchController extends FigoCommonController{
 	public String category(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response){
 		
 		try {
-			String categoryUrl = "https://www.farfetch.cn/cn/shopping/women/items.aspx";
+			String categoryUrl = "https://www.farfetch.com/hk/shopping/women/items.aspx";
 			this.category(request, categoryUrl);
 			
-			categoryUrl = "https://www.farfetch.cn/cn/shopping/men/items.aspx";
+			categoryUrl = "https://www.farfetch.com/hk/shopping/men/items.aspx";
 			this.category(request, categoryUrl);
 			
-			categoryUrl = "https://www.farfetch.cn/cn/shopping/kids/items.aspx";
+			categoryUrl = "https://www.farfetch.com/hk/shopping/kids/items.aspx";
 			this.category(request, categoryUrl);
 			
 		} catch (Exception e) {
@@ -398,13 +398,13 @@ public class FarfetchController extends FigoCommonController{
 	}
 	
 	public static void main(String[] args) throws Exception {
-		String goodsurl = "https://www.farfetch.cn/cn/shopping/women/items.aspx";
+		String goodsurl = "https://www.farfetch.com/hk/shopping/women/items.aspx";
 		FarfetchController ac = new FarfetchController();
-		goodsurl = "https://www.farfetch.cn/cn/shopping/kids/msgm-kids--t--item-12114745.aspx?storeid=10238&from=listing&rnkdmnly=1";
+		goodsurl = "https://www.farfetch.com/hk/shopping/kids/msgm-kids--t--item-12114745.aspx?storeid=10238&from=listing&rnkdmnly=1";
 		ac.goodsModel(null,goodsurl,1);
-//		goodsurl = "https://www.farfetch.cn/cn/shopping/women/clothing-1/items.aspx?ffref=hd_snav";
+//		goodsurl = "https://www.farfetch.com/hk/shopping/women/clothing-1/items.aspx?ffref=hd_snav";
 	//	ac.goodsUrl(null, goodsurl, 1);
-//		ac.getArticlesToSaveFromCategory("https://www.farfetch.cn/cn/sets/women/new-in-this-week-eu-women.aspx?ffref=hd_mnav");
+//		ac.getArticlesToSaveFromCategory("https://www.farfetch.com/hk/sets/women/new-in-this-week-eu-women.aspx?ffref=hd_mnav");
 //		ac.category(null, goodsurl);	
 	}
 }
