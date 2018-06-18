@@ -17,10 +17,10 @@
   <url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven_compiler_ver>3.2</maven_compiler_ver>
+		<maven_compiler_ver>3.7.0</maven_compiler_ver>
 		<maven_resources_ver>2.7</maven_resources_ver>
-		<spring.version>4.2.6.RELEASE</spring.version><!-- 4.0.5.RELEASE -->
-		<jdk_ver>1.7</jdk_ver>
+		<spring.version>4.3.7.RELEASE</spring.version><!-- 4.0.5.RELEASE -->
+		<jdk_ver>1.8</jdk_ver>
 		<maven_ver>3.2</maven_ver>
 		<junit_ver>4.12</junit_ver>
 		<struts2_ver>2.3.24</struts2_ver>
@@ -476,13 +476,14 @@
 					<overwrite>true</overwrite>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven_compiler_ver}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
