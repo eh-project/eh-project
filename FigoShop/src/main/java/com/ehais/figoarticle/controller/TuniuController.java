@@ -35,5 +35,18 @@ public class TuniuController extends FigoCommonController {
 		return "";
 	}
 	
+	public static void main(String[] args) {
+		String websiteUrl = "http://hotel.tuniu.com/list/%E5%B9%BF%E5%B7%9Ep0s0b0/?checkindate=2018-06-19&checkoutdate=2018-06-20";
+		
+		try {
+			String result = PythonUtil.python("D:\\eclipse-workspace\\eh-project\\FigoShop\\getAjaxWeb.py", websiteUrl);
+			System.out.println(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 }
